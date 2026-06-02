@@ -2,6 +2,7 @@ import { mkdirSync } from "fs";
 import { readFile } from "fs/promises";
 import path from "path";
 import postgres from "postgres";
+import { resolveDatabaseUrl } from "@/lib/db/database-url";
 import type { RegisterNext } from "@/lib/registration/types";
 
 type SqliteDatabase = import("better-sqlite3").Database;
@@ -11,11 +12,11 @@ let sqliteDb: SqliteDatabase | null = null;
 let schemaReady: Promise<void> | null = null;
 
 export function usesPostgres(): boolean {
-  return Boolean(process.env.DATABASE_URL?.trim());
+  return Boolean(resolveDatabaseUrl());
 }
 
 function getPostgres() {
-  const url = process.env.DATABASE_URL?.trim();
+  const url = resolveDatabaseUrl();
   if (!url) return null;
   if (!pgSql) {
     pgSql = postgres(url, { max: 10 });
