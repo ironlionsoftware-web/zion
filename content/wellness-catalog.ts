@@ -1,0 +1,343 @@
+/**
+ * Curated offerings for the wellness guide matcher.
+ * Tags and phrases are used for search, not medical claims.
+ */
+
+export type WellnessOfferingKind = "healing-service" | "fitness" | "shop-product" | "retreat";
+
+export type WellnessOffering = {
+  id: string;
+  kind: WellnessOfferingKind;
+  title: string;
+  summary: string;
+  href: string;
+  /** Weighted search terms (conditions, goals, feelings, synonyms). */
+  tags: string[];
+};
+
+export const wellnessDisclaimer =
+  "Suggestions are educational starting points only, not medical advice, diagnosis, or treatment. Always consult licensed care providers for health conditions. Plant offerings and ceremonies have their own preparation and safety requirements; we will discuss those before you book.";
+
+export const wellnessGuidePrompts = [
+  "stress and trouble sleeping",
+  "low energy and wanting more minerals",
+  "spiritual clarity and life direction",
+  "grief and emotional heaviness",
+  "blood sugar support with herbs",
+  "deep reset in nature with a group",
+] as const;
+
+export const wellnessCatalog: WellnessOffering[] = [
+  {
+    id: "reiki",
+    kind: "healing-service",
+    title: "Reiki & Frequency tuning",
+    summary:
+      "Gentle energy work and frequency tuning focused on grounding, chakra balance, nervous system ease, and consent led sessions.",
+    href: "/register?next=book&service=reiki",
+    tags: [
+      "reiki",
+      "energy",
+      "chakra",
+      "anxiety",
+      "stress",
+      "grief",
+      "trauma",
+      "burnout",
+      "overwhelmed",
+      "spiritual",
+      "balance",
+      "grounding",
+      "rest",
+      "emotional",
+      "nervous system",
+      "calm",
+      "healing touch",
+      "intuition",
+      "frequency",
+      "sound",
+      "vibration",
+      "tuning",
+      "somatic",
+    ],
+  },
+  {
+    id: "consultation",
+    kind: "healing-service",
+    title: "Consultation",
+    summary:
+      "Schedule a consultation to map a holistic health plan for mind, body, and spirit, with structure, root cause focus, and next steps that fit your life.",
+    href: "/register?next=book&service=consultation",
+    tags: [
+      "consultation",
+      "consult",
+      "intake",
+      "holistic plan",
+      "health plan",
+      "mind body spirit",
+      "root cause",
+      "assessment",
+      "first visit",
+      "getting started",
+      "direction",
+      "goals",
+    ],
+  },
+  {
+    id: "help-sessions",
+    kind: "healing-service",
+    title: "H.e.l.p. sessions",
+    summary:
+      "Channelled insight and spiritual or mental coaching for clarity, direction, and inner work, complementary to licensed therapy.",
+    href: "/register?next=book&service=help-sessions",
+    tags: [
+      "help",
+      "coaching",
+      "spiritual",
+      "mental",
+      "clarity",
+      "direction",
+      "purpose",
+      "crossroads",
+      "guidance",
+      "insight",
+      "life change",
+      "depression support",
+      "overwhelmed",
+      "meaning",
+      "channelled",
+    ],
+  },
+  {
+    id: "plant-medicine-ceremonies",
+    kind: "healing-service",
+    title: "Plant medicine ceremonies",
+    summary:
+      "Held, consent led ceremonial space for deep inner work and integration, choose Hape or Sananga when you book.",
+    href: "/register?next=book&service=plant-medicine-ceremonies",
+    tags: [
+      "plant medicine",
+      "ceremony",
+      "ceremonial",
+      "deep healing",
+      "integration",
+      "spiritual journey",
+      "inner work",
+      "transformation",
+      "psychedelic curious",
+      "ritual",
+      "ancestors",
+      "breakthrough",
+    ],
+  },
+  {
+    id: "classes",
+    kind: "healing-service",
+    title: "Classes & workshops",
+    summary:
+      "Multi week and single series classes on Reiki, breath, plant forward living, and energy awareness for all ages.",
+    href: "/healing-services/classes",
+    tags: [
+      "class",
+      "classes",
+      "workshop",
+      "workshops",
+      "learn",
+      "education",
+      "series",
+      "group",
+      "reiki class",
+      "breath class",
+      "kids",
+      "children",
+      "plant forward",
+    ],
+  },
+  {
+    id: "card-readings",
+    kind: "healing-service",
+    title: "Card readings",
+    summary:
+      "Reflective card reading for perspective when you are at a fork in the road or want intuitive reflection.",
+    href: "/register?next=book&service=card-readings",
+    tags: [
+      "cards",
+      "tarot",
+      "reading",
+      "guidance",
+      "intuition",
+      "decision",
+      "crossroads",
+      "clarity",
+      "reflection",
+      "spiritual",
+    ],
+  },
+  {
+    id: "donation-based",
+    kind: "healing-service",
+    title: "Donation based service",
+    summary:
+      "Flexible contribution ($45 to $120) when cost is a barrier but you still want supported healing work.",
+    href: "/register?next=donation&service=donation-based",
+    tags: [
+      "donation",
+      "sliding scale",
+      "affordable",
+      "budget",
+      "low cost",
+      "financial",
+      "accessible",
+    ],
+  },
+  {
+    id: "herbs-seamoss",
+    kind: "healing-service",
+    title: "Herbs & sea moss (apothecary)",
+    summary:
+      "Browse bottled teas, leaves, and sea moss from the shop, plant forward support for daily wellness routines.",
+    href: "/shop",
+    tags: [
+      "herbs",
+      "herbal",
+      "tea",
+      "seamoss",
+      "sea moss",
+      "botanical",
+      "plant medicine daily",
+      "apothecary",
+      "natural",
+      "holistic nutrition",
+    ],
+  },
+  {
+    id: "holistic-personal-training",
+    kind: "fitness",
+    title: "Holistic personal training",
+    summary:
+      "Strength, mobility, and conditioning paced for your joints, nervous system, and real life capacity.",
+    href: "/fitness-training",
+    tags: [
+      "fitness",
+      "training",
+      "strength",
+      "mobility",
+      "movement",
+      "weight",
+      "athletic",
+      "pain",
+      "injury",
+      "chronic pain",
+      "rebuild",
+      "accountability",
+      "workout",
+      "body",
+      "conditioning",
+    ],
+  },
+  {
+    id: "retreat",
+    kind: "retreat",
+    title: "Dominica holistic retreat",
+    summary:
+      "Immersive group retreat with Reiki, breath work, plant based meals, and nature, 4 to 8 participants.",
+    href: "/retreat",
+    tags: [
+      "retreat",
+      "dominica",
+      "immersive",
+      "group",
+      "reset",
+      "vacation healing",
+      "travel",
+      "nature",
+      "intensive",
+      "week away",
+      "transformation",
+    ],
+  },
+  {
+    id: "bottled-teas",
+    kind: "shop-product",
+    title: "Bottled teas",
+    summary: "Ready to use herbal teas from the apothecary for gentle daily ritual.",
+    href: "/shop",
+    tags: ["tea", "herbal tea", "daily ritual", "hydration", "gentle", "wellness routine"],
+  },
+  {
+    id: "guava-leaves",
+    kind: "shop-product",
+    title: "Guava leaves",
+    summary: "Traditional leaf often chosen for digestive ease and blood sugar balance support.",
+    href: "/shop",
+    tags: ["guava", "digestion", "digestive", "blood sugar", "glucose", "gut", "stomach"],
+  },
+  {
+    id: "cinnamon-leaves",
+    kind: "shop-product",
+    title: "Cinnamon leaves",
+    summary: "Warming botanical often used for circulation and metabolic support in plant traditions.",
+    href: "/shop",
+    tags: ["cinnamon", "circulation", "warmth", "metabolic", "blood sugar", "warming"],
+  },
+  {
+    id: "nettle",
+    kind: "shop-product",
+    title: "Nettle",
+    summary: "Mineral rich herb commonly used for inflammation, allergies, and nourishment.",
+    href: "/shop",
+    tags: ["nettle", "allergies", "hay fever", "inflammation", "minerals", "iron", "nourish", "joints"],
+  },
+  {
+    id: "avocado-leaves",
+    kind: "shop-product",
+    title: "Avocado leaves",
+    summary: "Leaf traditionally used for calm, sleep support, and cardiovascular balance.",
+    href: "/shop",
+    tags: ["avocado", "sleep", "insomnia", "blood pressure", "heart", "calm", "rest"],
+  },
+  {
+    id: "cerasee",
+    kind: "shop-product",
+    title: "Cerasee",
+    summary: "Bitter herb widely used in Caribbean wellness for cleansing and blood sugar support.",
+    href: "/shop",
+    tags: ["cerasee", "bitter", "cleanse", "detox", "blood sugar", "diabetes support", "purify"],
+  },
+  {
+    id: "blue-vervain",
+    kind: "shop-product",
+    title: "Blue vervain",
+    summary: "Nervine herb often chosen for anxiety, tension, and nervous system overwhelm.",
+    href: "/shop",
+    tags: ["vervain", "anxiety", "nervous", "stress", "tension", "overwhelmed", "calm", "sleep"],
+  },
+  {
+    id: "soursop-leaves",
+    kind: "shop-product",
+    title: "Soursop leaves",
+    summary: "Leaf used in plant traditions for immune support, relaxation, and restorative rest.",
+    href: "/shop",
+    tags: ["soursop", "immune", "immunity", "relaxation", "rest", "calm", "recovery"],
+  },
+  {
+    id: "dried-sea-moss",
+    kind: "shop-product",
+    title: "Dried sea moss",
+    summary: "Sea moss for mineral density, gut support, and steady energy in plant forward routines.",
+    href: "/shop",
+    tags: ["sea moss", "seamoss", "minerals", "iodine", "thyroid", "energy", "gut", "nutrition", "iron"],
+  },
+  {
+    id: "sea-moss-gel",
+    kind: "shop-product",
+    title: "Sea moss gel",
+    summary: "Ready to use gel for smoothies and daily mineral support.",
+    href: "/shop",
+    tags: ["sea moss gel", "seamoss", "smoothie", "minerals", "energy", "daily", "gut"],
+  },
+];
+
+export function getWellnessOffering(id: string): WellnessOffering | undefined {
+  return wellnessCatalog.find((o) => o.id === id);
+}

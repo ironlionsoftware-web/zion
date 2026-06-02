@@ -20,6 +20,9 @@
 # production
 /build
 
+# client registrations (marketing leads) & retreat bookings
+/data/
+
 # misc
 .DS_Store
 *.pem
@@ -30,8 +33,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files (secrets stay local / in host dashboard)
 .env*
+!.env.example
+
+# local performance audits
+/lighthouse-reports/
 
 # vercel
 .vercel

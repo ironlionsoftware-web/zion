@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -9,28 +10,28 @@ export const metadata: Metadata = {
 
 export default function ReikiPage() {
   return (
-    <div className="py-14 sm:py-20">
-      <Container className="max-w-3xl">
-        <h1 className="text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">{site.reiki.title}</h1>
-        <div className="mt-10 space-y-10">
-          {site.reiki.sections.map((block, i) => (
-            <section key={i} aria-labelledby={block.heading ? `reiki-h2-${i}` : undefined}>
-              {block.heading ? (
-                <h2 id={`reiki-h2-${i}`} className="text-xl font-semibold text-stone-950">
-                  {block.heading}
-                </h2>
-              ) : null}
-              <div className={block.heading ? "mt-3 space-y-4" : "space-y-4"}>
-                {block.paragraphs.map((para, j) => (
-                  <p key={j} className="leading-relaxed text-stone-700">
-                    {para}
-                  </p>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-      </Container>
-    </div>
+    <>
+      <PageHeader title={site.reiki.title} centered />
+      <div className="section-pad pt-0">
+        <Container className="max-w-3xl">
+          <div className="space-y-12">
+            {site.reiki.sections.map((block, i) => (
+              <section key={i} aria-labelledby={block.heading ? `reiki-h2-${i}` : undefined}>
+                {block.heading ? (
+                  <h2 id={`reiki-h2-${i}`} className="font-display text-2xl font-medium text-[var(--foreground)]">
+                    {block.heading}
+                  </h2>
+                ) : null}
+                <div className={block.heading ? "prose-content mt-4 space-y-4" : "prose-content space-y-4"}>
+                  {block.paragraphs.map((para, j) => (
+                    <p key={j}>{para}</p>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </Container>
+      </div>
+    </>
   );
 }

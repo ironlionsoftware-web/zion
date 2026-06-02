@@ -2,28 +2,35 @@ import Link from "next/link";
 import { site } from "@/content/site";
 import { Container } from "./Container";
 
+const externalSuffix = (
+  <span className="sr-only"> (opens in new tab)</span>
+);
+
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-stone-200 bg-stone-100 text-stone-800">
-      <Container className="py-12">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+    <footer className="relative z-20 mt-auto border-t border-subtle bg-surface">
+      <div className="symbol-band h-0.5" aria-hidden="true" />
+      <Container className="py-14 sm:py-16">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-800">
-              {site.shortName}
+            <p className="font-display text-xl font-medium break-words text-[var(--foreground)] sm:text-2xl">
+              {site.brandName}
             </p>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-stone-600">
-              {site.tagline}
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">{site.tagline}</p>
+            <p className="mt-6 flex gap-2 text-lg text-[var(--rasta-green)]/40" aria-hidden="true">
+              <span>☀</span>
+              <span>☥</span>
+              <span>✦</span>
             </p>
           </div>
           <div>
-            <p className="text-sm font-semibold text-stone-900">Explore</p>
-            <ul className="mt-3 space-y-2 text-sm">
+            <p className="eyebrow" id="footer-explore-heading">
+              Explore
+            </p>
+            <ul className="mt-4 space-y-2.5 text-sm" aria-labelledby="footer-explore-heading">
               {site.nav.map((item) => (
                 <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-stone-700 underline-offset-4 outline-none hover:text-stone-950 hover:underline focus-visible:rounded focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
-                  >
+                  <Link href={item.href} className="nav-link link-accent hover:underline">
                     {item.label}
                   </Link>
                 </li>
@@ -31,46 +38,67 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <p className="text-sm font-semibold text-stone-900">Social</p>
-            <ul className="mt-3 flex flex-wrap gap-4 text-sm">
+            <p className="eyebrow" id="footer-contact-heading">
+              Contact
+            </p>
+            <ul className="mt-4 space-y-2.5 text-sm text-muted" aria-labelledby="footer-contact-heading">
+              <li>
+                <a href={`mailto:${site.contact.email}`} className="nav-link link-accent inline-flex min-h-11 items-center hover:underline">
+                  {site.contact.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${site.contact.phoneTel}`}
+                  className="nav-link link-accent inline-flex min-h-11 items-center hover:underline"
+                >
+                  {site.contact.phoneDisplay}
+                </a>
+              </li>
+              <li className="pt-2 leading-relaxed">{site.contact.serviceArea}</li>
+            </ul>
+            <p className="eyebrow mt-8" id="footer-connect-heading">
+              Connect
+            </p>
+            <ul className="mt-4 flex flex-wrap gap-5 text-sm" aria-labelledby="footer-connect-heading">
               <li>
                 <a
                   href={site.social.instagram}
-                  className="text-stone-700 underline-offset-4 outline-none hover:text-stone-950 hover:underline focus-visible:rounded focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+                  className="nav-link link-accent hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   Instagram
+                  {externalSuffix}
                 </a>
               </li>
               <li>
                 <a
                   href={site.social.facebook}
-                  className="text-stone-700 underline-offset-4 outline-none hover:text-stone-950 hover:underline focus-visible:rounded focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+                  className="nav-link link-accent hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   Facebook
+                  {externalSuffix}
                 </a>
               </li>
               <li>
                 <a
                   href={site.social.youtube}
-                  className="text-stone-700 underline-offset-4 outline-none hover:text-stone-950 hover:underline focus-visible:rounded focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+                  className="nav-link link-accent hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   YouTube
+                  {externalSuffix}
                 </a>
               </li>
             </ul>
-            <ul className="mt-6 space-y-2 border-t border-stone-200 pt-6 text-sm">
+            <ul className="mt-8 flex flex-wrap gap-4 border-t border-subtle pt-6 text-xs text-muted">
               {site.footerNav.map((item) => (
                 <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-stone-700 underline-offset-4 outline-none hover:text-stone-950 hover:underline focus-visible:rounded focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
-                  >
+                  <Link href={item.href} className="nav-link hover:text-[var(--foreground)] hover:underline">
                     {item.label}
                   </Link>
                 </li>
@@ -78,7 +106,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <p className="mt-10 text-xs text-stone-500">
+        <p className="mt-12 text-xs text-muted/80">
           © {new Date().getFullYear()} {site.name}. All rights reserved.
         </p>
       </Container>

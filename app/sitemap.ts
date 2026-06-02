@@ -3,7 +3,25 @@ import { getServiceSlugs, site } from "@/content/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = site.url.replace(/\/$/, "");
-  const staticRoutes = ["", "/services", "/reiki", "/contact", "/legal/privacy", "/legal/terms"] as const;
+  const staticRoutes = [
+    "",
+    "/fitness-training",
+    "/healing-services",
+    "/healing-services/classes",
+    "/find-your-path",
+    "/retreat",
+    "/retreat/book",
+    "/shop",
+    "/shop/checkout",
+    "/checkout/service",
+    "/services",
+    "/reiki",
+    "/contact",
+    "/register",
+    "/donation",
+    "/legal/privacy",
+    "/legal/terms",
+  ] as const;
 
   const entries: MetadataRoute.Sitemap = staticRoutes.map((path) => ({
     url: `${base}${path}`,

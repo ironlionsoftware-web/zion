@@ -1,38 +1,27 @@
 import Link from "next/link";
 import { site } from "@/content/site";
 import { Container } from "@/components/layout/Container";
+import { NatureBackdrop } from "@/components/sections/NatureBackdrop";
 
 export function CtaBand() {
   return (
-    <section className="py-16 sm:py-20" aria-labelledby="home-cta-heading">
+    <NatureBackdrop src={site.home.ctaBackdrop} className="section-pad">
       <Container>
-        <div className="rounded-2xl bg-stone-950 px-6 py-10 text-stone-100 sm:px-10 sm:py-12">
-          <h2 id="home-cta-heading" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <div className="mx-auto max-w-3xl border border-subtle bg-surface/90 px-5 py-10 text-center backdrop-blur-sm sm:px-14 sm:py-16">
+          <h2 id="home-cta-heading" className="section-title">
             {site.home.ctaTitle}
           </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-stone-300 sm:text-base">{site.home.ctaBody}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Link
-              href="/contact"
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-amber-400 px-5 text-sm font-semibold text-stone-950 outline-none transition hover:bg-amber-300 focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-950 motion-reduce:transition-none"
-            >
-              Contact
+          <p className="prose-content mx-auto mt-5 max-w-xl">{site.home.ctaBody}</p>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
+            <Link href="/contact" className="btn btn-primary">
+              Contact us
             </Link>
-            <span
-              className="inline-flex min-h-11 items-center justify-center rounded-md border border-stone-600 px-5 text-sm font-medium text-stone-300"
-              title="Coming in a later phase"
-            >
-              Shop — coming soon
-            </span>
-            <span
-              className="inline-flex min-h-11 items-center justify-center rounded-md border border-stone-600 px-5 text-sm font-medium text-stone-300"
-              title="Coming in a later phase"
-            >
-              Book online — coming soon
-            </span>
+            <Link href="/shop" className="btn btn-secondary">
+              Shop plant medicine
+            </Link>
           </div>
         </div>
       </Container>
-    </section>
+    </NatureBackdrop>
   );
 }

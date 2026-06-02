@@ -1,33 +1,43 @@
 import Link from "next/link";
+import { LionOfJudah } from "@/components/brand/LionOfJudah";
 import { site } from "@/content/site";
 import { Container } from "@/components/layout/Container";
+import { NatureBackdrop } from "@/components/sections/NatureBackdrop";
 
 export function Hero() {
   return (
-    <section className="border-b border-stone-200 bg-gradient-to-b from-stone-50 to-amber-50/40" aria-labelledby="home-hero-heading">
-      <Container className="py-16 sm:py-24">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-800">
-          {site.home.heroEyebrow}
+    <NatureBackdrop
+      src={site.home.heroBackdrop}
+      className="border-b border-subtle bg-surface text-center"
+    >
+      <Container className="section-pad">
+        <LionOfJudah className="mx-auto" />
+        <p className="font-display mx-auto mt-8 max-w-full px-1 text-lg tracking-[0.12em] text-balance text-[var(--rasta-green)] sm:mt-10 sm:text-2xl sm:tracking-[0.28em] md:text-3xl md:tracking-[0.35em]">
+          {site.home.heroMantra.join(" · ")}
         </p>
-        <h1 id="home-hero-heading" className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
+        <p className="eyebrow mt-6 sm:mt-8">{site.home.heroEyebrow}</p>
+        <h1
+          id="home-hero-heading"
+          className="font-display mx-auto mt-4 max-w-3xl text-3xl font-medium leading-tight tracking-tight text-balance text-[var(--foreground)] sm:mt-5 sm:text-4xl md:text-5xl lg:text-6xl"
+        >
           {site.home.heroTitle}
         </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-stone-700">{site.home.heroLead}</p>
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Link
-            href="/contact"
-            className="inline-flex min-h-11 items-center justify-center rounded-md bg-stone-950 px-5 text-sm font-semibold text-amber-50 outline-none transition hover:bg-stone-800 focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-amber-50 motion-reduce:transition-none"
-          >
+        <p className="prose-content mx-auto mt-8 max-w-2xl">{site.home.heroLead}</p>
+        <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Link href="/contact" className="btn btn-primary">
             Get in touch
           </Link>
-          <Link
-            href="/services"
-            className="inline-flex min-h-11 items-center justify-center rounded-md border border-stone-400 bg-white/80 px-5 text-sm font-semibold text-stone-900 outline-none transition hover:border-stone-900 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-amber-50 motion-reduce:transition-none"
-          >
-            View services
+          <Link href="/healing-services" className="btn btn-secondary">
+            Healing Services & Classes
           </Link>
         </div>
+        <p className="mt-14 flex justify-center gap-4 text-xl text-[var(--rasta-gold)]/50" aria-hidden="true">
+          <span>☀</span>
+          <span>☥</span>
+          <span>✦</span>
+          <span>◇</span>
+        </p>
       </Container>
-    </section>
+    </NatureBackdrop>
   );
 }
