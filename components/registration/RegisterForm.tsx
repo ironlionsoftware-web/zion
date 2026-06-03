@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { PractitionerPicker } from "@/components/booking/PractitionerPicker";
 import { CeremonyMedicinePicker } from "@/components/booking/CeremonyMedicinePicker";
+import { ReikiAddOnPicker } from "@/components/booking/ReikiAddOnPicker";
 import { site } from "@/content/site";
 import { isClassService } from "@/lib/booking/classes";
 import {
   getCeremonyMedicineOptions,
   isPlantMedicineCeremonyService,
 } from "@/lib/booking/ceremony-medicine";
+import { isReikiService } from "@/lib/booking/reiki-addon";
 import { getBookableService } from "@/content/site";
 import { getPractitioners } from "@/lib/booking/practitioners";
 import type { RegisterNext } from "@/lib/registration/types";
@@ -21,6 +23,7 @@ type RegisterFormProps = {
   source?: string;
   initialPractitioner?: string;
   initialCeremonyMedicine?: string;
+  initialReikiAddOn?: string;
 };
 
 export function RegisterForm({
@@ -31,10 +34,12 @@ export function RegisterForm({
   source = "register",
   initialPractitioner,
   initialCeremonyMedicine,
+  initialReikiAddOn,
 }: RegisterFormProps) {
   const showPractitionerPicker = next === "book" && !isClassService(service);
   const servicePriceCents = service ? getBookableService(service)?.priceCents : undefined;
   const showCeremonyPicker = isPlantMedicineCeremonyService(service);
+  const showReikiAddOnPicker = isReikiService(service);
   const ceremonyOptions = getCeremonyMedicineOptions();
   const [practitioner, setPractitioner] = useState<string>(
     initialPractitioner ?? getPractitioners()[0]?.slug ?? "",
@@ -42,6 +47,7 @@ export function RegisterForm({
   const [ceremonyMedicine, setCeremonyMedicine] = useState<string>(
     initialCeremonyMedicine ?? ceremonyOptions[0]?.slug ?? "",
   );
+  const [reikiAddOn, setReikiAddOn] = useState<string>(initialReikiAddOn ?? "");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -75,6 +81,7 @@ export function RegisterForm({
           service,
           practitioner: showPractitionerPicker ? practitioner : undefined,
           ceremonyMedicine: showCeremonyPicker ? ceremonyMedicine : undefined,
+          reikiAddOn: showReikiAddOnPicker ? reikiAddOn || undefined : undefined,
           booking: bookingId,
           participant: participantIndex,
           source: source ?? (service ? "healing-services" : "register"),
@@ -104,6 +111,9 @@ export function RegisterForm({
       {showCeremonyPicker ? (
         <CeremonyMedicinePicker value={ceremonyMedicine} onChange={setCeremonyMedicine} disabled={loading} />
       ) : null}
+      {showReikiAddOnPicker ? (
+        <ReikiAddOnPicker value={reikiAddOn} onChange={setReikiAddOn} disabled={loading} />
+      ) : null}
       {showPractitionerPicker ? (
         <PractitionerPicker
           value={practitioner}
@@ -112,7 +122,13 @@ export function RegisterForm({
           basePriceCents={servicePriceCents}
         />
       ) : null}
-      <div className={showPractitionerPicker || showCeremonyPicker ? "mt-8 space-y-5" : "space-y-5"}>
+      <div
+        className={
+          showPractitionerPicker || showCeremonyPicker || showReikiAddOnPicker
+            ? "mt-8 space-y-5"
+            : "space-y-5"
+        }
+      >
         <div>
           <label htmlFor="reg-name" className="block text-sm font-semibold text-[var(--foreground)]">
             Full name <span className="text-[var(--rasta-red)]">*</span>

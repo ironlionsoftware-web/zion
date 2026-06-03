@@ -11,10 +11,17 @@ import {
   isPlantMedicineCeremonyService,
   parseCeremonyMedicineSlug,
 } from "@/lib/booking/ceremony-medicine";
+import {
+  getReikiAddOnOption,
+  getReikiAddOnPriceCents,
+  isReikiService,
+  parseReikiAddOnSlug,
+} from "@/lib/booking/reiki-addon";
 import { getBookableService, site } from "@/content/site";
 import { parsePaymentPlan } from "@/lib/payments/types";
 import { requireRegistration } from "@/lib/payments/require-registration";
 import { createStripeCheckoutSession } from "@/lib/stripe/checkout";
+import type { CheckoutLineItem } from "@/lib/stripe/checkout";
 import { getStripe } from "@/lib/stripe/server";
 
 export async function POST(request: Request) {
@@ -32,6 +39,7 @@ export async function POST(request: Request) {
     paymentPlan?: unknown;
     practitionerSlug?: unknown;
     ceremonyMedicineSlug?: unknown;
+    reikiAddOnSlug?: unknown;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -66,14 +74,22 @@ export async function POST(request: Request) {
   }
   const ceremonyMedicine = ceremonyMedicineSlug ? getCeremonyMedicine(ceremonyMedicineSlug)! : undefined;
 
+  const reikiAddOnSlug = isReikiService(service.slug)
+    ? parseReikiAddOnSlug(
+        typeof body.reikiAddOnSlug === "string" ? body.reikiAddOnSlug : undefined,
+      )
+    : undefined;
+  const reikiAddOn = reikiAddOnSlug ? getReikiAddOnOption(reikiAddOnSlug)! : undefined;
+
   const paymentPlan = parsePaymentPlan(body.paymentPlan);
   const origin = new URL(request.url).origin;
   const checkoutQuery = new URLSearchParams({ service: service.slug });
   if (practitionerSlug) checkoutQuery.set("practitioner", practitionerSlug);
   if (ceremonyMedicineSlug) checkoutQuery.set("ceremony", ceremonyMedicineSlug);
+  if (reikiAddOnSlug) checkoutQuery.set("addon", reikiAddOnSlug);
 
   const isDual = practitionerSlug ? isDualPractitionerSlug(practitionerSlug) : false;
-  const unitAmountCents = practitionerSlug
+  const serviceUnitCents = practitionerSlug
     ? computeServiceCheckoutCents(service.priceCents, practitionerSlug)
     : service.priceCents;
 
@@ -85,20 +101,33 @@ export async function POST(request: Request) {
     ? `${classOffering.schedule} · ${classOffering.format}`
     : ceremonyMedicine
       ? `${site.payments.serviceLineDescription} · ${ceremonyMedicine.label} · ${practitionerLine}`
-      : `${site.payments.serviceLineDescription} · ${practitionerLine}`;
+      : reikiAddOn
+        ? `${site.payments.serviceLineDescription} · ${practitionerLine}`
+        : `${site.payments.serviceLineDescription} · ${practitionerLine}`;
+
+  const lineItems: CheckoutLineItem[] = [
+    {
+      name: ceremonyMedicine ? `${service.label}: ${ceremonyMedicine.label}` : service.label,
+      description: lineDescription,
+      unitAmountCents: serviceUnitCents,
+      quantity: 1,
+    },
+  ];
+
+  if (reikiAddOn) {
+    lineItems.push({
+      name: `${reikiAddOn.label} add-on`,
+      description: `With ${service.label} · ${practitionerLine}`,
+      unitAmountCents: getReikiAddOnPriceCents(),
+      quantity: 1,
+    });
+  }
 
   const session = await createStripeCheckoutSession({
     stripe,
     registration,
     paymentPlan,
-    lineItems: [
-      {
-        name: ceremonyMedicine ? `${service.label}: ${ceremonyMedicine.label}` : service.label,
-        description: lineDescription,
-        unitAmountCents,
-        quantity: 1,
-      },
-    ],
+    lineItems,
     successUrl: `${origin}/checkout/service?${checkoutQuery.toString()}&success=1&session_id={CHECKOUT_SESSION_ID}`,
     cancelUrl: `${origin}/checkout/service?${checkoutQuery.toString()}&canceled=1`,
     metadata: {
@@ -122,6 +151,12 @@ export async function POST(request: Request) {
         ? {
             ceremony_medicine_slug: ceremonyMedicine.slug,
             ceremony_medicine_label: ceremonyMedicine.label,
+          }
+        : {}),
+      ...(reikiAddOn
+        ? {
+            ceremony_medicine_slug: reikiAddOn.slug,
+            ceremony_medicine_label: reikiAddOn.label,
           }
         : {}),
     },

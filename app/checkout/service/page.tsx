@@ -6,11 +6,19 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { ServiceCheckout } from "@/components/checkout/ServiceCheckout";
 import { getBookableService, site } from "@/content/site";
 import { parseCeremonyMedicineSlug } from "@/lib/booking/ceremony-medicine";
+import { parseReikiAddOnSlug } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
 import { getRegistration } from "@/lib/registration/cookie";
 
 type PageProps = {
-  searchParams: Promise<{ service?: string; success?: string; canceled?: string; practitioner?: string; ceremony?: string }>;
+  searchParams: Promise<{
+    service?: string;
+    success?: string;
+    canceled?: string;
+    practitioner?: string;
+    ceremony?: string;
+    addon?: string;
+  }>;
 };
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
@@ -32,6 +40,7 @@ export default async function ServiceCheckoutPage({ searchParams }: PageProps) {
   const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
   const practitionerSlug = parsePractitionerSlug(params.practitioner);
   const ceremonyMedicineSlug = parseCeremonyMedicineSlug(params.ceremony);
+  const reikiAddOnSlug = parseReikiAddOnSlug(params.addon);
 
   return (
     <>
@@ -49,6 +58,7 @@ export default async function ServiceCheckoutPage({ searchParams }: PageProps) {
               canceled={params.canceled === "1"}
               initialPractitioner={practitionerSlug}
               initialCeremonyMedicine={ceremonyMedicineSlug}
+              initialReikiAddOn={reikiAddOnSlug ?? ""}
             />
           </Suspense>
         </Container>

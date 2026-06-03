@@ -314,7 +314,7 @@ export const site = {
     intro:
       "Iron Lion brings together holistic fitness, Reiki and energy work, plant medicine, classes, and guided support so you can move, heal, and grow with care that honors your whole self. We aim to meet you with clarity, respect, and practical tools, not quick fixes or pressure. Start by scheduling a consultation to build a holistic health plan that covers mind, body, and spirit: clear structure for your goals, practices that fit your life, and attention to the root causes of whatever it is that you are working with. Whether it be mental, physical, or spiritual. Every session is consent led and works alongside your schedule, as well as your personal, cultural, and spiritual beliefs. Services are available to all ages.",
     services: [
-      { slug: "reiki", label: "Reiki & Frequency tuning", kind: "book", priceCents: 8500 },
+      { slug: "reiki", label: "Reiki & Frequency tuning", kind: "book", priceCents: 12000 },
       { slug: "consultation", label: "Consultation", kind: "book", priceCents: 8500 },
       {
         slug: "help-sessions",
@@ -394,6 +394,26 @@ export const site = {
           slug: "sananga",
           label: "Sananga",
           summary: "Traditional medicinal eye drops used for vision work and energetic clearing.",
+        },
+      ],
+    },
+    reikiAddOn: {
+      serviceSlug: "reiki",
+      priceCents: 4500,
+      legend: "Optional add-on",
+      lead: "Add Hape or Sananga to your Reiki session (+$45).",
+      noneLabel: "No add-on",
+      noneSummary: "Reiki & frequency tuning only.",
+      options: [
+        {
+          slug: "hape",
+          label: "Hape",
+          summary: "Sacred tobacco snuff for grounding, clarity, and prayer with your session.",
+        },
+        {
+          slug: "sananga",
+          label: "Sananga",
+          summary: "Traditional medicinal eye drops for vision work and energetic clearing.",
         },
       ],
     },

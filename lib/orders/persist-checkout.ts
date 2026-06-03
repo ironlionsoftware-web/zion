@@ -55,7 +55,11 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
         text: [
           `Customer: ${booking.fullName} (${booking.email})`,
           `Service: ${booking.serviceLabel}`,
-          booking.ceremonyMedicineLabel ? `Ceremony: ${booking.ceremonyMedicineLabel}` : null,
+          booking.ceremonyMedicineLabel
+            ? booking.serviceSlug === "reiki"
+              ? `Add-on: ${booking.ceremonyMedicineLabel}`
+              : `Ceremony: ${booking.ceremonyMedicineLabel}`
+            : null,
           `Practitioner: ${booking.practitionerName}`,
           `Amount: $${(booking.amountCents / 100).toFixed(2)}`,
           `Payment plan: ${booking.paymentPlan}`,

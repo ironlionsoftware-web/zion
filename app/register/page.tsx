@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { RegisterForm } from "@/components/registration/RegisterForm";
 import { getRegistration } from "@/lib/registration/cookie";
 import { parseCeremonyMedicineSlug } from "@/lib/booking/ceremony-medicine";
+import { parseReikiAddOnSlug } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
 import { parseRegisterNext, redirectAfterRegistration } from "@/lib/registration/redirect";
 import { site } from "@/content/site";
@@ -23,6 +24,7 @@ type PageProps = {
     participant?: string;
     practitioner?: string;
     ceremony?: string;
+    addon?: string;
   }>;
 };
 
@@ -34,6 +36,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
   const participantIndex = params.participant ? Number(params.participant) : undefined;
   const practitionerSlug = parsePractitionerSlug(params.practitioner);
   const ceremonyMedicineSlug = parseCeremonyMedicineSlug(params.ceremony);
+  const reikiAddOnSlug = parseReikiAddOnSlug(params.addon);
   const existing = await getRegistration();
 
   if (existing) {
@@ -43,6 +46,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
       participantIndex: Number.isInteger(participantIndex) ? participantIndex : undefined,
       practitionerSlug,
       ceremonyMedicineSlug,
+      reikiAddOnSlug,
     });
     if (external) {
       redirect(url);
@@ -69,6 +73,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
             participantIndex={Number.isInteger(participantIndex) ? participantIndex : undefined}
             initialPractitioner={practitionerSlug}
             initialCeremonyMedicine={ceremonyMedicineSlug}
+            initialReikiAddOn={reikiAddOnSlug ?? ""}
           />
           <p className="prose-content mt-8 text-sm">
             <Link href="/healing-services" className="link-accent font-medium hover:underline">
