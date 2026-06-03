@@ -60,6 +60,12 @@ export function resolveRetreatPricing(
     };
   }
 
+  if ("totalCents" in type && typeof type.totalCents === "number") {
+    const quote = priceFromTotal(type.totalCents);
+    const durationLabel = "duration" in type && type.duration ? type.duration : undefined;
+    return { ok: true, ...quote, durationLabel };
+  }
+
   const durationLabel = "duration" in type && type.duration ? type.duration : undefined;
   return { ok: true, ...defaultRetreatPrice(), durationLabel };
 }

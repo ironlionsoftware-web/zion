@@ -45,6 +45,11 @@ export default function RetreatPage() {
                         </li>
                       ))}
                     </ul>
+                  ) : "totalCents" in type && typeof type.totalCents === "number" ? (
+                    <p className="mt-2 text-xs font-medium text-[var(--rasta-green)]">
+                      {"duration" in type && type.duration ? `${type.duration} · ` : ""}
+                      {formatRetreatUsd(type.totalCents)} per person · $500 deposit
+                    </p>
                   ) : "duration" in type && type.duration ? (
                     <p className="mt-2 text-xs font-medium text-[var(--rasta-green)]">{type.duration}</p>
                   ) : null}

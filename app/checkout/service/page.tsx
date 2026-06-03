@@ -52,6 +52,7 @@ export default async function ServiceCheckoutPage({ searchParams }: PageProps) {
               serviceSlug={service.slug}
               serviceLabel={service.label}
               priceCents={service.priceCents}
+              slidingScale={service.slidingScale}
               registration={registration}
               paymentsReady={paymentsReady}
               success={params.success === "1"}

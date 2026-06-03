@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: pricing.error }, { status: 400 });
   }
 
-  const validated = validateParticipantsInput(body.participants);
+  const validated = validateParticipantsInput(body.participants, retreatType.slug);
   if (!validated.ok) {
     return NextResponse.json({ error: validated.error }, { status: 400 });
   }

@@ -158,7 +158,7 @@ export const wellnessCatalog: WellnessOffering[] = [
     kind: "healing-service",
     title: "Card readings",
     summary:
-      "Reflective card reading for perspective when you are at a fork in the road or want intuitive reflection.",
+      "Reflective card reading for perspective when you are at a fork in the road or want intuitive reflection. Sliding scale $45 to $120.",
     href: "/register?next=book&service=card-readings",
     tags: [
       "cards",

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { NatureFeature } from "@/components/sections/NatureFeature";
@@ -40,11 +39,6 @@ export default function FitnessTrainingPage() {
               </section>
             ))}
           </div>
-          <p className="mx-auto mt-14 max-w-3xl border-t border-subtle pt-10 text-center">
-            <Link href="/services/holistic-personal-training" className="btn btn-primary">
-              Read the detailed training page
-            </Link>
-          </p>
         </Container>
       </div>
     </>

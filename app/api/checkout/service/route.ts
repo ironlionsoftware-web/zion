@@ -18,6 +18,7 @@ import {
   resolveReikiAddOns,
   serializeReikiAddOnSlugs,
 } from "@/lib/booking/reiki-addon";
+import { parseSlidingScaleAmount } from "@/lib/booking/sliding-scale";
 import { getBookableService, site } from "@/content/site";
 import { parsePaymentPlan } from "@/lib/payments/types";
 import { requireRegistration } from "@/lib/payments/require-registration";
@@ -48,6 +49,7 @@ export async function POST(request: Request) {
   let body: {
     serviceSlug?: unknown;
     paymentPlan?: unknown;
+    amountCents?: unknown;
     practitionerSlug?: unknown;
     ceremonyMedicineSlug?: unknown;
     reikiAddOnSlug?: unknown;
@@ -100,9 +102,24 @@ export async function POST(request: Request) {
   if (addonQuery) checkoutQuery.set("addon", addonQuery);
 
   const isDual = practitionerSlug ? isDualPractitionerSlug(practitionerSlug) : false;
-  const serviceUnitCents = practitionerSlug
-    ? computeServiceCheckoutCents(service.priceCents, practitionerSlug)
-    : service.priceCents;
+
+  let serviceUnitCents: number;
+  if (service.slidingScale) {
+    const amountCents = parseSlidingScaleAmount(body.amountCents, service.slidingScale);
+    if (amountCents == null) {
+      return NextResponse.json(
+        {
+          error: `Choose an amount between $${service.slidingScale.minCents / 100} and $${service.slidingScale.maxCents / 100}.`,
+        },
+        { status: 400 },
+      );
+    }
+    serviceUnitCents = amountCents;
+  } else {
+    serviceUnitCents = practitionerSlug
+      ? computeServiceCheckoutCents(service.priceCents, practitionerSlug)
+      : service.priceCents;
+  }
 
   const practitionerLine = isDual
     ? "Dual session (both practitioners)"

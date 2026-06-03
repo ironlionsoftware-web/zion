@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:verify": "node --env-file=.env.local scripts/verify-database.mjs"
+    "db:verify": "node --env-file=.env.local scripts/verify-database.mjs",
+    "payments:verify": "node --env-file=.env.local scripts/verify-stripe.mjs",
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe/webhook"
   },
   "dependencies": {
     "better-sqlite3": "^12.10.0",

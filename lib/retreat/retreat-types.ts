@@ -17,3 +17,21 @@ export function parseRetreatTypeSlug(value: string | null | undefined): string |
 }
 
 export const FITNESS_RETREAT_SLUG = "holistic-fitness-vitality-weight-loss" as const;
+export const COUPLES_RETREAT_SLUG = "couples-bonding-healing" as const;
+export const GROUP_COUPLES_RETREAT_SLUG = "group-couples-bonding" as const;
+
+export function getRetreatParticipantLimits(retreatTypeSlug: string): {
+  minParticipants: number;
+  maxParticipants: number;
+} {
+  const type = getRetreatType(retreatTypeSlug);
+  const defaults = site.retreat.booking;
+  return {
+    minParticipants: type && "minParticipants" in type && type.minParticipants != null
+      ? type.minParticipants
+      : defaults.minParticipants,
+    maxParticipants: type && "maxParticipants" in type && type.maxParticipants != null
+      ? type.maxParticipants
+      : defaults.maxParticipants,
+  };
+}

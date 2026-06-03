@@ -6,7 +6,7 @@ import { RetreatDurationPicker } from "@/components/retreat/RetreatDurationPicke
 import { RetreatTypePicker } from "@/components/retreat/RetreatTypePicker";
 import { site } from "@/content/site";
 import { formatRetreatPriceSummary, resolveRetreatPricing, retreatHasDurationOptions } from "@/lib/retreat/pricing";
-import { FITNESS_RETREAT_SLUG, getRetreatType, getRetreatTypes } from "@/lib/retreat/retreat-types";
+import { FITNESS_RETREAT_SLUG, getRetreatParticipantLimits, getRetreatType, getRetreatTypes } from "@/lib/retreat/retreat-types";
 import type { RetreatMobilityLevel } from "@/lib/retreat/types";
 
 type ParticipantDraft = {
@@ -40,7 +40,8 @@ export function RetreatBookingForm() {
 
   const [retreatType, setRetreatType] = useState<string>(getRetreatTypes()[0]?.slug ?? "");
   const [retreatDuration, setRetreatDuration] = useState<string>(defaultFitnessDuration);
-  const [count, setCount] = useState<number>(cfg.minParticipants);
+  const participantLimits = getRetreatParticipantLimits(retreatType);
+  const [count, setCount] = useState<number>(participantLimits.minParticipants);
 
   const priceQuote = resolveRetreatPricing(
     retreatType,
@@ -50,6 +51,8 @@ export function RetreatBookingForm() {
 
   function handleRetreatTypeChange(slug: string) {
     setRetreatType(slug);
+    const limits = getRetreatParticipantLimits(slug);
+    handleCountChange(limits.minParticipants);
     if (retreatHasDurationOptions(slug)) {
       const type = getRetreatType(slug);
       if (type && "durationOptions" in type && type.durationOptions[0]) {
@@ -58,7 +61,7 @@ export function RetreatBookingForm() {
     }
   }
   const [participants, setParticipants] = useState<ParticipantDraft[]>(
-    Array.from({ length: cfg.minParticipants }, emptyParticipant),
+    Array.from({ length: participantLimits.minParticipants }, emptyParticipant),
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -147,7 +150,7 @@ export function RetreatBookingForm() {
 
       <div>
         <label htmlFor="participant-count" className="block text-sm font-semibold text-[var(--foreground)]">
-          Number of participants ({cfg.minParticipants} to {cfg.maxParticipants})
+          Number of participants ({participantLimits.minParticipants} to {participantLimits.maxParticipants})
         </label>
         <select
           id="participant-count"
@@ -155,8 +158,10 @@ export function RetreatBookingForm() {
           onChange={(e) => handleCountChange(Number(e.target.value))}
           className="form-control mt-2 max-w-xs"
         >
-          {Array.from({ length: cfg.maxParticipants - cfg.minParticipants + 1 }, (_, i) => {
-            const n = cfg.minParticipants + i;
+          {Array.from(
+            { length: participantLimits.maxParticipants - participantLimits.minParticipants + 1 },
+            (_, i) => {
+            const n = participantLimits.minParticipants + i;
             return (
               <option key={n} value={n}>
                 {n} people

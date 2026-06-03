@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { classServiceSlug, getClassCatalog } from "@/lib/booking/classes";
-import { formatUsd } from "@/lib/cart/products";
+import { getClassCatalog } from "@/lib/booking/classes";
 import { site } from "@/content/site";
 
 const catalog = getClassCatalog();
@@ -22,61 +21,30 @@ export default function HealingServicesClassesPage() {
       <div className="section-pad pt-0">
         <Container className="max-w-3xl">
           {classes.length === 0 ? (
-            <p className="card prose-content p-6 text-sm text-muted">{catalog.emptyMessage}</p>
+            <div className="card mx-auto max-w-xl px-8 py-14 text-center">
+              <p className="font-display text-2xl font-medium text-[var(--foreground)]">{catalog.emptyMessage}</p>
+              <p className="prose-content mt-4 text-sm">
+                We are putting together our first workshops. Check back here or{" "}
+                <Link href="/contact" className="link-accent font-medium hover:underline">
+                  contact us
+                </Link>{" "}
+                if you would like to hear when registration opens.
+              </p>
+            </div>
           ) : (
             <ul className="grid gap-6">
-              {classes.map((item) => {
-                const registerHref = `/register?next=book&service=${encodeURIComponent(classServiceSlug(item.slug))}`;
-
-                return (
-                  <li key={item.slug}>
-                    <article className="card flex h-full flex-col p-6 sm:p-8">
-                      <h2 className="font-display text-2xl font-medium text-[var(--foreground)]">{item.title}</h2>
-                      <p className="prose-content mt-3 text-sm">{item.summary}</p>
-                      <dl className="mt-5 space-y-2 text-sm text-muted">
-                        <div>
-                          <dt className="sr-only">Schedule</dt>
-                          <dd>
-                            <span className="font-medium text-[var(--foreground)]">When:</span> {item.schedule}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="sr-only">Format</dt>
-                          <dd>
-                            <span className="font-medium text-[var(--foreground)]">Format:</span> {item.format}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="sr-only">Location</dt>
-                          <dd>
-                            <span className="font-medium text-[var(--foreground)]">Where:</span> {item.location}
-                          </dd>
-                        </div>
-                        {item.spotsRemaining !== undefined ? (
-                          <div>
-                            <dt className="sr-only">Availability</dt>
-                            <dd>
-                              <span className="font-medium text-[var(--foreground)]">Spots:</span>{" "}
-                              {item.spotsRemaining} remaining
-                            </dd>
-                          </div>
-                        ) : null}
-                      </dl>
-                      <p className="mt-5 text-lg font-medium text-[var(--rasta-green)]">
-                        {formatUsd(item.priceCents)}
-                        <span className="ml-2 text-xs font-normal text-muted">per person · excl. tax</span>
-                      </p>
-                      <Link href={registerHref} className="btn btn-primary mt-6 w-full sm:w-auto">
-                        Register for this class
-                      </Link>
-                    </article>
-                  </li>
-                );
-              })}
+              {classes.map((item) => (
+                <li key={item.slug}>
+                  <article className="card flex h-full flex-col p-6 sm:p-8">
+                    <h2 className="font-display text-2xl font-medium text-[var(--foreground)]">{item.title}</h2>
+                    <p className="prose-content mt-3 text-sm">{item.summary}</p>
+                  </article>
+                </li>
+              ))}
             </ul>
           )}
 
-          <p className="prose-content mt-10 text-sm">
+          <p className="prose-content mt-10 text-center text-sm">
             <Link href="/healing-services" className="link-accent font-medium hover:underline">
               ← Back to {site.healingServices.title}
             </Link>

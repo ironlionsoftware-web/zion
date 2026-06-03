@@ -1,7 +1,7 @@
 import { site } from "@/content/site";
 import { validateRegistrationInput } from "@/lib/registration/validate";
 import { retreatDisplayLabel } from "./pricing";
-import { getRetreatType, parseRetreatTypeSlug } from "./retreat-types";
+import { getRetreatType, parseRetreatTypeSlug, getRetreatParticipantLimits } from "./retreat-types";
 import type { RetreatBooking, RetreatMobilityLevel, RetreatParticipant } from "./types";
 import { retreatMobilityLevels } from "./types";
 
@@ -90,8 +90,11 @@ function validateParticipantHealth(
 
 export function validateParticipantsInput(
   participants: unknown,
+  retreatTypeSlug?: string,
 ): { ok: true; participants: RetreatParticipant[] } | { ok: false; error: string } {
-  const { minParticipants, maxParticipants } = retreatPricing();
+  const { minParticipants, maxParticipants } = retreatTypeSlug
+    ? getRetreatParticipantLimits(retreatTypeSlug)
+    : retreatPricing();
 
   if (!Array.isArray(participants)) {
     return { ok: false, error: "Participant list is required." };

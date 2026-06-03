@@ -41,6 +41,11 @@ export function RetreatTypePicker({ value, onChange, disabled, name = "retreat-t
                   .map((d) => `${d.label} ${formatRetreatUsd(d.totalCents)}`)
                   .join(" · ")}
               </span>
+            ) : "totalCents" in type && typeof type.totalCents === "number" ? (
+              <span className="mt-1 block text-xs font-medium text-[var(--rasta-green)]">
+                {"duration" in type && type.duration ? `${type.duration} · ` : ""}
+                {formatRetreatUsd(type.totalCents)} per person · all-inclusive
+              </span>
             ) : "duration" in type && type.duration ? (
               <span className="mt-1 block text-xs font-medium text-[var(--rasta-green)]">
                 {type.duration} · {formatRetreatUsd(site.retreat.booking.totalCents)} all-inclusive

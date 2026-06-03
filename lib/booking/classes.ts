@@ -1,6 +1,7 @@
+import type { ClassOffering } from "@/content/site";
 import { site } from "@/content/site";
 
-export type ClassOffering = (typeof site.healingServices.classCatalog.classes)[number];
+export type { ClassOffering };
 
 const CLASS_PREFIX = "class-";
 

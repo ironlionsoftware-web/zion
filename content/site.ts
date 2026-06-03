@@ -28,8 +28,32 @@ export type HealingServiceItem = {
   label: string;
   /** book → pay then schedule; shop → apothecary; donation → pay-what-you-can; classes → class catalog */
   kind: "book" | "shop" | "donation" | "classes";
-  /** Required for bookable services (card checkout before scheduling) */
+  /** Fixed price for bookable services (card checkout before scheduling) */
   priceCents?: number;
+  /** Pay-what-you-can range for bookable services (e.g. card readings) */
+  slidingScale?: SlidingScale;
+};
+
+export type SlidingScale = {
+  minCents: number;
+  maxCents: number;
+  defaultCents: number;
+};
+
+export type BookableService = HealingServiceItem & {
+  priceCents: number;
+  slidingScale?: SlidingScale;
+};
+
+export type ClassOffering = {
+  slug: string;
+  title: string;
+  summary: string;
+  schedule: string;
+  format: string;
+  location: string;
+  priceCents: number;
+  spotsRemaining?: number;
 };
 
 export type NaturePhoto = {
@@ -307,6 +331,12 @@ export const site = {
           "As well as help with nutrition, lifestyle structure, and thought process.",
         ],
       },
+      {
+        heading: "Good fit if…",
+        paragraphs: [
+          "You want coaching that respects injuries, chronic pain, or neurodivergent needs, you are rebuilding after time off, if you want a steady partner for accountability, or if youre looking to excel athletically and need to be pushed. We welcome anyone at any stage of fitness.",
+        ],
+      },
     ],
   },
   healingServices: {
@@ -324,61 +354,15 @@ export const site = {
       },
       { slug: "herbs-seamoss", label: "Herbs & seamoss", kind: "shop" },
       { slug: "plant-medicine-ceremonies", label: "Plant medicine ceremonies", kind: "book", priceCents: 12000 },
-      { slug: "card-readings", label: "Card readings", kind: "book", priceCents: 4500 },
+      { slug: "card-readings", label: "Card readings", kind: "book", slidingScale: { minCents: 4500, maxCents: 12000, defaultCents: 7500 } },
       { slug: "classes", label: "Classes", kind: "classes" },
       { slug: "donation-based", label: "Donation based service", kind: "donation" },
     ] satisfies HealingServiceItem[],
     classCatalog: {
-      pageTitle: "Available classes",
-      pageLead:
-        "Register for an upcoming class or workshop. Each listing shows schedule and format. Complete registration and payment to reserve your spot.",
-      emptyMessage: "New classes are being scheduled. Check back soon or contact us to express interest.",
-      classes: [
-        {
-          slug: "reiki-level-1",
-          title: "Reiki Level 1",
-          summary:
-            "Foundations of Reiki history, hand positions, self treatment, and giving energy to others in a consent led, trauma aware space.",
-          schedule: "6 week series · Wednesdays 6:00 to 8:00 PM · Starts April 16",
-          format: "See schedule",
-          location: "Greater Houston area",
-          priceCents: 18_000,
-          spotsRemaining: 10,
-        },
-        {
-          slug: "embodied-breath",
-          title: "Embodied breath & nervous system",
-          summary:
-            "Pranayama, gentle movement, and grounding practices to support regulation, sleep, and everyday resilience.",
-          schedule: "4 week series · Saturdays 10:00 AM to 12:00 PM · Starts May 3",
-          format: "See schedule",
-          location: "Greater Houston area",
-          priceCents: 12_000,
-          spotsRemaining: 8,
-        },
-        {
-          slug: "plant-forward-living",
-          title: "Plant forward living workshop",
-          summary:
-            "Practical education on herbs, sea moss, and plant based nourishment without dogma, preparation, sourcing, and daily integration.",
-          schedule: "3 sessions · Sundays 2:00 to 4:30 PM · May 11, 18 & 25",
-          format: "See schedule",
-          location: "Greater Houston area",
-          priceCents: 9500,
-          spotsRemaining: 12,
-        },
-        {
-          slug: "kids-energy-awareness",
-          title: "Kids & energy awareness",
-          summary:
-            "Playful, age appropriate introduction to breath, mindfulness, and Reiki concepts for children and caregivers together.",
-          schedule: "Monthly · First Saturday 11:00 AM to 12:30 PM · Next: June 7",
-          format: "See schedule",
-          location: "Greater Houston area",
-          priceCents: 6000,
-          spotsRemaining: 6,
-        },
-      ],
+      pageTitle: "Classes",
+      pageLead: "Workshops and group sessions are on the way.",
+      emptyMessage: "Classes are coming soon!",
+      classes: [] as ClassOffering[],
     },
     plantMedicineCeremony: {
       serviceSlug: "plant-medicine-ceremonies",
@@ -526,15 +510,29 @@ export const site = {
         "Select your themed retreat, then enter every participant’s contact details, age, dietary needs, and fitness or mobility level. Each person will use this page to pay their own $500 deposit, then their remaining balance when the payment window opens. Retreats are all inclusive, only your flight is booked separately.",
       retreatTypeLegend: "Choose your retreat",
       retreatTypeLead:
-        "Select the themed retreat your group is registering for. All options are all inclusive, flight is the only cost beyond your retreat fee. Most retreats are 1 week ($2,500). The personalized retreat uses custom dates. The fitness retreat is 2 weeks ($3,000) or 1 month ($5,000).",
+        "Select the themed retreat your group is registering for. All options are all inclusive, flight is the only cost beyond your retreat fee. Most retreats are 1 week ($2,500). The private couples therapy / bonding retreat is for 2 people ($5,000 per person). The group couples bonding retreat welcomes 4 to 8 participants ($2,500 per person). The personalized retreat uses custom dates. The fitness retreat is 2 weeks ($3,000) or 1 month ($5,000).",
       durationLegend: "Choose your length",
       durationLead: "Select 2 weeks or 1 month for this retreat. A $500 deposit applies either way; the remaining balance is due 2 to 4 weeks after deposit.",
       types: [
         {
           slug: "couples-bonding-healing",
-          label: "Couples Bonding and Healing Retreat",
-          summary: "Shared healing, movement, and reflection to strengthen partnership.",
-          duration: "1 week",
+          label: "Couples Therapy / Bonding Retreat",
+          summary:
+            "Private two-person experience for partners: shared healing, movement, and reflection to strengthen connection and trust.",
+          duration: "Private · 2 participants",
+          totalCents: 500_000,
+          minParticipants: 2,
+          maxParticipants: 2,
+        },
+        {
+          slug: "group-couples-bonding",
+          label: "Group Couples Bonding Retreat",
+          summary:
+            "A shared bonding experience for couples in community: healing practices, movement, and reflection with 4 to 8 participants.",
+          duration: "1 week · 4 to 8 participants",
+          totalCents: 250_000,
+          minParticipants: 4,
+          maxParticipants: 8,
         },
         {
           slug: "divine-masculine-brotherhood",
@@ -603,8 +601,8 @@ export const site = {
       {
         heading: "All inclusive pricing",
         paragraphs: [
-          "$2,500 per participant for 1 week retreats, all inclusive (lodging, meals, sessions, and on island experiences). The Holistic Fitness retreat is $3,000 for 2 weeks or $5,000 for 1 month. You only purchase your flight separately.",
-          "$500 non refundable deposit due at registration; remaining $2,000 due in full between 2 and 4 weeks after your deposit (installment options available at checkout when eligible). Groups need a minimum of 4 and maximum of 8 participants. Each person lists age, dietary restrictions and allergies, and fitness or mobility level at registration so we can plan meals and movement safely.",
+          "$2,500 per participant for 1 week retreats, all inclusive (lodging, meals, sessions, and on island experiences). The private Couples Therapy / Bonding Retreat is for 2 people at $5,000 per person. The Group Couples Bonding Retreat is $2,500 per person for groups of 4 to 8. The Holistic Fitness retreat is $3,000 for 2 weeks or $5,000 for 1 month. You only purchase your flight separately.",
+          "$500 non refundable deposit due at registration; remaining balance due in full between 2 and 4 weeks after your deposit (installment options available at checkout when eligible). Most group retreats need 4 to 8 participants; the private couples retreat is exactly 2 participants. Each person lists age, dietary restrictions and allergies, and fitness or mobility level at registration so we can plan meals and movement safely.",
         ],
       },
     ],
@@ -631,25 +629,6 @@ export const site = {
 } as const;
 
 export const services: Service[] = [
-  {
-    slug: "holistic-personal-training",
-    title: "Holistic personal training",
-    summary:
-      "Strength, mobility, and conditioning with room for recovery, nervous system awareness, and sustainable progression.",
-    sections: [
-      {
-        paragraphs: [
-          "Training plans meet you at your current capacity. We prioritize form, joint kindness, and workouts that make you stronger and more effiecient in your everyday life.",
-        ],
-      },
-      {
-        heading: "Good fit if…",
-        paragraphs: [
-          "You want coaching that respects injuries, chronic pain, or neurodivergent needs, you are rebuilding after time off, if you want a steady partner for accountability, or if youre looking to excel athletically and need to be pushed. We welcome anyone at any stage of fitness.",
-        ],
-      },
-    ],
-  },
   {
     slug: "reiki-sessions",
     title: "Reiki sessions",
@@ -779,7 +758,7 @@ export function healingServiceHref(item: HealingServiceItem): string {
   return `/register?${params.toString()}`;
 }
 
-export function getBookableService(slug: string): (HealingServiceItem & { priceCents: number }) | undefined {
+export function getBookableService(slug: string): BookableService | undefined {
   const classSlug = slug.startsWith("class-") ? slug.slice("class-".length) : undefined;
   if (classSlug) {
     const offering = site.healingServices.classCatalog.classes.find((c) => c.slug === classSlug);
@@ -793,6 +772,16 @@ export function getBookableService(slug: string): (HealingServiceItem & { priceC
   }
 
   const item = site.healingServices.services.find((s) => s.slug === slug && s.kind === "book");
-  if (!item || typeof item.priceCents !== "number") return undefined;
-  return item as HealingServiceItem & { priceCents: number };
+  if (!item) return undefined;
+
+  if (item.slidingScale) {
+    return {
+      ...item,
+      priceCents: item.slidingScale.defaultCents,
+      slidingScale: item.slidingScale,
+    };
+  }
+
+  if (typeof item.priceCents !== "number") return undefined;
+  return item as BookableService;
 }
