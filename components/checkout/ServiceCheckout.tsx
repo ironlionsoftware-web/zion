@@ -92,11 +92,11 @@ export function ServiceCheckout({
     initialPractitioner ?? getPractitioners()[0]?.slug ?? "",
   );
   const [ceremonyMedicine, setCeremonyMedicine] = useState<string>(
-    initialCeremonyMedicine ?? ceremonyOptions[0]?.slug ?? "",
+    showCeremonyPicker ? (initialCeremonyMedicine ?? ceremonyOptions[0]?.slug ?? "") : "",
   );
   const [reikiAddOn, setReikiAddOn] = useState<string>(initialReikiAddOn ?? "");
   const practitionerRecord = getPractitioner(practitioner);
-  const ceremonyMedicineRecord = getCeremonyMedicine(ceremonyMedicine);
+  const ceremonyMedicineRecord = showCeremonyPicker ? getCeremonyMedicine(ceremonyMedicine) : undefined;
   const reikiAddOnRecord = getReikiAddOnOption(reikiAddOn);
   const baseCheckoutCents = showPractitionerPicker
     ? computeServiceCheckoutCents(priceCents, practitioner)
