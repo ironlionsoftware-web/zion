@@ -113,7 +113,7 @@ export const wellnessCatalog: WellnessOffering[] = [
     kind: "healing-service",
     title: "Plant medicine ceremonies",
     summary:
-      "Held, consent led ceremonial space for deep inner work and integration, choose Hape or Sananga when you book.",
+      "Held, consent led ceremonial space for deep inner work and integration. Choose Hape, Sananga, Soul Flower, or Ayavine when you book.",
     href: "/register?next=book&service=plant-medicine-ceremonies",
     tags: [
       "plant medicine",

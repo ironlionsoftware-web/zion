@@ -82,7 +82,7 @@ export async function POST(request: Request) {
       )
     : undefined;
   if (isPlantMedicineCeremonyService(service.slug) && !ceremonyMedicineSlug) {
-    return NextResponse.json({ error: "Please choose Hape or Sananga." }, { status: 400 });
+    return NextResponse.json({ error: "Please choose a ceremony option." }, { status: 400 });
   }
   const ceremonyMedicine = ceremonyMedicineSlug ? getCeremonyMedicine(ceremonyMedicineSlug)! : undefined;
 

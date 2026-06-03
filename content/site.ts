@@ -383,7 +383,7 @@ export const site = {
     plantMedicineCeremony: {
       serviceSlug: "plant-medicine-ceremonies",
       legend: "Choose your ceremony",
-      lead: "Select Hape or Sananga for your plant medicine ceremony.",
+      lead: "Select the plant medicine ceremony that fits your intention.",
       options: [
         {
           slug: "hape",
@@ -394,6 +394,18 @@ export const site = {
           slug: "sananga",
           label: "Sananga",
           summary: "Traditional medicinal eye drops used for vision work and energetic clearing.",
+        },
+        {
+          slug: "soul-flower",
+          label: "Soul Flower",
+          summary:
+            "Cannabreathwork ceremony: deep breathing and release with cannabis in a held, consent led space.",
+        },
+        {
+          slug: "ayavine",
+          label: "Ayavine",
+          summary:
+            "Ayahuasca caapi vine ceremony. May support neurodegenerative conditions, depression, anxiety, and related nervous system patterns.",
         },
       ],
     },

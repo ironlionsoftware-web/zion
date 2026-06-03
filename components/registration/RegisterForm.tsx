@@ -62,7 +62,7 @@ export function RegisterForm({
       return;
     }
     if (showCeremonyPicker && !ceremonyMedicine) {
-      setError("Please choose Hape or Sananga.");
+      setError("Please choose a ceremony option.");
       return;
     }
     setLoading(true);

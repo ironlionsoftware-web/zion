@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       ? parseCeremonyMedicineSlug(typeof body.ceremonyMedicine === "string" ? body.ceremonyMedicine : undefined)
       : undefined;
   if (isPlantMedicineCeremonyService(serviceSlug) && !ceremonyMedicineSlug) {
-    return NextResponse.json({ error: "Please choose Hape or Sananga." }, { status: 400 });
+    return NextResponse.json({ error: "Please choose a ceremony option." }, { status: 400 });
   }
   const reikiAddOnSlugs = isReikiService(serviceSlug)
     ? parseReikiAddOnSlugs(
