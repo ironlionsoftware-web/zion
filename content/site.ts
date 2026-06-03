@@ -323,7 +323,7 @@ export const site = {
         priceCents: 12000,
       },
       { slug: "herbs-seamoss", label: "Herbs & seamoss", kind: "shop" },
-      { slug: "plant-medicine-ceremonies", label: "Plant medicine ceremonies", kind: "book", priceCents: 15000 },
+      { slug: "plant-medicine-ceremonies", label: "Plant medicine ceremonies", kind: "book", priceCents: 12000 },
       { slug: "card-readings", label: "Card readings", kind: "book", priceCents: 4500 },
       { slug: "classes", label: "Classes", kind: "classes" },
       { slug: "donation-based", label: "Donation based service", kind: "donation" },
