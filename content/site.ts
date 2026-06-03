@@ -401,7 +401,7 @@ export const site = {
       serviceSlug: "reiki",
       priceCents: 4500,
       legend: "Optional add-on",
-      lead: "Add Hape or Sananga to your Reiki session (+$45).",
+      lead: "Add an optional enhancement to your Reiki session (+$45 each).",
       noneLabel: "No add-on",
       noneSummary: "Reiki & frequency tuning only.",
       options: [
@@ -414,6 +414,18 @@ export const site = {
           slug: "sananga",
           label: "Sananga",
           summary: "Traditional medicinal eye drops for vision work and energetic clearing.",
+        },
+        {
+          slug: "soul-flower",
+          label: "Soul Flower",
+          summary:
+            "Cannabreathwork: deep breathing and release with cannabis, woven into your Reiki session.",
+        },
+        {
+          slug: "ayavine",
+          label: "Ayavine",
+          summary:
+            "Ayahuasca caapi vine infused Reiki. May support neurodegenerative conditions, depression, anxiety, and related nervous system patterns.",
         },
       ],
     },
