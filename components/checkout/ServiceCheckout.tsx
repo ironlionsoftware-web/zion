@@ -13,9 +13,10 @@ import {
   isPlantMedicineCeremonyService,
 } from "@/lib/booking/ceremony-medicine";
 import {
-  getReikiAddOnOption,
+  computeReikiAddOnTotalCents,
   getReikiAddOnPriceCents,
   isReikiService,
+  resolveReikiAddOns,
 } from "@/lib/booking/reiki-addon";
 import { RegisterForm } from "@/components/registration/RegisterForm";
 import { PaymentPlanPicker } from "@/components/payments/PaymentPlanPicker";
@@ -42,7 +43,7 @@ type ServiceCheckoutProps = {
   canceled: boolean;
   initialPractitioner?: string;
   initialCeremonyMedicine?: string;
-  initialReikiAddOn?: string;
+  initialReikiAddOns?: readonly string[];
 };
 
 export function ServiceCheckout({
@@ -55,7 +56,7 @@ export function ServiceCheckout({
   canceled,
   initialPractitioner,
   initialCeremonyMedicine,
-  initialReikiAddOn,
+  initialReikiAddOns,
 }: ServiceCheckoutProps) {
   const isClass = isClassService(serviceSlug);
   const classOffering = getClassOfferingFromServiceSlug(serviceSlug);
@@ -94,15 +95,14 @@ export function ServiceCheckout({
   const [ceremonyMedicine, setCeremonyMedicine] = useState<string>(
     showCeremonyPicker ? (initialCeremonyMedicine ?? ceremonyOptions[0]?.slug ?? "") : "",
   );
-  const [reikiAddOn, setReikiAddOn] = useState<string>(initialReikiAddOn ?? "");
+  const [reikiAddOns, setReikiAddOns] = useState<string[]>([...(initialReikiAddOns ?? [])]);
   const practitionerRecord = getPractitioner(practitioner);
   const ceremonyMedicineRecord = showCeremonyPicker ? getCeremonyMedicine(ceremonyMedicine) : undefined;
-  const reikiAddOnRecord = getReikiAddOnOption(reikiAddOn);
+  const reikiAddOnRecords = resolveReikiAddOns(reikiAddOns);
   const baseCheckoutCents = showPractitionerPicker
     ? computeServiceCheckoutCents(priceCents, practitioner)
     : priceCents;
-  const checkoutPriceCents =
-    baseCheckoutCents + (reikiAddOnRecord ? getReikiAddOnPriceCents() : 0);
+  const checkoutPriceCents = baseCheckoutCents + computeReikiAddOnTotalCents(reikiAddOns);
   const isDual = isDualPractitionerSlug(practitioner);
   const p = site.payments;
 
@@ -161,11 +161,20 @@ export function ServiceCheckout({
             Ceremony: <strong className="text-[var(--foreground)]">{ceremonyMedicineRecord.label}</strong>
           </p>
         ) : null}
-        {reikiAddOnRecord ? (
-          <p className="mt-2 text-sm text-muted">
-            Add-on: <strong className="text-[var(--foreground)]">{reikiAddOnRecord.label}</strong> (
-            {formatUsd(getReikiAddOnPriceCents())})
-          </p>
+        {reikiAddOnRecords.length > 0 ? (
+          <div className="mt-2 text-sm text-muted">
+            <p>
+              Add-ons ({formatUsd(computeReikiAddOnTotalCents(reikiAddOns))} ·{" "}
+              {formatUsd(getReikiAddOnPriceCents())} each):
+            </p>
+            <ul className="mt-1 list-inside list-disc">
+              {reikiAddOnRecords.map((addOn) => (
+                <li key={addOn.slug}>
+                  <strong className="text-[var(--foreground)]">{addOn.label}</strong>
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : null}
         {classOffering ? (
           <dl className="mt-4 space-y-1 text-sm text-muted">
@@ -188,7 +197,7 @@ export function ServiceCheckout({
       ) : null}
 
       {showReikiAddOnPicker ? (
-        <ReikiAddOnPicker value={reikiAddOn} onChange={setReikiAddOn} />
+        <ReikiAddOnPicker value={reikiAddOns} onChange={setReikiAddOns} />
       ) : null}
 
       {showPractitionerPicker ? (
@@ -211,7 +220,7 @@ export function ServiceCheckout({
             source="service-checkout"
             initialPractitioner={practitioner}
             initialCeremonyMedicine={showCeremonyPicker ? ceremonyMedicine : undefined}
-            initialReikiAddOn={showReikiAddOnPicker ? reikiAddOn : undefined}
+            initialReikiAddOns={showReikiAddOnPicker ? reikiAddOns : undefined}
           />
         </section>
       ) : (
@@ -233,14 +242,14 @@ export function ServiceCheckout({
                   serviceSlug,
                   ...(showPractitionerPicker ? { practitionerSlug: practitioner } : {}),
                   ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
-                  reikiAddOnSlug: showReikiAddOnPicker ? reikiAddOn || undefined : undefined,
+                  reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
                 }}
                 registerNext="book"
                 registerOptions={{
                   serviceSlug,
                   ...(showPractitionerPicker ? { practitionerSlug: practitioner } : {}),
                   ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
-                  reikiAddOnSlug: showReikiAddOnPicker ? reikiAddOn || undefined : undefined,
+                  reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
                 }}
                 paymentPlan={paymentPlan}
                 disabled={

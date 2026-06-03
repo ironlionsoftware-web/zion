@@ -12,10 +12,11 @@ import {
   parseCeremonyMedicineSlug,
 } from "@/lib/booking/ceremony-medicine";
 import {
-  getReikiAddOnOption,
   getReikiAddOnPriceCents,
   isReikiService,
-  parseReikiAddOnSlug,
+  parseReikiAddOnSlugs,
+  resolveReikiAddOns,
+  serializeReikiAddOnSlugs,
 } from "@/lib/booking/reiki-addon";
 import { getBookableService, site } from "@/content/site";
 import { parsePaymentPlan } from "@/lib/payments/types";
@@ -23,6 +24,16 @@ import { requireRegistration } from "@/lib/payments/require-registration";
 import { createStripeCheckoutSession } from "@/lib/stripe/checkout";
 import type { CheckoutLineItem } from "@/lib/stripe/checkout";
 import { getStripe } from "@/lib/stripe/server";
+
+function parseReikiAddOnSlugsFromBody(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return parseReikiAddOnSlugs(value.filter((item): item is string => typeof item === "string"));
+  }
+  if (typeof value === "string") {
+    return parseReikiAddOnSlugs(value);
+  }
+  return [];
+}
 
 export async function POST(request: Request) {
   const auth = await requireRegistration();
@@ -40,6 +51,7 @@ export async function POST(request: Request) {
     practitionerSlug?: unknown;
     ceremonyMedicineSlug?: unknown;
     reikiAddOnSlug?: unknown;
+    reikiAddOnSlugs?: unknown;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -74,19 +86,18 @@ export async function POST(request: Request) {
   }
   const ceremonyMedicine = ceremonyMedicineSlug ? getCeremonyMedicine(ceremonyMedicineSlug)! : undefined;
 
-  const reikiAddOnSlug = isReikiService(service.slug)
-    ? parseReikiAddOnSlug(
-        typeof body.reikiAddOnSlug === "string" ? body.reikiAddOnSlug : undefined,
-      )
-    : undefined;
-  const reikiAddOn = reikiAddOnSlug ? getReikiAddOnOption(reikiAddOnSlug)! : undefined;
+  const reikiAddOnSlugs = isReikiService(service.slug)
+    ? parseReikiAddOnSlugsFromBody(body.reikiAddOnSlugs ?? body.reikiAddOnSlug)
+    : [];
+  const reikiAddOns = resolveReikiAddOns(reikiAddOnSlugs);
 
   const paymentPlan = parsePaymentPlan(body.paymentPlan);
   const origin = new URL(request.url).origin;
   const checkoutQuery = new URLSearchParams({ service: service.slug });
   if (practitionerSlug) checkoutQuery.set("practitioner", practitionerSlug);
   if (ceremonyMedicineSlug) checkoutQuery.set("ceremony", ceremonyMedicineSlug);
-  if (reikiAddOnSlug) checkoutQuery.set("addon", reikiAddOnSlug);
+  const addonQuery = reikiAddOnSlugs.length > 0 ? serializeReikiAddOnSlugs(reikiAddOnSlugs) : "";
+  if (addonQuery) checkoutQuery.set("addon", addonQuery);
 
   const isDual = practitionerSlug ? isDualPractitionerSlug(practitionerSlug) : false;
   const serviceUnitCents = practitionerSlug
@@ -101,9 +112,7 @@ export async function POST(request: Request) {
     ? `${classOffering.schedule} · ${classOffering.format}`
     : ceremonyMedicine
       ? `${site.payments.serviceLineDescription} · ${ceremonyMedicine.label} · ${practitionerLine}`
-      : reikiAddOn
-        ? `${site.payments.serviceLineDescription} · ${practitionerLine}`
-        : `${site.payments.serviceLineDescription} · ${practitionerLine}`;
+      : `${site.payments.serviceLineDescription} · ${practitionerLine}`;
 
   const lineItems: CheckoutLineItem[] = [
     {
@@ -114,11 +123,12 @@ export async function POST(request: Request) {
     },
   ];
 
-  if (reikiAddOn) {
+  const addOnPrice = getReikiAddOnPriceCents();
+  for (const addOn of reikiAddOns) {
     lineItems.push({
-      name: `${reikiAddOn.label} add-on`,
+      name: `${addOn.label} add-on`,
       description: `With ${service.label} · ${practitionerLine}`,
-      unitAmountCents: getReikiAddOnPriceCents(),
+      unitAmountCents: addOnPrice,
       quantity: 1,
     });
   }
@@ -153,10 +163,10 @@ export async function POST(request: Request) {
             ceremony_medicine_label: ceremonyMedicine.label,
           }
         : {}),
-      ...(reikiAddOn
+      ...(reikiAddOns.length > 0
         ? {
-            ceremony_medicine_slug: reikiAddOn.slug,
-            ceremony_medicine_label: reikiAddOn.label,
+            ceremony_medicine_slug: reikiAddOns.map((a) => a.slug).join(","),
+            ceremony_medicine_label: reikiAddOns.map((a) => a.label).join(", "),
           }
         : {}),
     },

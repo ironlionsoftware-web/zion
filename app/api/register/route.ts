@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { parseCeremonyMedicineSlug, isPlantMedicineCeremonyService } from "@/lib/booking/ceremony-medicine";
-import { isReikiService, parseReikiAddOnSlug } from "@/lib/booking/reiki-addon";
+import { isReikiService, parseReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
 import {
   encodeRegistrationCookie,
@@ -39,9 +39,15 @@ export async function POST(request: Request) {
   if (isPlantMedicineCeremonyService(serviceSlug) && !ceremonyMedicineSlug) {
     return NextResponse.json({ error: "Please choose Hape or Sananga." }, { status: 400 });
   }
-  const reikiAddOnSlug = isReikiService(serviceSlug)
-    ? parseReikiAddOnSlug(typeof body.reikiAddOn === "string" ? body.reikiAddOn : undefined)
-    : undefined;
+  const reikiAddOnSlugs = isReikiService(serviceSlug)
+    ? parseReikiAddOnSlugs(
+        Array.isArray(body.reikiAddOns)
+          ? body.reikiAddOns.filter((item): item is string => typeof item === "string")
+          : typeof body.reikiAddOn === "string"
+            ? body.reikiAddOn
+            : undefined,
+      )
+    : [];
   const bookingId = typeof body.booking === "string" ? body.booking.trim() : undefined;
   const participantIndex =
     typeof body.participant === "number"
@@ -74,7 +80,7 @@ export async function POST(request: Request) {
     participantIndex: Number.isInteger(participantIndex) ? participantIndex : undefined,
     practitionerSlug,
     ceremonyMedicineSlug,
-    reikiAddOnSlug,
+    reikiAddOnSlugs: reikiAddOnSlugs.length > 0 ? reikiAddOnSlugs : undefined,
   });
   const response = NextResponse.json({ redirect: url, external });
 

@@ -401,7 +401,7 @@ export const site = {
       serviceSlug: "reiki",
       priceCents: 4500,
       legend: "Optional add-on",
-      lead: "Add an optional enhancement to your Reiki session (+$45 each).",
+      lead: "Choose one or more optional enhancements for your Reiki session (+$45 each).",
       noneLabel: "No add-on",
       noneSummary: "Reiki & frequency tuning only.",
       options: [

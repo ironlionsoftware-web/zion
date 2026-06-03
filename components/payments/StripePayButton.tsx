@@ -15,7 +15,7 @@ type StripePayButtonProps = {
     serviceSlug?: string;
     practitionerSlug?: string;
     ceremonyMedicineSlug?: string;
-    reikiAddOnSlug?: string;
+    reikiAddOnSlugs?: string[];
   };
   label?: string;
   paymentPlan: PaymentPlan;

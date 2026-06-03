@@ -23,7 +23,7 @@ type RegisterFormProps = {
   source?: string;
   initialPractitioner?: string;
   initialCeremonyMedicine?: string;
-  initialReikiAddOn?: string;
+  initialReikiAddOns?: readonly string[];
 };
 
 export function RegisterForm({
@@ -34,7 +34,7 @@ export function RegisterForm({
   source = "register",
   initialPractitioner,
   initialCeremonyMedicine,
-  initialReikiAddOn,
+  initialReikiAddOns,
 }: RegisterFormProps) {
   const showPractitionerPicker = next === "book" && !isClassService(service);
   const servicePriceCents = service ? getBookableService(service)?.priceCents : undefined;
@@ -47,7 +47,7 @@ export function RegisterForm({
   const [ceremonyMedicine, setCeremonyMedicine] = useState<string>(
     initialCeremonyMedicine ?? ceremonyOptions[0]?.slug ?? "",
   );
-  const [reikiAddOn, setReikiAddOn] = useState<string>(initialReikiAddOn ?? "");
+  const [reikiAddOns, setReikiAddOns] = useState<string[]>([...(initialReikiAddOns ?? [])]);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -81,7 +81,7 @@ export function RegisterForm({
           service,
           practitioner: showPractitionerPicker ? practitioner : undefined,
           ceremonyMedicine: showCeremonyPicker ? ceremonyMedicine : undefined,
-          reikiAddOn: showReikiAddOnPicker ? reikiAddOn || undefined : undefined,
+          reikiAddOns: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
           booking: bookingId,
           participant: participantIndex,
           source: source ?? (service ? "healing-services" : "register"),
@@ -112,7 +112,7 @@ export function RegisterForm({
         <CeremonyMedicinePicker value={ceremonyMedicine} onChange={setCeremonyMedicine} disabled={loading} />
       ) : null}
       {showReikiAddOnPicker ? (
-        <ReikiAddOnPicker value={reikiAddOn} onChange={setReikiAddOn} disabled={loading} />
+        <ReikiAddOnPicker value={reikiAddOns} onChange={setReikiAddOns} disabled={loading} />
       ) : null}
       {showPractitionerPicker ? (
         <PractitionerPicker

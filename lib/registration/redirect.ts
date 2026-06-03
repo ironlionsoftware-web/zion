@@ -1,4 +1,5 @@
 import { getPractitioner, getPractitionerCalendlyUrl } from "@/lib/booking/practitioners";
+import { serializeReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { getBookableService, isCalendlyConfigured, site } from "@/content/site";
 import type { ClientRegistration, RegisterNext } from "./types";
 
@@ -10,7 +11,7 @@ export function registerHref(
     participantIndex?: number;
     practitionerSlug?: string;
     ceremonyMedicineSlug?: string;
-    reikiAddOnSlug?: string;
+    reikiAddOnSlugs?: readonly string[];
   },
 ): string {
   const params = new URLSearchParams({ next });
@@ -25,9 +26,10 @@ export function registerHref(
   if (options?.ceremonyMedicineSlug?.trim()) {
     params.set("ceremony", options.ceremonyMedicineSlug.trim());
   }
-  if (options?.reikiAddOnSlug?.trim()) {
-    params.set("addon", options.reikiAddOnSlug.trim());
-  }
+  const addonQuery = options?.reikiAddOnSlugs?.length
+    ? serializeReikiAddOnSlugs(options.reikiAddOnSlugs)
+    : "";
+  if (addonQuery) params.set("addon", addonQuery);
   return `/register?${params.toString()}`;
 }
 
@@ -42,13 +44,14 @@ export function calendlyUrlWithPrefill(reg: ClientRegistration, practitionerSlug
 
 function serviceCheckoutUrl(
   serviceSlug: string,
-  options?: { practitionerSlug?: string; ceremonyMedicineSlug?: string; reikiAddOnSlug?: string },
+  options?: { practitionerSlug?: string; ceremonyMedicineSlug?: string; reikiAddOnSlugs?: readonly string[] },
 ): string {
   const url = new URL("/checkout/service", "http://local");
   url.searchParams.set("service", serviceSlug);
   if (options?.practitionerSlug) url.searchParams.set("practitioner", options.practitionerSlug);
   if (options?.ceremonyMedicineSlug) url.searchParams.set("ceremony", options.ceremonyMedicineSlug);
-  if (options?.reikiAddOnSlug) url.searchParams.set("addon", options.reikiAddOnSlug);
+  const addonQuery = options?.reikiAddOnSlugs?.length ? serializeReikiAddOnSlugs(options.reikiAddOnSlugs) : "";
+  if (addonQuery) url.searchParams.set("addon", addonQuery);
   return `${url.pathname}${url.search}`;
 }
 
@@ -61,7 +64,7 @@ export function redirectAfterRegistration(
     participantIndex?: number;
     practitionerSlug?: string;
     ceremonyMedicineSlug?: string;
-    reikiAddOnSlug?: string;
+    reikiAddOnSlugs?: readonly string[];
   },
 ): { url: string; external: boolean } {
   switch (next) {
@@ -89,7 +92,7 @@ export function redirectAfterRegistration(
           url: serviceCheckoutUrl(service.slug, {
             practitionerSlug: options?.practitionerSlug,
             ceremonyMedicineSlug: options?.ceremonyMedicineSlug,
-            reikiAddOnSlug: options?.reikiAddOnSlug,
+            reikiAddOnSlugs: options?.reikiAddOnSlugs,
           }),
           external: false,
         };
