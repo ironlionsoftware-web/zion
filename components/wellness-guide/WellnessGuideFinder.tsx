@@ -113,8 +113,8 @@ export function WellnessGuideFinder({ compact = false }: { compact?: boolean }) 
             disabled={loading}
           />
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <button type="submit" className="btn btn-primary min-w-[10rem]" disabled={loading}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <button type="submit" className="btn btn-primary w-full sm:min-w-[10rem] sm:w-auto" disabled={loading}>
             {loading ? "Finding matches…" : "Get recommendations"}
           </button>
           {result ? (
@@ -139,7 +139,7 @@ export function WellnessGuideFinder({ compact = false }: { compact?: boolean }) 
             type="button"
             disabled={loading}
             onClick={() => void runSearch(example)}
-            className="rounded-full border border-subtle bg-[var(--surface-muted)] px-3 py-1.5 text-xs font-medium text-earth transition hover:border-[var(--rasta-green)] hover:text-[var(--rasta-green)] disabled:opacity-50 motion-reduce:transition-none"
+            className="min-h-10 rounded-full border border-subtle bg-[var(--surface-muted)] px-3 py-2 text-xs font-medium text-earth transition hover:border-[var(--rasta-green)] hover:text-[var(--rasta-green)] disabled:opacity-50 motion-reduce:transition-none"
           >
             {example}
           </button>

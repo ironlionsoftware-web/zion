@@ -12,11 +12,11 @@ export function CtaBand() {
             {site.home.ctaTitle}
           </h2>
           <p className="prose-content mx-auto mt-5 max-w-xl">{site.home.ctaBody}</p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
-            <Link href="/contact" className="btn btn-primary">
+          <div className="mt-10 flex w-full max-w-md flex-col items-stretch gap-3 sm:mx-auto sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-4">
+            <Link href="/contact" className="btn btn-primary w-full sm:w-auto">
               Contact us
             </Link>
-            <Link href="/shop" className="btn btn-secondary">
+            <Link href="/shop" className="btn btn-secondary w-full sm:w-auto">
               Shop plant medicine
             </Link>
           </div>

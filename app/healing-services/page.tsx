@@ -34,7 +34,7 @@ export default function HealingServicesPage() {
                 <li key={service.slug}>
                   <Link
                     href={href}
-                    className="card block min-h-11 p-5 font-medium text-[var(--foreground)] outline-none transition hover:border-[var(--rasta-green)] hover:text-[var(--rasta-green)] motion-reduce:transition-none"
+                    className="card block min-h-[3.25rem] p-5 py-4 font-medium leading-snug text-[var(--foreground)] outline-none transition hover:border-[var(--rasta-green)] hover:text-[var(--rasta-green)] active:bg-surface-muted motion-reduce:transition-none"
                   >
                     {service.label}
                     <span className="sr-only">{srSuffix}</span>

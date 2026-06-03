@@ -9,7 +9,7 @@ export function CartButton() {
   return (
     <Link
       href={itemCount > 0 ? "/shop/checkout" : "/shop"}
-      className="relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm px-2 text-sm font-medium text-earth outline-none transition hover:text-[var(--rasta-green)] focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2 motion-reduce:transition-none"
+      className="relative inline-flex shrink-0 min-h-11 min-w-11 touch-manipulation items-center justify-center rounded-sm px-2 text-sm font-medium text-earth outline-none transition hover:text-[var(--rasta-green)] focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2 motion-reduce:transition-none"
       aria-label={itemCount > 0 ? `Cart, ${itemCount} items` : "Cart, empty"}
     >
       <span aria-hidden="true" className="text-lg">

@@ -36,6 +36,16 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-tap-highlight-color: rgb(23 99 58 / 0.12);
+}
+
+button,
+a,
+input,
+select,
+textarea,
+label {
+  touch-action: manipulation;
 }
 
 body::before {
@@ -56,6 +66,14 @@ body::before {
 
 dialog::backdrop {
   background: rgb(42 34 24 / 0.4);
+}
+
+.mobile-menu-dialog {
+  overscroll-behavior: contain;
+}
+
+.mobile-menu-dialog::backdrop {
+  background: rgb(42 34 24 / 0.45);
 }
 
 .symbol-band {
@@ -256,7 +274,14 @@ textarea.form-control {
 
 /* Sticky bars on notched phones */
 .safe-bottom {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+}
+
+/* Room for sticky shop cart bar on small screens */
+@media (max-width: 639px) {
+  main#main-content:has(+ footer) {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 @media (forced-colors: active) {

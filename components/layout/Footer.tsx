@@ -30,7 +30,10 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm" aria-labelledby="footer-explore-heading">
               {site.nav.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="nav-link link-accent hover:underline">
+                  <Link
+                    href={item.href}
+                    className="nav-link link-accent inline-flex min-h-11 max-w-full items-center py-1 hover:underline"
+                  >
                     {item.label}
                   </Link>
                 </li>
@@ -64,7 +67,7 @@ export function Footer() {
               <li>
                 <a
                   href={site.social.instagram}
-                  className="nav-link link-accent hover:underline"
+                  className="nav-link link-accent inline-flex min-h-11 items-center py-1 hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -75,7 +78,7 @@ export function Footer() {
               <li>
                 <a
                   href={site.social.facebook}
-                  className="nav-link link-accent hover:underline"
+                  className="nav-link link-accent inline-flex min-h-11 items-center py-1 hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -86,7 +89,7 @@ export function Footer() {
               <li>
                 <a
                   href={site.social.youtube}
-                  className="nav-link link-accent hover:underline"
+                  className="nav-link link-accent inline-flex min-h-11 items-center py-1 hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

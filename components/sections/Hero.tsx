@@ -23,11 +23,11 @@ export function Hero() {
           {site.home.heroTitle}
         </h1>
         <p className="prose-content mx-auto mt-8 max-w-2xl">{site.home.heroLead}</p>
-        <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link href="/contact" className="btn btn-primary">
+        <div className="mt-12 flex w-full max-w-md flex-col items-stretch justify-center gap-3 sm:mx-auto sm:max-w-none sm:flex-row sm:items-center sm:gap-4">
+          <Link href="/contact" className="btn btn-primary w-full sm:w-auto">
             Get in touch
           </Link>
-          <Link href="/healing-services" className="btn btn-secondary">
+          <Link href="/healing-services" className="btn btn-secondary w-full text-center sm:w-auto">
             Healing Services & Classes
           </Link>
         </div>

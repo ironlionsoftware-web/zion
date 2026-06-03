@@ -13,7 +13,10 @@ export function Header() {
           href="/"
           className="group min-w-0 flex-1 flex-col justify-center pr-2 outline-none focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2 sm:max-w-xs sm:flex-none sm:pr-0"
         >
-          <span className="font-display text-sm font-medium leading-snug break-words text-[var(--foreground)] transition group-hover:text-[var(--rasta-green)] sm:text-base md:text-lg motion-reduce:transition-none">
+          <span className="font-display text-sm font-medium leading-snug text-[var(--foreground)] transition group-hover:text-[var(--rasta-green)] sm:text-base md:text-lg motion-reduce:transition-none lg:hidden">
+            {site.shortName}
+          </span>
+          <span className="font-display hidden text-sm font-medium leading-snug break-words text-[var(--foreground)] transition group-hover:text-[var(--rasta-green)] lg:inline lg:text-base xl:text-lg motion-reduce:transition-none">
             {site.brandName}
           </span>
         </Link>
@@ -30,7 +33,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <CartButton />
           <Link href="/contact" className="btn btn-primary hidden text-xs sm:inline-flex">
             Contact
