@@ -104,8 +104,8 @@ export const austinLandscapePhotos = [
     alt: "Barton Springs Pool on a sunny day in Austin, Texas",
   },
   {
-    src: "/images/austin/landscapes/04-skyline-sunset.png",
-    alt: "Austin skyline at sunset along Lady Bird Lake",
+    src: "/images/austin/austin-skyline-sunset.png",
+    alt: "Austin skyline at sunset along Lady Bird Lake with Congress Avenue Bridge and kayakers on the water",
   },
   {
     src: "/images/austin/landscapes/05-greenbelt-creek.png",
@@ -136,7 +136,8 @@ export const site = {
     email: "ironlionhealing@gmail.com",
     phoneDisplay: "(713) 815 0276",
     phoneTel: "+17138150276",
-    serviceArea: "Greater Houston area. Nationwide by arrangement.",
+    phoneNote: "Text only",
+    serviceArea: "Greater Austin area. Nationwide by arrangement.",
     intro:
       "Email or call for shop orders, session bookings, retreat questions, or anything else. We will reply with availability and next steps.",
   },

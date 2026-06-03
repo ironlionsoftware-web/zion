@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { NatureFeature } from "@/components/sections/NatureFeature";
-import { site } from "@/content/site";
+import { austinLandscapePhotos, site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -19,7 +19,7 @@ export default function ContactPage() {
         <Container className="max-w-4xl">
           <div className="grid gap-4 sm:grid-cols-2">
             <NatureFeature photo={site.nature.photos[0]} label={site.nature.label} />
-            <NatureFeature photo={site.nature.photos[6]} label={site.nature.label} />
+            <NatureFeature photo={austinLandscapePhotos[3]} label="Austin, Texas" />
           </div>
         </Container>
       </div>
@@ -46,6 +46,7 @@ export default function ContactPage() {
                 >
                   {site.contact.phoneDisplay}
                 </a>
+                <p className="mt-1 text-sm text-muted">{site.contact.phoneNote}</p>
               </dd>
             </div>
             <div>
