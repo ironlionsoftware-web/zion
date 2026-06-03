@@ -11,7 +11,7 @@ export function ShopCartBar() {
 
   return (
     <div
-      className="safe-bottom sticky bottom-0 z-20 -mx-4 border-t border-subtle bg-[var(--cream)]/95 px-4 py-3 backdrop-blur-sm sm:-mx-6 sm:px-6 sm:py-4"
+      className="safe-bottom sticky bottom-0 z-20 -mx-4 border-t border-subtle bg-[var(--cream)] px-4 py-3 max-lg:bg-[var(--cream)] sm:-mx-6 sm:px-6 sm:py-4 lg:bg-[var(--cream)]/95 lg:backdrop-blur-sm"
       role="region"
       aria-label="Cart summary"
     >

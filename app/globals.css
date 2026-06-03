@@ -64,16 +64,25 @@ body::before {
   outline: none;
 }
 
-dialog::backdrop {
-  background: rgb(42 34 24 / 0.4);
+/* Lock page scroll when mobile menu is open (Android-safe; no position:fixed on body) */
+html.mobile-menu-open,
+body.mobile-menu-open {
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
-.mobile-menu-dialog {
+.mobile-menu-root {
   overscroll-behavior: contain;
 }
 
-.mobile-menu-dialog::backdrop {
-  background: rgb(42 34 24 / 0.45);
+.mobile-menu-nav {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.mobile-menu-panel a {
+  touch-action: manipulation;
 }
 
 .symbol-band {

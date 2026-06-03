@@ -6,7 +6,7 @@ import { MobileMenu } from "./MobileMenu";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-30 border-b border-subtle bg-[var(--cream)]/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-30 border-b border-subtle bg-[var(--cream)] max-lg:bg-[var(--cream)] lg:bg-[var(--cream)]/95 lg:backdrop-blur-sm">
       <div className="symbol-band h-0.5" aria-hidden="true" />
       <Container className="flex items-center justify-between gap-2 py-3 sm:gap-6 sm:py-5">
         <Link
@@ -33,9 +33,12 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           <CartButton />
-          <Link href="/contact" className="btn btn-primary hidden text-xs sm:inline-flex">
+          <Link
+            href="/contact"
+            className="btn btn-primary hidden min-h-11 text-xs sm:inline-flex"
+          >
             Contact
           </Link>
           <MobileMenu nav={site.nav} />
