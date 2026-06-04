@@ -226,7 +226,7 @@ export const site = {
     dualSession: {
       slug: "dual",
       name: "Dual session (both practitioners)",
-      title: "Johari Templin Jr & Johnny Lona together",
+      title: "Johari Templin & Johnny Lona together",
       description: "One shared session with both practitioners present at the same time.",
       /** Calendly event for dual sessions — override with CALENDLY_URL_DUAL_SESSION env var */
       calendlyUrl: "https://calendly.com/ironlionsoftware",
@@ -236,9 +236,9 @@ export const site = {
     list: [
       {
         slug: "johari-templin-jr",
-        name: "Johari Templin Jr",
+        name: "Johari Templin",
         title: "Holistic healer & trainer",
-        /** Per-practitioner Calendly page, override with CALENDLY_URL_JOHARI_TEMPLIN_JR / CALENDLY_URL_JOHNNY_LONA env vars */
+        /** Per-practitioner Calendly page, override with CALENDLY_URL_JOHARI_TEMPLIN_JR env var */
         calendlyUrl: "https://calendly.com/ironlionsoftware/johari-templin-jr",
       },
       {
@@ -246,6 +246,12 @@ export const site = {
         name: "Johnny Lona",
         title: "Holistic healer & trainer",
         calendlyUrl: "https://calendly.com/ironlionsoftware/johnny-lona",
+      },
+      {
+        slug: "pierre-middleton",
+        name: "Pierre Middleton",
+        title: "Holistic healer & trainer",
+        calendlyUrl: "https://calendly.com/ironlionsoftware/pierre-middleton",
       },
     ],
   },
@@ -338,6 +344,12 @@ export const site = {
         ],
       },
     ],
+    booking: {
+      heading: "Book a training session",
+      lead: "Choose your trainer, then register (if you have not already) and schedule on Calendly.",
+      trainerLegend: "Choose your trainer",
+      trainerSlugs: ["johari-templin-jr", "johnny-lona", "pierre-middleton"],
+    },
   },
   healingServices: {
     title: "Healing Services & Classes",

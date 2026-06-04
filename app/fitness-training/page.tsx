@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { FitnessTrainerBooking } from "@/components/fitness/FitnessTrainerBooking";
 import { NatureFeature } from "@/components/sections/NatureFeature";
+import { getRegistration } from "@/lib/registration/cookie";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -9,8 +11,10 @@ export const metadata: Metadata = {
   description: site.fitnessTraining.sections[0]?.paragraphs[0],
 };
 
-export default function FitnessTrainingPage() {
+export default async function FitnessTrainingPage() {
   const p = site.fitnessTraining;
+  const registration = await getRegistration();
+
   return (
     <>
       <PageHeader title={p.title} centered />
@@ -39,6 +43,7 @@ export default function FitnessTrainingPage() {
               </section>
             ))}
           </div>
+          <FitnessTrainerBooking registration={registration} />
         </Container>
       </div>
     </>

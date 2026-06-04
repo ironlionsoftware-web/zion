@@ -9,6 +9,7 @@ export type PractitionerSelection = Practitioner | (typeof site.practitioners.du
 const CALENDLY_ENV_KEYS: Record<string, string> = {
   "johari-templin-jr": "CALENDLY_URL_JOHARI_TEMPLIN_JR",
   "johnny-lona": "CALENDLY_URL_JOHNNY_LONA",
+  "pierre-middleton": "CALENDLY_URL_PIERRE_MIDDLETON",
   [DUAL_PRACTITIONER_SLUG]: "CALENDLY_URL_DUAL_SESSION",
 };
 
