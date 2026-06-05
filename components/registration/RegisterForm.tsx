@@ -12,6 +12,7 @@ import {
 } from "@/lib/booking/ceremony-medicine";
 import { isReikiService } from "@/lib/booking/reiki-addon";
 import { getBookableService } from "@/content/site";
+import { isFitnessOnlyPractitionerSlug } from "@/lib/booking/fitness-trainers";
 import { getPractitioners } from "@/lib/booking/practitioners";
 import type { RegisterNext } from "@/lib/registration/types";
 
@@ -36,7 +37,10 @@ export function RegisterForm({
   initialCeremonyMedicine,
   initialReikiAddOns,
 }: RegisterFormProps) {
-  const showPractitionerPicker = next === "book" && !isClassService(service);
+  const fitnessTrainerPreselected =
+    Boolean(initialPractitioner) && isFitnessOnlyPractitionerSlug(initialPractitioner) && !service;
+  const showPractitionerPicker =
+    next === "book" && !isClassService(service) && !fitnessTrainerPreselected;
   const servicePriceCents = service ? getBookableService(service)?.priceCents : undefined;
   const showCeremonyPicker = isPlantMedicineCeremonyService(service);
   const showReikiAddOnPicker = isReikiService(service);
@@ -79,7 +83,8 @@ export function RegisterForm({
           marketingConsent,
           next,
           service,
-          practitioner: showPractitionerPicker ? practitioner : undefined,
+          practitioner:
+            showPractitionerPicker || fitnessTrainerPreselected ? practitioner : undefined,
           ceremonyMedicine: showCeremonyPicker ? ceremonyMedicine : undefined,
           reikiAddOns: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
           booking: bookingId,

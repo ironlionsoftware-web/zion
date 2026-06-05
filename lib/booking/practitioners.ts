@@ -1,10 +1,14 @@
+import { getFitnessOnlyTrainers, type FitnessOnlyTrainer } from "@/lib/booking/fitness-trainers";
 import { site } from "@/content/site";
 
 export const DUAL_PRACTITIONER_SLUG = "dual";
 
 export type Practitioner = (typeof site.practitioners.list)[number];
 
-export type PractitionerSelection = Practitioner | (typeof site.practitioners.dualSession);
+export type PractitionerSelection =
+  | Practitioner
+  | FitnessOnlyTrainer
+  | (typeof site.practitioners.dualSession);
 
 const CALENDLY_ENV_KEYS: Record<string, string> = {
   "johari-templin-jr": "CALENDLY_URL_JOHARI_TEMPLIN_JR",
@@ -37,13 +41,22 @@ export function getPractitioner(slug: string): PractitionerSelection | undefined
   if (normalized === DUAL_PRACTITIONER_SLUG) {
     return site.practitioners.dualSession;
   }
-  return site.practitioners.list.find((p) => p.slug === normalized);
+  const bookable = site.practitioners.list.find((p) => p.slug === normalized);
+  if (bookable) return bookable;
+  return getFitnessOnlyTrainers().find((p) => p.slug === normalized);
 }
 
-export function parsePractitionerSlug(value: string | null | undefined): string | undefined {
+export function parsePractitionerSlug(
+  value: string | null | undefined,
+  options?: { includeFitnessOnly?: boolean },
+): string | undefined {
   const slug = typeof value === "string" ? value.trim().toLowerCase() : "";
   if (slug === DUAL_PRACTITIONER_SLUG) return slug;
-  return getPractitioner(slug) ? slug : undefined;
+  const practitioner = getPractitioner(slug);
+  if (!practitioner) return undefined;
+  if ("priceMultiplier" in practitioner) return slug;
+  if (options?.includeFitnessOnly) return slug;
+  return site.practitioners.list.some((p) => p.slug === slug) ? slug : undefined;
 }
 
 export function getPractitionerDisplayName(slug: string): string {

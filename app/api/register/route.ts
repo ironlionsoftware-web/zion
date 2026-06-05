@@ -28,7 +28,11 @@ export async function POST(request: Request) {
   const next = parseRegisterNext(typeof body.next === "string" ? body.next : undefined);
   const serviceSlug = typeof body.service === "string" ? body.service.trim() : undefined;
   const practitionerSlug =
-    next === "book" ? parsePractitionerSlug(typeof body.practitioner === "string" ? body.practitioner : undefined) : undefined;
+    next === "book"
+      ? parsePractitionerSlug(typeof body.practitioner === "string" ? body.practitioner : undefined, {
+          includeFitnessOnly: !serviceSlug,
+        })
+      : undefined;
   if (next === "book" && !practitionerSlug) {
     return NextResponse.json({ error: "Please choose a practitioner." }, { status: 400 });
   }

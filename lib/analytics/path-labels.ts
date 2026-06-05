@@ -10,7 +10,7 @@ const PATH_LABELS: Record<string, string> = {
   "/find-your-path": "Find your path",
   "/fitness-training": "Fitness training",
   "/contact": "Contact",
-  "/donation": "Donation",
+  "/donation": "Sliding scale",
   "/services": "Services overview",
   "/reiki": "Reiki",
 };
@@ -19,7 +19,7 @@ const INTENT_LABELS: Record<string, string> = {
   book: "Book a session",
   shop: "Shop",
   checkout: "Checkout",
-  donation: "Donation",
+  donation: "Sliding scale",
   retreat: "Retreat",
   contact: "Contact",
 };

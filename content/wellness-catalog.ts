@@ -176,7 +176,7 @@ export const wellnessCatalog: WellnessOffering[] = [
   {
     id: "donation-based",
     kind: "healing-service",
-    title: "Donation based service",
+    title: "Sliding scale service",
     summary:
       "Flexible contribution ($45 to $120) when cost is a barrier but you still want supported healing work.",
     href: "/register?next=donation&service=donation-based",

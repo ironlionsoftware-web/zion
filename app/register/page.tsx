@@ -34,7 +34,9 @@ export default async function RegisterPage({ searchParams }: PageProps) {
   const serviceSlug = params.service?.trim();
   const bookingId = params.booking?.trim();
   const participantIndex = params.participant ? Number(params.participant) : undefined;
-  const practitionerSlug = parsePractitionerSlug(params.practitioner);
+  const practitionerSlug = parsePractitionerSlug(params.practitioner, {
+    includeFitnessOnly: !serviceSlug,
+  });
   const ceremonyMedicineSlug = parseCeremonyMedicineSlug(params.ceremony);
   const reikiAddOnSlugs = parseReikiAddOnSlugs(params.addon);
   const existing = await getRegistration();

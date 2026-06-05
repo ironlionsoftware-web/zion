@@ -247,12 +247,6 @@ export const site = {
         title: "Holistic healer & trainer",
         calendlyUrl: "https://calendly.com/ironlionsoftware/johnny-lona",
       },
-      {
-        slug: "pierre-middleton",
-        name: "Pierre Middleton",
-        title: "Holistic healer & trainer",
-        calendlyUrl: "https://calendly.com/ironlionsoftware/pierre-middleton",
-      },
     ],
   },
   registration: {
@@ -279,10 +273,10 @@ export const site = {
       "You are registered for this class. We will email you with any preparation details and reminders before the first session.",
   },
   donation: {
-    title: "Donation based service",
+    title: "Sliding scale service",
     intro:
-      "Support donation based healing work with a contribution between $45 and $120. Choose the amount that fits your situation, then complete payment securely through Stripe.",
-    checkoutDescription: "Donation based healing service contribution",
+      "Support sliding scale healing work with a contribution between $45 and $120. Choose the amount that fits your situation, then complete payment securely through Stripe.",
+    checkoutDescription: "Sliding scale healing service contribution",
     minCents: 4500,
     maxCents: 12000,
     defaultCents: 7500,
@@ -349,6 +343,15 @@ export const site = {
       lead: "Choose your trainer, then register (if you have not already) and schedule on Calendly.",
       trainerLegend: "Choose your trainer",
       trainerSlugs: ["johari-templin-jr", "johnny-lona", "pierre-middleton"],
+      /** Fitness-only trainers — not offered on healing service booking flows */
+      fitnessOnlyTrainers: [
+        {
+          slug: "pierre-middleton",
+          name: "Pierre Middleton",
+          title: "Fitness trainer",
+          calendlyUrl: "https://calendly.com/ironlionsoftware/pierre-middleton",
+        },
+      ],
     },
   },
   healingServices: {
@@ -368,7 +371,7 @@ export const site = {
       { slug: "plant-medicine-ceremonies", label: "Plant medicine ceremonies", kind: "book", priceCents: 12000 },
       { slug: "card-readings", label: "Card readings", kind: "book", slidingScale: { minCents: 4500, maxCents: 12000, defaultCents: 7500 } },
       { slug: "classes", label: "Classes", kind: "classes" },
-      { slug: "donation-based", label: "Donation based service", kind: "donation" },
+      { slug: "donation-based", label: "Sliding scale service", kind: "donation" },
     ] satisfies HealingServiceItem[],
     classCatalog: {
       pageTitle: "Classes",
