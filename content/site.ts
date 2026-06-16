@@ -239,13 +239,13 @@ export const site = {
         name: "Johari Templin",
         title: "Holistic healer & trainer",
         /** Per-practitioner Calendly page, override with CALENDLY_URL_JOHARI_TEMPLIN_JR env var */
-        calendlyUrl: "https://calendly.com/ironlionsoftware/johari-templin-jr",
+        calendlyUrl: "https://calendly.com/ironlionsoftware/reiki",
       },
       {
         slug: "johnny-lona",
         name: "Johnny Lona",
         title: "Holistic healer & trainer",
-        calendlyUrl: "https://calendly.com/ironlionsoftware/johnny-lona",
+        calendlyUrl: "https://calendly.com/ironlionsoftware/30min",
       },
     ],
   },
