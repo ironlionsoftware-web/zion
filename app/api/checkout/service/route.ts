@@ -6,6 +6,7 @@ import {
   isDualPractitionerSlug,
   parsePractitionerSlug,
 } from "@/lib/booking/practitioners";
+import { isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
 import {
   getCeremonyMedicine,
   isPlantMedicineCeremonyService,
@@ -72,7 +73,9 @@ export async function POST(request: Request) {
 
   const practitionerSlug = isClass
     ? undefined
-    : parsePractitionerSlug(typeof body.practitionerSlug === "string" ? body.practitionerSlug : undefined);
+    : parsePractitionerSlug(typeof body.practitionerSlug === "string" ? body.practitionerSlug : undefined, {
+        includeFitnessOnly: isFitnessTrainingService(service.slug),
+      });
   if (!isClass && !practitionerSlug) {
     return NextResponse.json({ error: "Please choose a practitioner." }, { status: 400 });
   }

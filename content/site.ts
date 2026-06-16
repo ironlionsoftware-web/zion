@@ -340,8 +340,11 @@ export const site = {
     ],
     booking: {
       heading: "Book a training session",
-      lead: "Choose your trainer, then register (if you have not already) and schedule on Calendly.",
+      lead: "Choose your trainer, then register (if needed), pay on a sliding scale ($45–$120), and schedule on Calendly.",
       trainerLegend: "Choose your trainer",
+      serviceSlug: "fitness-training",
+      serviceLabel: "Fitness training session",
+      slidingScale: { minCents: 4500, maxCents: 12000, defaultCents: 7500 },
       trainerSlugs: ["johari-templin-jr", "johnny-lona", "pierre-middleton"],
       /** Fitness-only trainers — not offered on healing service booking flows */
       fitnessOnlyTrainers: [
@@ -783,6 +786,17 @@ export function getBookableService(slug: string): BookableService | undefined {
       label: offering.title,
       kind: "book",
       priceCents: offering.priceCents,
+    };
+  }
+
+  if (slug === site.fitnessTraining.booking.serviceSlug) {
+    const { serviceLabel, slidingScale } = site.fitnessTraining.booking;
+    return {
+      slug: site.fitnessTraining.booking.serviceSlug,
+      label: serviceLabel,
+      kind: "book",
+      priceCents: slidingScale.defaultCents,
+      slidingScale,
     };
   }
 

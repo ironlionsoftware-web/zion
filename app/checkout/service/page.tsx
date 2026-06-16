@@ -8,6 +8,7 @@ import { getBookableService, site } from "@/content/site";
 import { parseCeremonyMedicineSlug } from "@/lib/booking/ceremony-medicine";
 import { parseReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
+import { isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
 import { getRegistration } from "@/lib/registration/cookie";
 
 type PageProps = {
@@ -38,7 +39,9 @@ export default async function ServiceCheckoutPage({ searchParams }: PageProps) {
 
   const registration = await getRegistration();
   const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
-  const practitionerSlug = parsePractitionerSlug(params.practitioner);
+  const practitionerSlug = parsePractitionerSlug(params.practitioner, {
+    includeFitnessOnly: isFitnessTrainingService(serviceSlug),
+  });
   const ceremonyMedicineSlug = parseCeremonyMedicineSlug(params.ceremony);
   const reikiAddOnSlugs = parseReikiAddOnSlugs(params.addon);
 

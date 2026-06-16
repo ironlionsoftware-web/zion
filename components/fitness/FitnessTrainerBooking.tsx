@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { getFitnessTrainers } from "@/lib/booking/fitness-trainers";
-import { calendlyUrlWithPrefill, registerHref } from "@/lib/registration/redirect";
+import { FitnessTrainerPicker } from "@/components/fitness/FitnessTrainerPicker";
+import {
+  FITNESS_TRAINING_SERVICE_SLUG,
+  getFitnessTrainers,
+} from "@/lib/booking/fitness-trainers";
+import { registerHref } from "@/lib/registration/redirect";
+import { formatSlidingScaleRange } from "@/lib/booking/sliding-scale";
 import { isCalendlyConfigured } from "@/content/site";
 import type { ClientRegistration } from "@/lib/registration/types";
 import { site } from "@/content/site";
@@ -19,6 +24,7 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
   const calendlyReady = isCalendlyConfigured();
 
   const activeTrainer = trainers.find((t) => t.slug === selected);
+  const checkoutHref = `/checkout/service?service=${FITNESS_TRAINING_SERVICE_SLUG}&practitioner=${encodeURIComponent(selected)}`;
 
   return (
     <section
@@ -30,45 +36,26 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
         {cfg.heading}
       </h2>
       <p className="prose-content mt-4">{cfg.lead}</p>
+      <p className="mt-2 text-sm font-medium text-[var(--rasta-green)]">
+        {formatSlidingScaleRange(cfg.slidingScale)} sliding scale per session
+      </p>
 
       <fieldset className="card mt-8 p-6 sm:p-8">
-        <legend className="text-sm font-semibold text-[var(--foreground)]">{cfg.trainerLegend}</legend>
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          {trainers.map((trainer) => (
-            <label
-              key={trainer.slug}
-              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${selected === trainer.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"}`}
-            >
-              <input
-                type="radio"
-                name="fitness-trainer"
-                value={trainer.slug}
-                checked={selected === trainer.slug}
-                onChange={() => setSelected(trainer.slug)}
-                className="sr-only"
-              />
-              <span className="block font-medium text-[var(--foreground)]">{trainer.name}</span>
-              <span className="mt-1 block text-xs text-muted">{trainer.title}</span>
-            </label>
-          ))}
-        </div>
+        <FitnessTrainerPicker value={selected} onChange={setSelected} />
 
-        {registration && activeTrainer && calendlyReady ? (
-          <a
-            href={calendlyUrlWithPrefill(registration, activeTrainer.slug)}
-            className="btn btn-primary mt-8 w-full sm:w-auto"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Schedule with {activeTrainer.name}
-            <span className="sr-only"> (opens Calendly in a new tab)</span>
-          </a>
+        {registration && activeTrainer ? (
+          <Link href={checkoutHref} className="btn btn-primary mt-8 w-full sm:w-auto">
+            Pay & schedule with {activeTrainer.name}
+          </Link>
         ) : (
           <Link
-            href={registerHref("book", { practitionerSlug: selected })}
+            href={registerHref("book", {
+              serviceSlug: FITNESS_TRAINING_SERVICE_SLUG,
+              practitionerSlug: selected,
+            })}
             className="btn btn-primary mt-8 w-full sm:w-auto"
           >
-            {registration ? `Schedule with ${activeTrainer?.name ?? "your trainer"}` : "Register to book"}
+            Register to book
           </Link>
         )}
 
@@ -85,11 +72,11 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
         {registration ? (
           <p className="mt-4 text-sm text-muted">
             Signed in as <strong className="text-[var(--foreground)]">{registration.fullName}</strong>. Pick a
-            trainer, then open Calendly to choose your time.
+            trainer, choose your sliding scale amount, then schedule on Calendly.
           </p>
         ) : (
           <p className="mt-4 text-sm text-muted">
-            Register once, then you will be taken to Calendly to pick a time with your trainer.
+            Register once, then pay on the sliding scale and pick a time with your trainer on Calendly.
           </p>
         )}
       </fieldset>

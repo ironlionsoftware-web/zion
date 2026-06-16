@@ -22,12 +22,14 @@ import { RegisterForm } from "@/components/registration/RegisterForm";
 import { PaymentPlanPicker } from "@/components/payments/PaymentPlanPicker";
 import { SlidingScalePicker } from "@/components/payments/SlidingScalePicker";
 import { StripePayButton } from "@/components/payments/StripePayButton";
+import { FitnessTrainerPicker } from "@/components/fitness/FitnessTrainerPicker";
 import {
   computeServiceCheckoutCents,
   getPractitioner,
   getPractitioners,
   isDualPractitionerSlug,
 } from "@/lib/booking/practitioners";
+import { getFitnessTrainers, isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
 import { formatSlidingScaleRange } from "@/lib/booking/sliding-scale";
 import { calendlyUrlWithPrefill } from "@/lib/registration/redirect";
 import { formatUsd } from "@/lib/cart/products";
@@ -64,10 +66,12 @@ export function ServiceCheckout({
   initialReikiAddOns,
 }: ServiceCheckoutProps) {
   const isClass = isClassService(serviceSlug);
+  const isFitnessBooking = isFitnessTrainingService(serviceSlug);
   const classOffering = getClassOfferingFromServiceSlug(serviceSlug);
   const showCeremonyPicker = isPlantMedicineCeremonyService(serviceSlug);
   const showReikiAddOnPicker = isReikiService(serviceSlug);
-  const showPractitionerPicker = !isClass;
+  const showPractitionerPicker = !isClass && !isFitnessBooking;
+  const showFitnessTrainerPicker = isFitnessBooking;
   const ceremonyOptions = getCeremonyMedicineOptions();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
@@ -98,7 +102,9 @@ export function ServiceCheckout({
     slidingScale?.defaultCents ?? priceCents,
   );
   const [practitioner, setPractitioner] = useState<string>(
-    initialPractitioner ?? getPractitioners()[0]?.slug ?? "",
+    initialPractitioner ??
+      (isFitnessBooking ? getFitnessTrainers()[0]?.slug : getPractitioners()[0]?.slug) ??
+      "",
   );
   const [ceremonyMedicine, setCeremonyMedicine] = useState<string>(
     showCeremonyPicker ? (initialCeremonyMedicine ?? ceremonyOptions[0]?.slug ?? "") : "",
@@ -221,6 +227,10 @@ export function ServiceCheckout({
         <ReikiAddOnPicker value={reikiAddOns} onChange={setReikiAddOns} />
       ) : null}
 
+      {showFitnessTrainerPicker ? (
+        <FitnessTrainerPicker value={practitioner} onChange={setPractitioner} />
+      ) : null}
+
       {showPractitionerPicker ? (
         <PractitionerPicker
           value={practitioner}
@@ -235,7 +245,7 @@ export function ServiceCheckout({
           valueCents={slidingAmountCents}
           onChange={setSlidingAmountCents}
           label="Your contribution"
-          id="card-reading-amount"
+          id={isFitnessBooking ? "fitness-training-amount" : "card-reading-amount"}
         />
       ) : null}
 
@@ -272,20 +282,21 @@ export function ServiceCheckout({
                 body={{
                   serviceSlug,
                   ...(slidingScale ? { amountCents: slidingAmountCents } : {}),
-                  ...(showPractitionerPicker ? { practitionerSlug: practitioner } : {}),
+                  ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
                   ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
                   reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
                 }}
                 registerNext="book"
                 registerOptions={{
                   serviceSlug,
-                  ...(showPractitionerPicker ? { practitionerSlug: practitioner } : {}),
+                  ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
                   ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
                   reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
                 }}
                 paymentPlan={paymentPlan}
                 disabled={
-                  (showPractitionerPicker && !practitioner) || (showCeremonyPicker && !ceremonyMedicine)
+                  ((showPractitionerPicker || showFitnessTrainerPicker) && !practitioner) ||
+                  (showCeremonyPicker && !ceremonyMedicine)
                 }
                 label={`Pay ${formatUsd(checkoutPriceCents)}`}
               />
@@ -296,10 +307,16 @@ export function ServiceCheckout({
 
       <p className="text-sm">
         <Link
-          href={isClass ? "/healing-services/classes" : "/healing-services"}
+          href={
+            isClass
+              ? "/healing-services/classes"
+              : isFitnessBooking
+                ? "/fitness-training"
+                : "/healing-services"
+          }
           className="link-accent font-medium hover:underline"
         >
-          {isClass ? "← Back to classes" : "← Back to Healing Services & Classes"}
+          {isClass ? "← Back to classes" : isFitnessBooking ? "← Back to Fitness Training" : "← Back to Healing Services & Classes"}
         </Link>
       </p>
     </div>

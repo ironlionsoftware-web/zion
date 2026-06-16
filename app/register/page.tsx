@@ -8,8 +8,9 @@ import { getRegistration } from "@/lib/registration/cookie";
 import { parseCeremonyMedicineSlug } from "@/lib/booking/ceremony-medicine";
 import { parseReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
+import { shouldIncludeFitnessOnlyPractitioner, isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
 import { parseRegisterNext, redirectAfterRegistration } from "@/lib/registration/redirect";
-import { site } from "@/content/site";
+import { getBookableService, site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: site.registration.title,
@@ -35,7 +36,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
   const bookingId = params.booking?.trim();
   const participantIndex = params.participant ? Number(params.participant) : undefined;
   const practitionerSlug = parsePractitionerSlug(params.practitioner, {
-    includeFitnessOnly: !serviceSlug,
+    includeFitnessOnly: shouldIncludeFitnessOnlyPractitioner(serviceSlug),
   });
   const ceremonyMedicineSlug = parseCeremonyMedicineSlug(params.ceremony);
   const reikiAddOnSlugs = parseReikiAddOnSlugs(params.addon);
@@ -56,9 +57,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
     redirect(url);
   }
 
-  const serviceLabel = serviceSlug
-    ? site.healingServices.services.find((s) => s.slug === serviceSlug)?.label
-    : undefined;
+  const serviceLabel = serviceSlug ? getBookableService(serviceSlug)?.label : undefined;
   const lead = serviceLabel
     ? `${site.registration.intro} You selected: ${serviceLabel}.`
     : site.registration.intro;
@@ -78,8 +77,13 @@ export default async function RegisterPage({ searchParams }: PageProps) {
             initialReikiAddOns={reikiAddOnSlugs}
           />
           <p className="prose-content mt-8 text-sm">
-            <Link href="/healing-services" className="link-accent font-medium hover:underline">
-              ← Back to Healing Services & Classes
+            <Link
+              href={isFitnessTrainingService(serviceSlug) ? "/fitness-training" : "/healing-services"}
+              className="link-accent font-medium hover:underline"
+            >
+              {isFitnessTrainingService(serviceSlug)
+                ? "← Back to Fitness Training"
+                : "← Back to Healing Services & Classes"}
             </Link>
           </p>
         </Container>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { parseCeremonyMedicineSlug, isPlantMedicineCeremonyService } from "@/lib/booking/ceremony-medicine";
 import { isReikiService, parseReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
+import { shouldIncludeFitnessOnlyPractitioner } from "@/lib/booking/fitness-trainers";
 import {
   encodeRegistrationCookie,
   registrationCookieOptions,
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
   const practitionerSlug =
     next === "book"
       ? parsePractitionerSlug(typeof body.practitioner === "string" ? body.practitioner : undefined, {
-          includeFitnessOnly: !serviceSlug,
+          includeFitnessOnly: shouldIncludeFitnessOnlyPractitioner(serviceSlug),
         })
       : undefined;
   if (next === "book" && !practitionerSlug) {
