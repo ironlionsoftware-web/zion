@@ -19,7 +19,6 @@ export default function ShopPage() {
       <div className="section-pad pt-0 pb-28">
         <Container className="max-w-6xl">
           <ShopCatalog />
-          <p className="card prose-content mt-12 max-w-3xl p-5 text-sm">{shop.disclaimer}</p>
           <ShopCartBar />
         </Container>
       </div>

@@ -137,10 +137,7 @@ function ProductCard({ product, hydrated }: { product: ShopProduct; hydrated: bo
       <div className="flex flex-1 flex-col p-6">
         <h3 className="font-display text-xl font-medium text-[var(--foreground)]">{product.name}</h3>
         {product.description ? (
-          <div className="mt-3 space-y-3">
-            <p className="prose-content text-sm leading-relaxed text-muted">{product.description}</p>
-            <p className="text-xs leading-relaxed text-muted">{site.shop.disclaimer}</p>
-          </div>
+          <p className="prose-content mt-3 text-sm leading-relaxed text-muted">{product.description}</p>
         ) : null}
         <p className="mt-2 text-base font-medium text-[var(--rasta-green)]">
           {selection ? formatUsd(displayPrice ?? 0) : productPriceLabel(product)}
@@ -193,6 +190,11 @@ export function ShopCatalog() {
           <span className="sr-only"> (opens in new tab)</span>
         </Link>
         .
+      </p>
+      <p
+        className="prose-content mt-12 max-w-3xl border-t border-subtle pt-10 text-sm leading-relaxed text-muted"
+      >
+        {site.shop.disclaimer}
       </p>
     </section>
   );
