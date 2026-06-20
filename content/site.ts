@@ -21,11 +21,28 @@ export type ShopProductVariant = {
   priceCents: number;
 };
 
+export type ShopProductOptionChoice = {
+  id: string;
+  label: string;
+  /** Short wellness-oriented description for shop display */
+  description?: string;
+};
+
+export type ShopProductOptionGroup = {
+  id: string;
+  label: string;
+  choices: ShopProductOptionChoice[];
+};
+
 export type ShopProduct = {
   slug: string;
   name: string;
+  description?: string;
   priceCents?: number;
   variants?: ShopProductVariant[];
+  /** Multi-option products (e.g. size + flavor). Price keyed by choice ids joined with "|". */
+  optionGroups?: ShopProductOptionGroup[];
+  optionPrices?: Record<string, number>;
   imageSrc: string;
   imageAlt: string;
 };
@@ -692,13 +709,98 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "bottled-teas",
     name: "Bottled Teas",
-    priceCents: 500,
+    description:
+      "Small-batch herbal teas for daily ritual and hydration. Each flavor draws on plant traditions for gentle wellness support—not medical treatment.",
     imageSrc: "/images/shop/bottled-teas.jpg",
     imageAlt: "Bottled herbal teas from Iron Lion apothecary",
+    optionGroups: [
+      {
+        id: "size",
+        label: "Size",
+        choices: [
+          { id: "6pack", label: "12 oz 6-pack" },
+          { id: "gallon", label: "Gallon" },
+        ],
+      },
+      {
+        id: "flavor",
+        label: "Flavor",
+        choices: [
+          {
+            id: "sorrel",
+            label: "Sorrel",
+            description:
+              "A tangy hibiscus-based brew rich in antioxidants and vitamin C. Traditionally enjoyed in Caribbean wellness for cooling the body, supporting healthy blood pressure, and refreshing daily hydration.",
+          },
+          {
+            id: "soursop-leaf",
+            label: "Soursop leaf",
+            description:
+              "Leaf used in plant traditions to support immune resilience, calm the nervous system, and encourage restorative rest after long or stressful days.",
+          },
+          {
+            id: "guava-leaf",
+            label: "Guava leaf",
+            description:
+              "A digestive-friendly leaf often chosen for easing stomach discomfort and supporting balanced blood sugar as part of a plant-forward routine.",
+          },
+          {
+            id: "blue-vervain",
+            label: "Blue vervain",
+            description:
+              "A classic nervine herb used when stress, tension, or nervous system overwhelm make it hard to unwind—often sipped in the evening for calm and ease.",
+          },
+          {
+            id: "avocado-leaf",
+            label: "Avocado leaf",
+            description:
+              "Traditionally brewed for relaxation, sleep support, and cardiovascular balance—gentle enough for evening ritual when you want the body to settle.",
+          },
+          {
+            id: "cinnamon-leaf",
+            label: "Cinnamon leaf",
+            description:
+              "A warming botanical associated with circulation, metabolic warmth, and steady energy—comforting in cooler weather or when you want a cozy, grounding cup.",
+          },
+          {
+            id: "seamoss-juice",
+            label: "Sea moss juice",
+            description:
+              "Mineral-dense sea moss in drinkable form, valued for iodine and trace nutrients that support thyroid health, gut comfort, and sustained daily energy.",
+          },
+          {
+            id: "cerasee",
+            label: "Cerasee",
+            description:
+              "A bitter Caribbean herb widely used for cleansing, blood sugar support, and periodic detox rituals—bold in flavor and rooted in traditional island wellness.",
+          },
+        ],
+      },
+    ],
+    optionPrices: {
+      "6pack|sorrel": 2000,
+      "6pack|soursop-leaf": 2000,
+      "6pack|guava-leaf": 2000,
+      "6pack|blue-vervain": 2000,
+      "6pack|avocado-leaf": 2000,
+      "6pack|cinnamon-leaf": 2000,
+      "6pack|seamoss-juice": 2000,
+      "6pack|cerasee": 2000,
+      "gallon|sorrel": 3000,
+      "gallon|soursop-leaf": 3000,
+      "gallon|guava-leaf": 3000,
+      "gallon|blue-vervain": 3000,
+      "gallon|avocado-leaf": 3000,
+      "gallon|cinnamon-leaf": 3000,
+      "gallon|seamoss-juice": 3000,
+      "gallon|cerasee": 3000,
+    },
   },
   {
     slug: "guava-leaves",
     name: "Guava Leaves",
+    description:
+      "Dried guava leaves for brewing tea at home. In Caribbean and Latin American plant traditions, guava leaf tea is valued for easing digestive discomfort, reducing bloating, and supporting healthy blood sugar when enjoyed regularly as part of a balanced diet. Rich in antioxidants and tannins, it is often chosen after heavy meals or as a gentle daily tonic for gut comfort.",
     priceCents: 2000,
     imageSrc: "/images/shop/guava-leaves.webp",
     imageAlt: "Dried guava leaves",
@@ -706,6 +808,8 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "cinnamon-leaves",
     name: "Cinnamon leaves",
+    description:
+      "Whole dried cinnamon leaves for warm, aromatic tea and culinary use. Traditionally used to support healthy circulation, warm the body from within, and lend metabolic balance—especially in cooler months. Sipped as a daily ritual, cinnamon leaf tea offers comfort, steady warmth, and plant-forward support for blood sugar awareness.",
     priceCents: 2000,
     imageSrc: "/images/shop/cinnamon-leaves.png",
     imageAlt: "Cinnamon leaves",
@@ -713,6 +817,8 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "nettle",
     name: "Nettle",
+    description:
+      "Mineral-rich stinging nettle, dried and ready to steep. Long prized in herbal practice for iron, magnesium, and other nutrients, nettle is commonly used to nourish the blood, ease seasonal allergies and inflammation, and support joint comfort and overall vitality. A foundational herb for people rebuilding energy after depletion or seeking dense, food-like botanical nourishment.",
     priceCents: 2000,
     imageSrc: "/images/shop/nettle.jpeg",
     imageAlt: "Dried nettle",
@@ -720,6 +826,8 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "avocado-leaves",
     name: "Avocado leaves",
+    description:
+      "Dried avocado leaves for traditional tea preparation. Used across Central American and Caribbean wellness lineages for calming the nervous system, supporting restful sleep, and maintaining cardiovascular balance through gentle daily brewing. Often enjoyed in the evening when the body needs to downshift without heaviness.",
     priceCents: 2000,
     imageSrc: "/images/shop/avocado-leaves.jpg",
     imageAlt: "Avocado leaves",
@@ -727,6 +835,8 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "cerasee",
     name: "Cerasee",
+    description:
+      "Bitter cerasee (bitter melon leaf) as dried herb for tea. A cornerstone of Caribbean cleansing practice, cerasee is taken periodically to support blood sugar balance, liver and digestive purification, and the body's natural detox pathways. Its bold bitter taste reflects its traditional role in resetting appetite and metabolic clarity—best used with respect for its strength.",
     priceCents: 2000,
     imageSrc: "/images/shop/cerasee.png",
     imageAlt: "Cerasee herb",
@@ -734,6 +844,8 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "blue-vervain",
     name: "Blue Vervain",
+    description:
+      "Dried blue vervain for tea and herbal preparation. A respected nervine in Western and folk herbalism, vervain is chosen when anxiety, muscle tension, or nervous system overload interfere with rest and focus. Supports ease before sleep, softens tension held in the jaw and shoulders, and helps the body release the grip of chronic stress.",
     priceCents: 2000,
     imageSrc: "/images/shop/blue-vervain.jpg",
     imageAlt: "Blue vervain",
@@ -741,6 +853,8 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "soursop-leaves",
     name: "Soursop Leaves",
+    description:
+      "Dried soursop (graviola) leaves for brewing. Used in tropical plant medicine for immune system support, anti-inflammatory comfort, and deep relaxation—particularly when recovering from illness or mental fatigue. Often paired with rest rituals to encourage calm, parasympathetic recovery, and restorative sleep.",
     priceCents: 2000,
     imageSrc: "/images/shop/soursop-leaves.jpg",
     imageAlt: "Soursop leaves",
@@ -748,6 +862,8 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "dried-sea-moss",
     name: "Dried Sea moss",
+    description:
+      "Raw dried sea moss (Irish moss) to rinse, soak, and prepare at home. One of the most mineral-dense sea vegetables available, it delivers iodine for thyroid support, iron for blood building, and prebiotic fibers for gut health. A staple for people building daily mineral intake through smoothies, broths, or homemade gel.",
     priceCents: 1000,
     imageSrc: "/images/shop/dried-sea-moss.jpg",
     imageAlt: "Dried sea moss",
@@ -755,6 +871,8 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "sea-moss-gel",
     name: "Sea moss Gel",
+    description:
+      "Our ready-to-use sea moss gel, blended for convenience. Packed with iodine, potassium, and trace minerals that support thyroid function, digestive lining health, joint comfort, and sustained energy without stimulants. Stir into smoothies, oats, or teas—or take by the spoonful for daily mineral density.",
     imageSrc: "/images/shop/sea-moss-gel.png",
     imageAlt: "Sea moss gel",
     variants: [

@@ -2,32 +2,123 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { shopProducts, type ShopProduct } from "@/content/site";
+import { useMemo, useState } from "react";
+import { shopProducts, site, type ShopProduct } from "@/content/site";
 import { useCart } from "@/components/cart/CartProvider";
-import { formatUsd } from "@/lib/cart/products";
+import {
+  defaultOptionSelection,
+  formatUsd,
+  optionSelectionVariantId,
+  productPriceLabel,
+  resolveProductSelection,
+} from "@/lib/cart/products";
 
-function productPriceLabel(product: ShopProduct): string {
-  if (product.variants?.length) {
-    const prices = product.variants.map((v) => v.priceCents);
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    return min === max ? formatUsd(min) : `From ${formatUsd(min)}`;
-  }
-  return formatUsd(product.priceCents ?? 0);
+function OptionGroupPicker({
+  product,
+  selection,
+  onChange,
+}: {
+  product: ShopProduct;
+  selection: Record<string, string>;
+  onChange: (next: Record<string, string>) => void;
+}) {
+  return (
+    <>
+      {product.optionGroups!.map((group) => {
+        const selectedChoice = group.choices.find((choice) => choice.id === selection[group.id]);
+        return (
+          <fieldset key={group.id} className="mt-4">
+            <legend className="text-sm font-semibold text-[var(--foreground)]">{group.label}</legend>
+            <div className="mt-2 grid gap-2">
+              {group.choices.map((choice) => (
+                <label
+                  key={choice.id}
+                  className={`flex cursor-pointer items-center gap-2 rounded-sm border px-3 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${selection[group.id] === choice.id ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"}`}
+                >
+                  <input
+                    type="radio"
+                    name={`${product.slug}-${group.id}`}
+                    value={choice.id}
+                    checked={selection[group.id] === choice.id}
+                    onChange={() => onChange({ ...selection, [group.id]: choice.id })}
+                    className="accent-[var(--rasta-green)]"
+                  />
+                  <span className="font-medium text-[var(--foreground)]">{choice.label}</span>
+                </label>
+              ))}
+            </div>
+            {group.id === "flavor" && selectedChoice?.description ? (
+              <p
+                className="mt-3 rounded-sm border border-[var(--rasta-green)]/30 bg-surface-muted p-3 text-sm leading-relaxed text-[var(--foreground)]"
+                role="status"
+              >
+                <span className="font-medium">{selectedChoice.label}:</span> {selectedChoice.description}
+              </p>
+            ) : null}
+          </fieldset>
+        );
+      })}
+    </>
+  );
+}
+
+function VariantPicker({
+  product,
+  variantId,
+  onChange,
+}: {
+  product: ShopProduct;
+  variantId: string;
+  onChange: (id: string) => void;
+}) {
+  return (
+    <fieldset className="mt-4">
+      <legend className="text-sm font-semibold text-[var(--foreground)]">Size</legend>
+      <div className="mt-2 grid gap-2">
+        {product.variants!.map((variant) => (
+          <label
+            key={variant.id}
+            className={`flex cursor-pointer items-center justify-between rounded-sm border px-3 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${variantId === variant.id ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"}`}
+          >
+            <span className="flex items-center gap-2">
+              <input
+                type="radio"
+                name={`variant-${product.slug}`}
+                value={variant.id}
+                checked={variantId === variant.id}
+                onChange={() => onChange(variant.id)}
+                className="accent-[var(--rasta-green)]"
+              />
+              <span className="font-medium text-[var(--foreground)]">{variant.label}</span>
+            </span>
+            <span className="text-[var(--rasta-green)]">{formatUsd(variant.priceCents)}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
 }
 
 function ProductCard({ product, hydrated }: { product: ShopProduct; hydrated: boolean }) {
   const { addItem } = useCart();
+  const hasOptionGroups = Boolean(product.optionGroups?.length);
   const hasVariants = Boolean(product.variants?.length);
+  const [optionSelection, setOptionSelection] = useState(() => defaultOptionSelection(product));
   const [variantId, setVariantId] = useState(product.variants?.[0]?.id ?? "");
   const [justAdded, setJustAdded] = useState(false);
 
-  const selectedVariant = product.variants?.find((v) => v.id === variantId);
-  const displayPrice = selectedVariant?.priceCents ?? product.priceCents;
+  const activeVariantId = useMemo(() => {
+    if (hasOptionGroups) return optionSelectionVariantId(product, optionSelection);
+    if (hasVariants) return variantId;
+    return undefined;
+  }, [hasOptionGroups, hasVariants, optionSelection, product, variantId]);
+
+  const selection = resolveProductSelection(product, activeVariantId);
+  const displayPrice = selection?.priceCents ?? product.priceCents;
 
   function handleAdd() {
-    addItem(product.slug, hasVariants ? variantId : undefined);
+    if (!activeVariantId && (hasOptionGroups || hasVariants)) return;
+    addItem(product.slug, activeVariantId);
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 2000);
   }
@@ -45,43 +136,27 @@ function ProductCard({ product, hydrated }: { product: ShopProduct; hydrated: bo
       </div>
       <div className="flex flex-1 flex-col p-6">
         <h3 className="font-display text-xl font-medium text-[var(--foreground)]">{product.name}</h3>
+        {product.description ? (
+          <div className="mt-3 space-y-3">
+            <p className="prose-content text-sm leading-relaxed text-muted">{product.description}</p>
+            <p className="text-xs leading-relaxed text-muted">{site.shop.disclaimer}</p>
+          </div>
+        ) : null}
         <p className="mt-2 text-base font-medium text-[var(--rasta-green)]">
-          {hasVariants && selectedVariant ? formatUsd(displayPrice ?? 0) : productPriceLabel(product)}
+          {selection ? formatUsd(displayPrice ?? 0) : productPriceLabel(product)}
         </p>
         <p className="mt-1 text-xs text-muted">Excluding sales tax</p>
 
-        {hasVariants ? (
-          <fieldset className="mt-4">
-            <legend className="text-sm font-semibold text-[var(--foreground)]">Size</legend>
-            <div className="mt-2 grid gap-2">
-              {product.variants!.map((variant) => (
-                <label
-                  key={variant.id}
-                  className={`flex cursor-pointer items-center justify-between rounded-sm border px-3 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${variantId === variant.id ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"}`}
-                >
-                  <span className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name={`variant-${product.slug}`}
-                      value={variant.id}
-                      checked={variantId === variant.id}
-                      onChange={() => setVariantId(variant.id)}
-                      className="accent-[var(--rasta-green)]"
-                    />
-                    <span className="font-medium text-[var(--foreground)]">{variant.label}</span>
-                  </span>
-                  <span className="text-[var(--rasta-green)]">{formatUsd(variant.priceCents)}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
+        {hasOptionGroups ? (
+          <OptionGroupPicker product={product} selection={optionSelection} onChange={setOptionSelection} />
         ) : null}
+        {hasVariants ? <VariantPicker product={product} variantId={variantId} onChange={setVariantId} /> : null}
 
         <button
           type="button"
           onClick={handleAdd}
           className="btn btn-primary mt-6 w-full"
-          disabled={!hydrated || (hasVariants && !variantId)}
+          disabled={!hydrated || ((hasOptionGroups || hasVariants) && !activeVariantId)}
           aria-live="polite"
         >
           {justAdded ? `${product.name} added to cart` : `Add ${product.name} to cart`}

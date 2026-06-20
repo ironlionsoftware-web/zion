@@ -260,7 +260,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "bottled-teas",
     kind: "shop-product",
     title: "Bottled teas",
-    summary: "Ready to use herbal teas from the apothecary for gentle daily ritual.",
+    summary:
+      "Small-batch herbal teas in 12 oz 6-packs ($20) or gallons ($30). Each flavor includes traditional wellness benefits—from sorrel and sea moss juice to cerasee and blue vervain.",
     href: "/shop",
     tags: ["tea", "herbal tea", "daily ritual", "hydration", "gentle", "wellness routine"],
   },
@@ -268,7 +269,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "guava-leaves",
     kind: "shop-product",
     title: "Guava leaves",
-    summary: "Traditional leaf often chosen for digestive ease and blood sugar balance support.",
+    summary:
+      "Dried guava leaves for tea—traditionally used for digestive ease, bloating relief, and blood sugar support as a gentle daily gut tonic.",
     href: "/shop",
     tags: ["guava", "digestion", "digestive", "blood sugar", "glucose", "gut", "stomach"],
   },
@@ -276,7 +278,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "cinnamon-leaves",
     kind: "shop-product",
     title: "Cinnamon leaves",
-    summary: "Warming botanical often used for circulation and metabolic support in plant traditions.",
+    summary:
+      "Dried cinnamon leaves for warm tea—traditionally used for circulation, metabolic warmth, and blood sugar awareness in plant-forward routines.",
     href: "/shop",
     tags: ["cinnamon", "circulation", "warmth", "metabolic", "blood sugar", "warming"],
   },
@@ -284,7 +287,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "nettle",
     kind: "shop-product",
     title: "Nettle",
-    summary: "Mineral rich herb commonly used for inflammation, allergies, and nourishment.",
+    summary:
+      "Mineral-rich dried nettle for steeping—used to nourish the blood, ease allergies and inflammation, and support joints and daily vitality.",
     href: "/shop",
     tags: ["nettle", "allergies", "hay fever", "inflammation", "minerals", "iron", "nourish", "joints"],
   },
@@ -292,7 +296,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "avocado-leaves",
     kind: "shop-product",
     title: "Avocado leaves",
-    summary: "Leaf traditionally used for calm, sleep support, and cardiovascular balance.",
+    summary:
+      "Dried avocado leaves for evening tea—traditionally used for calm, sleep support, and cardiovascular balance.",
     href: "/shop",
     tags: ["avocado", "sleep", "insomnia", "blood pressure", "heart", "calm", "rest"],
   },
@@ -300,7 +305,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "cerasee",
     kind: "shop-product",
     title: "Cerasee",
-    summary: "Bitter herb widely used in Caribbean wellness for cleansing and blood sugar support.",
+    summary:
+      "Bitter cerasee leaf for cleansing tea—Caribbean tradition for blood sugar support, digestive purification, and periodic detox.",
     href: "/shop",
     tags: ["cerasee", "bitter", "cleanse", "detox", "blood sugar", "diabetes support", "purify"],
   },
@@ -308,7 +314,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "blue-vervain",
     kind: "shop-product",
     title: "Blue vervain",
-    summary: "Nervine herb often chosen for anxiety, tension, and nervous system overwhelm.",
+    summary:
+      "Dried blue vervain for nervine tea—often chosen for anxiety, muscle tension, and nervous system overwhelm before rest.",
     href: "/shop",
     tags: ["vervain", "anxiety", "nervous", "stress", "tension", "overwhelmed", "calm", "sleep"],
   },
@@ -316,7 +323,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "soursop-leaves",
     kind: "shop-product",
     title: "Soursop leaves",
-    summary: "Leaf used in plant traditions for immune support, relaxation, and restorative rest.",
+    summary:
+      "Dried soursop leaves for brewing—plant traditions use them for immune support, anti-inflammatory comfort, and restorative rest.",
     href: "/shop",
     tags: ["soursop", "immune", "immunity", "relaxation", "rest", "calm", "recovery"],
   },
@@ -324,7 +332,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "dried-sea-moss",
     kind: "shop-product",
     title: "Dried sea moss",
-    summary: "Sea moss for mineral density, gut support, and steady energy in plant forward routines.",
+    summary:
+      "Raw dried sea moss to prepare at home—iodine and minerals for thyroid support, iron for blood building, and prebiotic gut fibers.",
     href: "/shop",
     tags: ["sea moss", "seamoss", "minerals", "iodine", "thyroid", "energy", "gut", "nutrition", "iron"],
   },
@@ -332,7 +341,8 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "sea-moss-gel",
     kind: "shop-product",
     title: "Sea moss gel",
-    summary: "Ready to use gel in 8 oz, 16 oz, or 32 oz sizes for smoothies and daily mineral support.",
+    summary:
+      "Ready-to-use sea moss gel in 8 oz, 16 oz, or 32 oz—minerals for thyroid, digestion, joints, and steady daily energy.",
     href: "/shop",
     tags: ["sea moss gel", "seamoss", "smoothie", "minerals", "energy", "daily", "gut"],
   },
