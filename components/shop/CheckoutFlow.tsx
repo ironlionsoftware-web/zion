@@ -3,18 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { RegisterForm } from "@/components/registration/RegisterForm";
+import { useEffect, useMemo, useState } from "react";
 import { PaymentPlanPicker } from "@/components/payments/PaymentPlanPicker";
 import { StripePayButton } from "@/components/payments/StripePayButton";
+import {
+  DeliveryAddressForm,
+  deliveryFeePreview,
+  emptyDeliveryAddress,
+  type DeliveryAddressFormValue,
+} from "@/components/shop/DeliveryAddressForm";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatUsd } from "@/lib/cart/products";
+import { parseDeliveryAddress } from "@/lib/shipping/delivery";
 import type { PaymentPlan } from "@/lib/payments/types";
 import type { ClientRegistration } from "@/lib/registration/types";
-import { site } from "@/content/site";
 
 type CheckoutFlowProps = {
-  registration: ClientRegistration | null;
+  registration: ClientRegistration;
   paymentsReady: boolean;
 };
 
@@ -22,7 +27,7 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
   const router = useRouter();
   const searchParams = useSearchParams();
   const { lines, subtotalCents, hydrated, setQuantity, removeItem, clearCart } = useCart();
-  const [fulfillmentNote, setFulfillmentNote] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddressFormValue>(emptyDeliveryAddress);
   const [paymentPlan, setPaymentPlan] = useState<PaymentPlan>("full");
   const successParam = searchParams.get("success") === "1";
   const sessionId = searchParams.get("session_id");
@@ -30,6 +35,17 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
   const [confirmed, setConfirmed] = useState(false);
   const [confirmError, setConfirmError] = useState("");
   const success = successParam || confirmed;
+
+  const shippingPreview = deliveryFeePreview(deliveryAddress);
+  const deliveryFeeCents = shippingPreview.valid ? shippingPreview.feeCents! : 0;
+  const totalCents = subtotalCents + deliveryFeeCents;
+  const deliveryReady = shippingPreview.valid;
+
+  const deliveryPayload = useMemo(() => {
+    const parsed = parseDeliveryAddress(deliveryAddress);
+    if (!parsed) return null;
+    return parsed;
+  }, [deliveryAddress]);
 
   useEffect(() => {
     if (!successParam || !sessionId || confirmed) return;
@@ -77,7 +93,7 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
           </p>
         ) : null}
         <p className="card border-[var(--rasta-green)] p-5 text-sm leading-relaxed" role="status">
-          Thank you for your order. Payment was successful. We will follow up about pickup or shipping.
+          Thank you for your order. Payment was successful. We will follow up about delivery to your address.
         </p>
         <Link href="/shop" className="link-accent text-sm font-medium hover:underline">
           Continue shopping
@@ -100,7 +116,7 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
         </h2>
         <ul className="mt-6 space-y-4">
           {lines.map((line) => (
-            <li key={line.slug} className="card flex gap-4 p-4 sm:gap-6">
+            <li key={line.key} className="card flex gap-4 p-4 sm:gap-6">
               <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-md bg-surface-muted sm:h-24 sm:w-20">
                 <Image src={line.imageSrc} alt="" fill sizes="80px" className="object-cover" aria-hidden />
               </div>
@@ -108,23 +124,23 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
                 <p className="font-medium text-[var(--foreground)]">{line.name}</p>
                 <p className="text-sm text-muted">{formatUsd(line.priceCents)} each</p>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <label htmlFor={`qty-${line.slug}`} className="flex items-center gap-2 text-sm">
+                  <label htmlFor={`qty-${line.key}`} className="flex items-center gap-2 text-sm">
                     <span className="text-muted">Qty</span>
                     <input
-                      id={`qty-${line.slug}`}
+                      id={`qty-${line.key}`}
                       type="number"
                       min={1}
                       max={99}
                       inputMode="numeric"
                       aria-label={`Quantity for ${line.name}`}
                       value={line.quantity}
-                      onChange={(e) => setQuantity(line.slug, Number(e.target.value))}
+                      onChange={(e) => setQuantity(line.key, Number(e.target.value))}
                       className="form-control w-20 max-w-full py-1.5 text-center"
                     />
                   </label>
                   <button
                     type="button"
-                    onClick={() => removeItem(line.slug)}
+                    onClick={() => removeItem(line.key)}
                     className="min-h-11 rounded-sm px-2 text-sm font-medium text-[var(--rasta-red)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2"
                   >
                     Remove {line.name}
@@ -135,60 +151,70 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
             </li>
           ))}
         </ul>
-        <p className="mt-6 text-right text-lg font-semibold text-[var(--foreground)]">
-          Subtotal <span className="text-[var(--rasta-green)]">{formatUsd(subtotalCents)}</span>
-          <span className="block text-xs font-normal text-muted">Excluding sales tax</span>
-        </p>
+        <dl className="mt-6 space-y-2 text-right">
+          <div className="flex justify-end gap-4 text-sm">
+            <dt className="text-muted">Subtotal</dt>
+            <dd className="font-medium text-[var(--foreground)]">{formatUsd(subtotalCents)}</dd>
+          </div>
+          <div className="flex justify-end gap-4 text-sm">
+            <dt className="text-muted">Delivery</dt>
+            <dd className="font-medium text-[var(--foreground)]">
+              {!deliveryReady ? (
+                <span className="text-muted">Enter address below</span>
+              ) : deliveryFeeCents === 0 ? (
+                <span className="text-[var(--rasta-green)]">Free (Greater Austin)</span>
+              ) : (
+                formatUsd(deliveryFeeCents)
+              )}
+            </dd>
+          </div>
+          <div className="flex justify-end gap-4 text-lg font-semibold text-[var(--foreground)]">
+            <dt>Total</dt>
+            <dd className="text-[var(--rasta-green)]">{formatUsd(deliveryReady ? totalCents : subtotalCents)}</dd>
+          </div>
+        </dl>
+        <p className="mt-2 text-right text-xs text-muted">Excluding sales tax</p>
       </section>
 
-      {!registration ? (
-        <section aria-labelledby="checkout-register-heading" className="border-t border-subtle pt-10">
-          <h2 id="checkout-register-heading" className="font-display text-2xl font-medium text-[var(--foreground)]">
-            {site.shop.checkoutRegistrationTitle}
-          </h2>
-          <p className="prose-content mt-3 max-w-2xl">{site.shop.checkoutRegistrationIntro}</p>
-          <RegisterForm next="checkout" source="shop-checkout" />
-        </section>
-      ) : (
-        <section aria-labelledby="checkout-complete-heading" className="border-t border-subtle pt-10">
-          <h2 id="checkout-complete-heading" className="font-display text-2xl font-medium text-[var(--foreground)]">
-            Payment
-          </h2>
-          <p className="card mt-4 p-4 text-sm text-[var(--foreground)]">
-            Ordering as <strong>{registration.fullName}</strong> · {registration.email} · {registration.phone}
+      <section aria-labelledby="checkout-delivery-heading" className="border-t border-subtle pt-10">
+        <h2 id="checkout-delivery-heading" className="font-display text-2xl font-medium text-[var(--foreground)]">
+          Delivery address
+        </h2>
+        <DeliveryAddressForm value={deliveryAddress} onChange={setDeliveryAddress} />
+      </section>
+
+      <section aria-labelledby="checkout-complete-heading" className="border-t border-subtle pt-10">
+        <h2 id="checkout-complete-heading" className="font-display text-2xl font-medium text-[var(--foreground)]">
+          Payment
+        </h2>
+        <p className="card mt-4 p-4 text-sm text-[var(--foreground)]">
+          Ordering as <strong>{registration.fullName}</strong> · {registration.email} · {registration.phone}
+        </p>
+        {paymentsReady ? (
+          <>
+            <PaymentPlanPicker value={paymentPlan} onChange={setPaymentPlan} />
+            <StripePayButton
+              apiPath="/api/checkout/shop"
+              body={{
+                items: lines.map((line) => ({
+                  slug: line.slug,
+                  variantId: line.variantId,
+                  quantity: line.quantity,
+                })),
+                deliveryAddress: deliveryPayload,
+              }}
+              registerNext="checkout"
+              paymentPlan={paymentPlan}
+              disabled={!deliveryReady}
+              label={`Pay ${formatUsd(deliveryReady ? totalCents : subtotalCents)}`}
+            />
+          </>
+        ) : (
+          <p className="mt-4 text-sm text-muted">
+            Add <code className="text-xs">STRIPE_SECRET_KEY</code> to enable card checkout.
           </p>
-          <label htmlFor="fulfillment-note" className="mt-6 block text-sm font-semibold text-[var(--foreground)]">
-            Pickup or shipping preference
-          </label>
-          <textarea
-            id="fulfillment-note"
-            rows={3}
-            value={fulfillmentNote}
-            onChange={(e) => setFulfillmentNote(e.target.value)}
-            placeholder="e.g. Pickup in Houston, or ship to…"
-            className="form-control mt-2 max-w-xl"
-          />
-          {paymentsReady ? (
-            <>
-              <PaymentPlanPicker value={paymentPlan} onChange={setPaymentPlan} />
-              <StripePayButton
-                apiPath="/api/checkout/shop"
-                body={{
-                  items: lines.map((line) => ({ slug: line.slug, quantity: line.quantity })),
-                  fulfillmentNote,
-                }}
-                registerNext="checkout"
-                paymentPlan={paymentPlan}
-                label={`Pay ${formatUsd(subtotalCents)}`}
-              />
-            </>
-          ) : (
-            <p className="mt-4 text-sm text-muted">
-              Add <code className="text-xs">STRIPE_SECRET_KEY</code> to enable card checkout.
-            </p>
-          )}
-        </section>
-      )}
+        )}
+      </section>
 
       <p className="text-sm">
         <Link href="/shop" className="link-accent font-medium hover:underline">

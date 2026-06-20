@@ -10,7 +10,7 @@ import type { RetreatBooking } from "@/lib/retreat/types";
 type RetreatBookingHubProps = {
   bookingId: string;
   initialBooking: RetreatBooking;
-  registration: ClientRegistration | null;
+  registration: ClientRegistration;
   paymentsReady: boolean;
   highlightParticipant?: number;
 };

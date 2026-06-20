@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ADMIN_COOKIE } from "@/lib/admin/constants";
+import { buildRegisterPath } from "@/lib/registration/register-path";
 import { REGISTRATION_COOKIE } from "@/lib/registration/constants";
-import type { RegisterNext } from "@/lib/registration/types";
-
-const PROTECTED_PATHS: { path: string; next: RegisterNext }[] = [{ path: "/donation", next: "donation" }];
 
 function isRegistered(request: NextRequest): boolean {
   const value = request.cookies.get(REGISTRATION_COOKIE)?.value;
@@ -18,6 +16,13 @@ function isAdmin(request: NextRequest): boolean {
   if (!value) return false;
   const [payload, signature] = value.split(".");
   return Boolean(payload && signature && signature.length > 8);
+}
+
+function redirectToRegister(request: NextRequest, options: Parameters<typeof buildRegisterPath>[0]): NextResponse {
+  const url = request.nextUrl.clone();
+  url.pathname = "/register";
+  url.search = buildRegisterPath(options).split("?")[1] ?? "";
+  return NextResponse.redirect(url);
 }
 
 export function middleware(request: NextRequest) {
@@ -49,24 +54,57 @@ export function middleware(request: NextRequest) {
   if (pathname.startsWith("/api/checkout/")) {
     if (!isRegistered(request)) {
       return NextResponse.json(
-        { error: "Please complete registration before checkout." },
+        { error: "Please complete registration before checkout.", code: "registration_required" },
         { status: 401 },
       );
     }
     return NextResponse.next();
   }
 
-  const protectedRoute = PROTECTED_PATHS.find((r) => pathname === r.path);
-  if (protectedRoute && !isRegistered(request)) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/register";
-    url.searchParams.set("next", protectedRoute.next);
-    return NextResponse.redirect(url);
+  if (!isRegistered(request)) {
+    if (pathname === "/donation") {
+      return redirectToRegister(request, { next: "donation" });
+    }
+
+    if (pathname === "/shop/checkout") {
+      return redirectToRegister(request, { next: "checkout" });
+    }
+
+    if (pathname === "/checkout/service") {
+      const service = request.nextUrl.searchParams.get("service")?.trim();
+      return redirectToRegister(request, {
+        next: "book",
+        service: service || undefined,
+        practitioner: request.nextUrl.searchParams.get("practitioner") ?? undefined,
+        ceremony: request.nextUrl.searchParams.get("ceremony") ?? undefined,
+        addon: request.nextUrl.searchParams.get("addon") ?? undefined,
+      });
+    }
+
+    if (pathname.startsWith("/retreat/booking/")) {
+      const bookingId = pathname.slice("/retreat/booking/".length).split("/")[0];
+      const participantRaw = request.nextUrl.searchParams.get("participant");
+      const participant = participantRaw ? Number(participantRaw) : undefined;
+      return redirectToRegister(request, {
+        next: "retreat",
+        booking: bookingId || undefined,
+        participant: Number.isInteger(participant) ? participant : undefined,
+      });
+    }
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/donation", "/api/checkout/:path*", "/admin", "/admin/:path*", "/api/admin/:path*"],
+  matcher: [
+    "/donation",
+    "/shop/checkout",
+    "/checkout/service",
+    "/retreat/booking/:path*",
+    "/api/checkout/:path*",
+    "/admin",
+    "/admin/:path*",
+    "/api/admin/:path*",
+  ],
 };

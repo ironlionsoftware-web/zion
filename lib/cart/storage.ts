@@ -14,8 +14,12 @@ export function readCartFromStorage(): CartLine[] {
         if (typeof row !== "object" || row === null) return null;
         const slug = "slug" in row && typeof row.slug === "string" ? row.slug : "";
         const quantity = "quantity" in row ? Number(row.quantity) : 0;
+        const variantId =
+          "variantId" in row && typeof row.variantId === "string" ? row.variantId : undefined;
         if (!slug || !Number.isInteger(quantity) || quantity < 1) return null;
-        return { slug, quantity };
+        const line: CartLine = { slug, quantity };
+        if (variantId) line.variantId = variantId;
+        return line;
       })
       .filter((row): row is CartLine => row !== null);
   } catch {

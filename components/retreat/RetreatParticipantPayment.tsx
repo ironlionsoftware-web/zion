@@ -22,7 +22,7 @@ type RetreatParticipantPaymentProps = {
   booking: RetreatBooking;
   participantIndex: number;
   participant: RetreatParticipant;
-  registration: ClientRegistration | null;
+  registration: ClientRegistration;
   paymentsReady: boolean;
 };
 
@@ -39,7 +39,7 @@ export function RetreatParticipantPayment({
   const [depositPlan, setDepositPlan] = useState<PaymentPlan>("full");
   const [balancePlan, setBalancePlan] = useState<PaymentPlan>("installments");
 
-  const emailMatches = registration ? participantMatchesRegistration(participant, registration) : false;
+  const emailMatches = participantMatchesRegistration(participant, registration);
   const balanceWindow = participant.depositPaidAt ? balanceDueWindow(participant.depositPaidAt) : null;
 
   return (
@@ -98,10 +98,11 @@ export function RetreatParticipantPayment({
         </li>
       </ul>
 
-      {!registration || !emailMatches ? (
+      {!emailMatches ? (
         <div className="mt-5 border-t border-subtle pt-5">
           <p className="text-sm text-muted">
-            {participant.fullName} must sign in with <strong>{participant.email}</strong> to pay.
+            You are signed in as <strong>{registration.email}</strong>, but this payment is for{" "}
+            <strong>{participant.email}</strong>. Register with that email to pay for {participant.fullName}.
           </p>
           <Link
             href={registerHref("retreat", { bookingId, participantIndex })}

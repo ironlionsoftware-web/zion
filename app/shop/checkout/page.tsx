@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { CheckoutFlow } from "@/components/shop/CheckoutFlow";
 import { site } from "@/content/site";
-import { getRegistration } from "@/lib/registration/cookie";
+import { requireClientRegistration } from "@/lib/registration/require-page";
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopCheckoutPage() {
-  const registration = await getRegistration();
+  const registration = await requireClientRegistration({ next: "checkout" });
   const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
 
   return (

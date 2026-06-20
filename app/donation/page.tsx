@@ -6,8 +6,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { DonationConfirm } from "@/components/donation/DonationConfirm";
 import { DonationForm } from "@/components/donation/DonationForm";
 import { site } from "@/content/site";
-import { getRegistration } from "@/lib/registration/cookie";
-import { registerHref } from "@/lib/registration/redirect";
+import { requireClientRegistration } from "@/lib/registration/require-page";
 
 export const metadata: Metadata = {
   title: site.donation.title,
@@ -21,7 +20,7 @@ type PageProps = {
 export default async function DonationPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
-  const registration = await getRegistration();
+  const registration = await requireClientRegistration({ next: "donation" });
   const d = site.donation;
 
   return (
@@ -42,20 +41,11 @@ export default async function DonationPage({ searchParams }: PageProps) {
               Checkout was canceled. You can adjust your amount and try again when you are ready.
             </p>
           ) : null}
-          {registration ? (
-            <p className="card mb-8 p-4 text-sm text-[var(--foreground)]" role="status">
-              Contributing as <strong>{registration.fullName}</strong> ({registration.email})
-            </p>
-          ) : (
-            <p className="card mb-8 p-4 text-sm text-muted">
-              <Link href={registerHref("donation")} className="link-accent font-medium hover:underline">
-                Register
-              </Link>{" "}
-              before donating (required for checkout).
-            </p>
-          )}
+          <p className="card mb-8 p-4 text-sm text-[var(--foreground)]" role="status">
+            Contributing as <strong>{registration.fullName}</strong> ({registration.email})
+          </p>
 
-          <DonationForm paymentsReady={paymentsReady && registration !== null} />
+          <DonationForm paymentsReady={paymentsReady} />
 
           <p className="prose-content mt-10 text-sm">
             <Link href="/healing-services" className="link-accent font-medium hover:underline">

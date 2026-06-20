@@ -18,7 +18,6 @@ import {
   isReikiService,
   resolveReikiAddOns,
 } from "@/lib/booking/reiki-addon";
-import { RegisterForm } from "@/components/registration/RegisterForm";
 import { PaymentPlanPicker } from "@/components/payments/PaymentPlanPicker";
 import { SlidingScalePicker } from "@/components/payments/SlidingScalePicker";
 import { StripePayButton } from "@/components/payments/StripePayButton";
@@ -43,7 +42,7 @@ type ServiceCheckoutProps = {
   serviceLabel: string;
   priceCents: number;
   slidingScale?: SlidingScale;
-  registration: ClientRegistration | null;
+  registration: ClientRegistration;
   paymentsReady: boolean;
   success: boolean;
   canceled: boolean;
@@ -249,61 +248,44 @@ export function ServiceCheckout({
         />
       ) : null}
 
-      {!registration ? (
-        <section className="border-t border-subtle pt-10">
-          <h2 className="font-display text-xl font-medium text-[var(--foreground)]">
-            {site.registration.title}
-          </h2>
-          <p className="prose-content mt-3">{site.registration.intro}</p>
-          <RegisterForm
-            next="book"
-            service={serviceSlug}
-            source="service-checkout"
-            initialPractitioner={practitioner}
-            initialCeremonyMedicine={showCeremonyPicker ? ceremonyMedicine : undefined}
-            initialReikiAddOns={showReikiAddOnPicker ? reikiAddOns : undefined}
-          />
-        </section>
-      ) : (
-        <section className="border-t border-subtle pt-10">
-          <p className="text-sm text-[var(--foreground)]">
-            Paying as <strong>{registration.fullName}</strong> · {registration.email}
+      <section className="border-t border-subtle pt-10">
+        <p className="text-sm text-[var(--foreground)]">
+          Paying as <strong>{registration.fullName}</strong> · {registration.email}
+        </p>
+        {!paymentsReady ? (
+          <p className="mt-4 text-sm text-muted">
+            Card payments are not configured yet. Add <code className="text-xs">STRIPE_SECRET_KEY</code> to your
+            environment.
           </p>
-          {!paymentsReady ? (
-            <p className="mt-4 text-sm text-muted">
-              Card payments are not configured yet. Add <code className="text-xs">STRIPE_SECRET_KEY</code> to your
-              environment.
-            </p>
-          ) : (
-            <>
-              <PaymentPlanPicker value={paymentPlan} onChange={setPaymentPlan} />
-              <StripePayButton
-                apiPath="/api/checkout/service"
-                body={{
-                  serviceSlug,
-                  ...(slidingScale ? { amountCents: slidingAmountCents } : {}),
-                  ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
-                  ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
-                  reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
-                }}
-                registerNext="book"
-                registerOptions={{
-                  serviceSlug,
-                  ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
-                  ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
-                  reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
-                }}
-                paymentPlan={paymentPlan}
-                disabled={
-                  ((showPractitionerPicker || showFitnessTrainerPicker) && !practitioner) ||
-                  (showCeremonyPicker && !ceremonyMedicine)
-                }
-                label={`Pay ${formatUsd(checkoutPriceCents)}`}
-              />
-            </>
-          )}
-        </section>
-      )}
+        ) : (
+          <>
+            <PaymentPlanPicker value={paymentPlan} onChange={setPaymentPlan} />
+            <StripePayButton
+              apiPath="/api/checkout/service"
+              body={{
+                serviceSlug,
+                ...(slidingScale ? { amountCents: slidingAmountCents } : {}),
+                ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
+                ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
+                reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
+              }}
+              registerNext="book"
+              registerOptions={{
+                serviceSlug,
+                ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
+                ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
+                reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
+              }}
+              paymentPlan={paymentPlan}
+              disabled={
+                ((showPractitionerPicker || showFitnessTrainerPicker) && !practitioner) ||
+                (showCeremonyPicker && !ceremonyMedicine)
+              }
+              label={`Pay ${formatUsd(checkoutPriceCents)}`}
+            />
+          </>
+        )}
+      </section>
 
       <p className="text-sm">
         <Link

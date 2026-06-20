@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { RetreatBookingHub } from "@/components/retreat/RetreatBookingHub";
-import { getRegistration } from "@/lib/registration/cookie";
+import { requireClientRegistration } from "@/lib/registration/require-page";
 import { getRetreatBooking } from "@/lib/retreat/storage";
 import { site } from "@/content/site";
 
@@ -28,9 +28,13 @@ export default async function RetreatBookingPage({ params, searchParams }: PageP
   const booking = await getRetreatBooking(id);
   if (!booking) notFound();
 
-  const registration = await getRegistration();
-  const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
   const highlightParticipant = query.participant ? Number(query.participant) : undefined;
+  const registration = await requireClientRegistration({
+    next: "retreat",
+    booking: id,
+    participant: Number.isInteger(highlightParticipant) ? highlightParticipant : undefined,
+  });
+  const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
 
   return (
     <>

@@ -15,10 +15,17 @@ export type Service = {
   sections: { heading?: string; paragraphs: string[] }[];
 };
 
+export type ShopProductVariant = {
+  id: string;
+  label: string;
+  priceCents: number;
+};
+
 export type ShopProduct = {
   slug: string;
   name: string;
-  priceCents: number;
+  priceCents?: number;
+  variants?: ShopProductVariant[];
   imageSrc: string;
   imageAlt: string;
 };
@@ -193,7 +200,7 @@ export const site = {
     aboutTitle: "Why Iron Lion",
     aboutBody: [
       "Iron Lion is built around the idea that healing and fitness are not one size templates. Sessions honor your pace, your nervous system, and your goals while blending practical strength work with breath, presence, and energy practices when they serve you.",
-      "Register once, then book healing sessions, shop plant medicine, or make a donation, all through this site. We follow up by email or text with next steps for scheduling, pickup, or shipping.",
+      "Registration is required before booking, shopping, or making a contribution. Register once with your contact details, then complete your order or session through this site. We follow up by email or text with next steps for scheduling and delivery.",
     ],
     ctaTitle: "Ready when you are",
     ctaBody:
@@ -252,7 +259,7 @@ export const site = {
   registration: {
     title: "Client registration",
     intro:
-      "Please share your contact details so we can confirm your visit, order, or donation and send helpful updates.",
+      "Please share your contact details to register. Registration is required before checkout, booking, or payment on this site.",
     submitLabel: "Continue",
     marketingConsentLabel:
       "I agree to receive emails and texts from Iron Lion about sessions, offers, and wellness updates. I can unsubscribe anytime.",
@@ -628,13 +635,13 @@ export const site = {
   shop: {
     title: "Shop plant medicine",
     intro:
-      "Curated botanicals and sea moss from our apothecary. Add items to your cart, then checkout with card payment or installments (when eligible). Prices exclude sales tax.",
+      "Curated botanicals and sea moss from our apothecary. Registration is required at checkout. Add items to your cart, register, enter your delivery address, and pay securely. Delivery is free in the Greater Austin area; a $10 fee applies elsewhere. Prices exclude sales tax.",
     checkoutTitle: "Checkout",
     checkoutIntro:
-      "Review your cart, register, and pay securely with Stripe. Choose pay in full or installments at checkout when available.",
+      "Register first, then review your cart, enter your delivery address, and pay securely with Stripe. Delivery is free in the Greater Austin area; a $10 fee applies elsewhere.",
     checkoutRegistrationTitle: "Your details",
     checkoutRegistrationIntro:
-      "Please register so we can confirm your order and stay in touch about pickup, shipping, and future offerings.",
+      "Please register so we can confirm your order and coordinate delivery.",
     disclaimer:
       "These offerings are for education and wellness support only and are not medical advice. Ask your care team before use if you are pregnant, nursing, or managing a health condition.",
   },
@@ -748,9 +755,13 @@ export const shopProducts: ShopProduct[] = [
   {
     slug: "sea-moss-gel",
     name: "Sea moss Gel",
-    priceCents: 1200,
     imageSrc: "/images/shop/sea-moss-gel.png",
     imageAlt: "Sea moss gel",
+    variants: [
+      { id: "8oz", label: "8 oz", priceCents: 1200 },
+      { id: "16oz", label: "16 oz", priceCents: 2000 },
+      { id: "32oz", label: "32 oz", priceCents: 3500 },
+    ],
   },
 ];
 

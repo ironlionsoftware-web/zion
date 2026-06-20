@@ -6,10 +6,10 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { ServiceCheckout } from "@/components/checkout/ServiceCheckout";
 import { getBookableService, site } from "@/content/site";
 import { parseCeremonyMedicineSlug } from "@/lib/booking/ceremony-medicine";
-import { parseReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
+import { parseReikiAddOnSlugs, serializeReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
 import { isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
-import { getRegistration } from "@/lib/registration/cookie";
+import { requireClientRegistration } from "@/lib/registration/require-page";
 
 type PageProps = {
   searchParams: Promise<{
@@ -37,13 +37,19 @@ export default async function ServiceCheckoutPage({ searchParams }: PageProps) {
   const service = getBookableService(serviceSlug);
   if (!service) notFound();
 
-  const registration = await getRegistration();
-  const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
   const practitionerSlug = parsePractitionerSlug(params.practitioner, {
     includeFitnessOnly: isFitnessTrainingService(serviceSlug),
   });
   const ceremonyMedicineSlug = parseCeremonyMedicineSlug(params.ceremony);
   const reikiAddOnSlugs = parseReikiAddOnSlugs(params.addon);
+  const registration = await requireClientRegistration({
+    next: "book",
+    service: service.slug,
+    practitioner: practitionerSlug,
+    ceremony: ceremonyMedicineSlug,
+    addon: reikiAddOnSlugs.length > 0 ? serializeReikiAddOnSlugs(reikiAddOnSlugs) : undefined,
+  });
+  const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
 
   return (
     <>

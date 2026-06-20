@@ -332,7 +332,7 @@ export const wellnessCatalog: WellnessOffering[] = [
     id: "sea-moss-gel",
     kind: "shop-product",
     title: "Sea moss gel",
-    summary: "Ready to use gel for smoothies and daily mineral support.",
+    summary: "Ready to use gel in 8 oz, 16 oz, or 32 oz sizes for smoothies and daily mineral support.",
     href: "/shop",
     tags: ["sea moss gel", "seamoss", "smoothie", "minerals", "energy", "daily", "gut"],
   },

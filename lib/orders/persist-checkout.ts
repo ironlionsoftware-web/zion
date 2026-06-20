@@ -1,5 +1,5 @@
 import type Stripe from "stripe";
-import { resolveCartLines } from "@/lib/cart/products";
+import { parseCartMetaLine, resolveCartLines } from "@/lib/cart/products";
 import type { CartLine } from "@/lib/cart/types";
 import { insertServiceBooking } from "@/lib/db/service-bookings";
 import { insertShopOrder } from "@/lib/db/shop-orders";
@@ -75,28 +75,36 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
     const cartMeta = meta(session, "cart");
     const items: CartLine[] = cartMeta
       .split(",")
-      .map((part) => {
-        const match = part.match(/^(.+)x(\d+)$/);
-        if (!match) return null;
-        return { slug: match[1], quantity: Number(match[2]) };
-      })
+      .map((part) => parseCartMetaLine(part.trim()))
       .filter((row): row is CartLine => row !== null && row.quantity > 0);
 
     const lines = resolveCartLines(items);
     const fulfillmentNote = meta(session, "fulfillment_note");
     const note = fulfillmentNote === "none" ? null : fulfillmentNote || null;
+    const deliveryFeeCents = Number(meta(session, "delivery_fee_cents") || "0");
+
+    const orderLineItems = lines.map((line) => ({
+      slug: line.key,
+      name: line.name,
+      quantity: line.quantity,
+      priceCents: line.priceCents,
+    }));
+
+    if (deliveryFeeCents > 0) {
+      orderLineItems.push({
+        slug: "delivery",
+        name: "Delivery fee",
+        quantity: 1,
+        priceCents: deliveryFeeCents,
+      });
+    }
 
     const order = await insertShopOrder({
       stripeSessionId: session.id,
       fullName,
       email,
       phone,
-      lineItems: lines.map((line) => ({
-        slug: line.slug,
-        name: line.name,
-        quantity: line.quantity,
-        priceCents: line.priceCents,
-      })),
+      lineItems: orderLineItems,
       fulfillmentNote: note,
       subtotalCents: session.amount_total ?? 0,
       paymentPlan,
@@ -105,13 +113,15 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
 
     if (order) {
       const itemsText = order.lineItems.map((l) => `${l.name} x${l.quantity}`).join(", ");
+      const freeDelivery = meta(session, "free_delivery") === "true";
       void notifyAdmin({
         subject: `New shop order: ${order.fullName}`,
         text: [
           `Customer: ${order.fullName} (${order.email})`,
           `Items: ${itemsText}`,
           `Total: $${(order.subtotalCents / 100).toFixed(2)}`,
-          order.fulfillmentNote ? `Fulfillment: ${order.fulfillmentNote}` : null,
+          freeDelivery ? "Delivery: Free (Greater Austin)" : `Delivery fee: $${(deliveryFeeCents / 100).toFixed(2)}`,
+          order.fulfillmentNote ? `Delivery address:\n${order.fulfillmentNote}` : null,
         ]
           .filter(Boolean)
           .join("\n"),

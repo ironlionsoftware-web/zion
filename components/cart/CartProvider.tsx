@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { shopProducts } from "@/content/site";
-import { cartSubtotalCents, resolveCartLines } from "@/lib/cart/products";
+import { cartSubtotalCents, cartLineKey, isValidCartLine, resolveCartLines } from "@/lib/cart/products";
 import { readCartFromStorage, writeCartToStorage } from "@/lib/cart/storage";
 import type { CartLine, CartLineWithProduct } from "@/lib/cart/types";
 
@@ -11,17 +10,20 @@ type CartContextValue = {
   itemCount: number;
   subtotalCents: number;
   hydrated: boolean;
-  addItem: (slug: string) => void;
-  setQuantity: (slug: string, quantity: number) => void;
-  removeItem: (slug: string) => void;
+  addItem: (slug: string, variantId?: string) => void;
+  setQuantity: (key: string, quantity: number) => void;
+  removeItem: (key: string) => void;
   clearCart: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 
 function normalizeItems(items: CartLine[]): CartLine[] {
-  const validSlugs = new Set(shopProducts.map((p) => p.slug));
-  return items.filter((item) => validSlugs.has(item.slug) && item.quantity > 0);
+  return items.filter((item) => isValidCartLine(item));
+}
+
+function lineMatchesKey(line: CartLine, key: string): boolean {
+  return cartLineKey(line) === key;
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -43,37 +45,39 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addItem = useCallback(
-    (slug: string) => {
-      if (!shopProducts.some((p) => p.slug === slug)) return;
+    (slug: string, variantId?: string) => {
+      const candidate: CartLine = { slug, variantId, quantity: 1 };
+      if (!isValidCartLine(candidate)) return;
+      const key = cartLineKey(candidate);
       setItems((prev) => {
-        const existing = prev.find((line) => line.slug === slug);
+        const existing = prev.find((line) => lineMatchesKey(line, key));
         if (existing) {
           return prev.map((line) =>
-            line.slug === slug ? { ...line, quantity: line.quantity + 1 } : line,
+            lineMatchesKey(line, key) ? { ...line, quantity: line.quantity + 1 } : line,
           );
         }
-        return [...prev, { slug, quantity: 1 }];
+        return [...prev, candidate];
       });
     },
     [setItems],
   );
 
   const setQuantity = useCallback(
-    (slug: string, quantity: number) => {
+    (key: string, quantity: number) => {
       if (quantity < 1) {
-        setItems((prev) => prev.filter((line) => line.slug !== slug));
+        setItems((prev) => prev.filter((line) => !lineMatchesKey(line, key)));
         return;
       }
       setItems((prev) =>
-        prev.map((line) => (line.slug === slug ? { ...line, quantity } : line)),
+        prev.map((line) => (lineMatchesKey(line, key) ? { ...line, quantity } : line)),
       );
     },
     [setItems],
   );
 
   const removeItem = useCallback(
-    (slug: string) => {
-      setItems((prev) => prev.filter((line) => line.slug !== slug));
+    (key: string) => {
+      setItems((prev) => prev.filter((line) => !lineMatchesKey(line, key)));
     },
     [setItems],
   );
