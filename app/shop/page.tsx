@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { ShopCartBar } from "@/components/shop/ShopCartBar";
 import { ShopCatalog } from "@/components/shop/ShopCatalog";
+import { ShopPageShell } from "@/components/shop/ShopPageShell";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -16,11 +16,12 @@ export default function ShopPage() {
   return (
     <>
       <PageHeader title={shop.title} lead={shop.intro} centered />
-      <div className="section-pad pt-0 pb-28">
-        <Container className="max-w-6xl">
-          <ShopCatalog />
-          <ShopCartBar />
-        </Container>
+      <div className="section-pad pt-0">
+        <ShopPageShell>
+          <Container className="max-w-6xl">
+            <ShopCatalog />
+          </Container>
+        </ShopPageShell>
       </div>
     </>
   );

@@ -11,7 +11,7 @@ export function ShopCartBar() {
 
   return (
     <div
-      className="safe-bottom sticky bottom-0 z-20 -mx-4 border-t border-subtle bg-[var(--cream)] px-4 py-3 max-lg:bg-[var(--cream)] sm:-mx-6 sm:px-6 sm:py-4 lg:bg-[var(--cream)]/95 lg:backdrop-blur-sm"
+      className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-subtle bg-[var(--cream)]/98 px-4 py-3 shadow-[0_-4px_24px_rgb(42_34_24_/0.08)] backdrop-blur-sm sm:px-6 sm:py-4"
       role="region"
       aria-label="Cart summary"
     >
@@ -25,7 +25,7 @@ export function ShopCartBar() {
           <Link href="/shop/checkout" className="btn btn-primary w-full touch-manipulation sm:w-auto">
             Checkout
           </Link>
-          <p className="self-center text-xs text-muted sm:max-w-xs sm:truncate">
+          <p className="min-w-0 text-xs text-muted sm:max-w-md sm:truncate">
             {lines.map((line) => `${line.name} ×${line.quantity}`).join(", ")}
           </p>
         </div>
