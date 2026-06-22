@@ -187,7 +187,20 @@ export const site = {
     phoneNote: "Text only",
     serviceArea: "Greater Austin area. Nationwide by arrangement.",
     intro:
-      "Email or call for shop orders, session bookings, retreat questions, or anything else. We will reply with availability and next steps.",
+      "Email, call, or send us a message below for shop orders, session bookings, retreat questions, or anything else. We will reply with availability and next steps.",
+    form: {
+      heading: "Send us a message",
+      lead: "Share your name, contact details, and what you are looking for. We will get back to you by email or text.",
+      nameLabel: "Full name",
+      emailLabel: "Email",
+      phoneLabel: "Phone number",
+      messageLabel: "Message",
+      messagePlaceholder: "How can we help you?",
+      submitLabel: "Send message",
+      submittingLabel: "Sending…",
+      successMessage: "Thank you. Your message was sent. We will reply soon.",
+      errorMessage: "Could not send your message. Please try again or email us directly.",
+    },
   },
   social: {
     instagram: "https://www.instagram.com/ironlion_healing/",

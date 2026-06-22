@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { ContactForm } from "@/components/contact/ContactForm";
 import { NatureFeature } from "@/components/sections/NatureFeature";
 import { austinLandscapePhotos, site } from "@/content/site";
 
@@ -55,6 +56,8 @@ export default function ContactPage() {
             </div>
           </dl>
 
+          <ContactForm />
+
           <p className="prose-content mt-12 text-sm">
             Prefer to start with a topic? See{" "}
             <a
@@ -70,7 +73,7 @@ export default function ContactPage() {
             >
               Shop plant medicine
             </a>{" "}
-            to request a product by email.
+            to browse the apothecary.
           </p>
         </Container>
       </div>
