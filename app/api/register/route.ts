@@ -57,6 +57,13 @@ export async function POST(request: Request) {
   const fitnessOptions = isFitnessTrainingService(serviceSlug)
     ? parseFitnessBookingOptions({
         session: typeof body.fitnessSession === "string" ? body.fitnessSession : undefined,
+        format: typeof body.fitnessFormat === "string" ? body.fitnessFormat : undefined,
+        group:
+          typeof body.fitnessGroup === "number"
+            ? body.fitnessGroup
+            : typeof body.fitnessGroup === "string"
+              ? body.fitnessGroup
+              : undefined,
         audience: typeof body.fitnessAudience === "string" ? body.fitnessAudience : undefined,
         frequency:
           typeof body.fitnessFrequency === "number"

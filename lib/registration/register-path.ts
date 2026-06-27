@@ -10,6 +10,8 @@ export type RegistrationRedirectOptions = {
   ceremony?: string;
   addon?: string;
   session?: string;
+  format?: string;
+  group?: string;
   audience?: string;
   frequency?: string;
   billing?: string;
@@ -26,6 +28,8 @@ export function buildRegisterPath(options: RegistrationRedirectOptions): string 
   if (options.ceremony?.trim()) params.set("ceremony", options.ceremony.trim());
   if (options.addon?.trim()) params.set("addon", options.addon.trim());
   if (options.session?.trim()) params.set("session", options.session.trim());
+  if (options.format?.trim()) params.set("format", options.format.trim());
+  if (options.group?.trim()) params.set("group", options.group.trim());
   if (options.audience?.trim()) params.set("audience", options.audience.trim());
   if (options.frequency?.trim()) params.set("frequency", options.frequency.trim());
   if (options.billing?.trim()) params.set("billing", options.billing.trim());
@@ -35,6 +39,8 @@ export function buildRegisterPath(options: RegistrationRedirectOptions): string 
 export function fitnessOptionsFromRedirect(options: RegistrationRedirectOptions): FitnessBookingOptions | undefined {
   return parseFitnessBookingOptions({
     session: options.session,
+    format: options.format,
+    group: options.group,
     audience: options.audience,
     frequency: options.frequency,
     billing: options.billing,

@@ -12,7 +12,9 @@ import {
   computeFitnessWeeklyRecurringCents,
   formatFitnessBookingSummary,
   getDefaultFitnessBookingOptions,
+  isFitnessGroupTraining,
   isFitnessRecurringBilling,
+  computeFitnessPerSessionCents,
   parseFitnessBookingOptions,
 } from "@/lib/booking/fitness-options";
 import {
@@ -64,6 +66,8 @@ export async function POST(request: Request) {
     reikiAddOnSlug?: unknown;
     reikiAddOnSlugs?: unknown;
     fitnessSession?: unknown;
+    fitnessFormat?: unknown;
+    fitnessGroup?: unknown;
     fitnessAudience?: unknown;
     fitnessFrequency?: unknown;
     fitnessBilling?: unknown;
@@ -112,6 +116,13 @@ export async function POST(request: Request) {
   const fitnessOptions = isFitness
     ? parseFitnessBookingOptions({
         session: typeof body.fitnessSession === "string" ? body.fitnessSession : undefined,
+        format: typeof body.fitnessFormat === "string" ? body.fitnessFormat : undefined,
+        group:
+          typeof body.fitnessGroup === "number"
+            ? body.fitnessGroup
+            : typeof body.fitnessGroup === "string"
+              ? body.fitnessGroup
+              : undefined,
         audience: typeof body.fitnessAudience === "string" ? body.fitnessAudience : undefined,
         frequency:
           typeof body.fitnessFrequency === "number"
@@ -136,7 +147,9 @@ export async function POST(request: Request) {
   const isDual = practitionerSlug ? isDualPractitionerSlug(practitionerSlug) : false;
 
   let serviceUnitCents: number;
-  if (service.slidingScale) {
+  if (isFitness && fitnessOptions && isFitnessGroupTraining(fitnessOptions)) {
+    serviceUnitCents = computeFitnessPerSessionCents(fitnessOptions, 0);
+  } else if (service.slidingScale) {
     const amountCents = parseSlidingScaleAmount(body.amountCents, service.slidingScale);
     if (amountCents == null) {
       return NextResponse.json(
@@ -170,6 +183,8 @@ export async function POST(request: Request) {
   const fitnessMetadata: Record<string, string> = fitnessOptions
     ? {
         fitness_session_type: fitnessOptions.sessionType,
+        fitness_training_format: fitnessOptions.trainingFormat,
+        fitness_group_size: String(fitnessOptions.groupSize),
         fitness_audience: fitnessOptions.audience,
         fitness_sessions_per_week: String(fitnessOptions.sessionsPerWeek),
         fitness_billing_mode: fitnessOptions.billingMode,

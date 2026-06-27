@@ -28,6 +28,8 @@ type PageProps = {
     ceremony?: string;
     addon?: string;
     session?: string;
+    format?: string;
+    group?: string;
     audience?: string;
     frequency?: string;
     billing?: string;
@@ -48,6 +50,8 @@ export default async function RegisterPage({ searchParams }: PageProps) {
   const fitnessOptions = isFitnessTrainingService(serviceSlug)
     ? parseFitnessBookingOptions({
         session: params.session,
+        format: params.format,
+        group: params.group,
         audience: params.audience,
         frequency: params.frequency,
         billing: params.billing,

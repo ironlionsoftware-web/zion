@@ -10,8 +10,11 @@ import {
 } from "@/lib/booking/fitness-trainers";
 import {
   appendFitnessBookingOptions,
+  computeFitnessPerSessionCents,
   computeFitnessWeeklyRecurringCents,
   getDefaultFitnessBookingOptions,
+  getFitnessGroupPerPersonCents,
+  isFitnessGroupTraining,
   isFitnessRecurringBilling,
   type FitnessBookingOptions,
 } from "@/lib/booking/fitness-options";
@@ -45,8 +48,10 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
   const activeTrainer = trainers.find((t) => t.slug === selected);
   const checkoutHref = buildFitnessCheckoutHref(selected, bookingOptions);
   const recurring = isFitnessRecurringBilling(bookingOptions);
+  const groupSelected = isFitnessGroupTraining(bookingOptions);
+  const perSessionCents = computeFitnessPerSessionCents(bookingOptions, cfg.slidingScale.defaultCents);
   const weeklyEstimateCents = computeFitnessWeeklyRecurringCents(
-    cfg.slidingScale.defaultCents,
+    perSessionCents,
     bookingOptions.sessionsPerWeek,
   );
 
@@ -61,8 +66,10 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
       </h2>
       <p className="prose-content mt-4">{cfg.lead}</p>
       <p className="mt-2 text-sm font-medium text-[var(--rasta-green)]">
-        {formatSlidingScaleRange(cfg.slidingScale)} sliding scale per session
-        {recurring ? ` · weekly billing from ${formatUsd(weeklyEstimateCents)} at the default rate` : null}
+        {groupSelected
+          ? `${formatUsd(getFitnessGroupPerPersonCents())} per person for groups of ${cfg.groupTraining.minSize}–${cfg.groupTraining.maxSize}`
+          : `${formatSlidingScaleRange(cfg.slidingScale)} sliding scale per session`}
+        {recurring ? ` · weekly billing from ${formatUsd(weeklyEstimateCents)}` : null}
       </p>
 
       <fieldset className="card mt-8 p-6 sm:p-8">
@@ -99,12 +106,12 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
         {registration ? (
           <p className="mt-4 text-sm text-muted">
             Signed in as <strong className="text-[var(--foreground)]">{registration.fullName}</strong>. Confirm your
-            options, choose your sliding scale amount at checkout
+            options{groupSelected ? "" : ", choose your sliding scale amount at checkout"}
             {recurring ? ", then set up weekly billing" : ""}, and schedule on Calendly.
           </p>
         ) : (
           <p className="mt-4 text-sm text-muted">
-            Register once, then pay on the sliding scale
+            Register once, then {groupSelected ? "pay the group rate" : "pay on the sliding scale"}
             {recurring ? " or set up weekly recurring billing" : ""} and pick a time with your trainer on Calendly.
           </p>
         )}

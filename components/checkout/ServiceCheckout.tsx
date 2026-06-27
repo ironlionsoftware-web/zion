@@ -24,9 +24,12 @@ import { StripePayButton } from "@/components/payments/StripePayButton";
 import { FitnessTrainerPicker } from "@/components/fitness/FitnessTrainerPicker";
 import { FitnessBookingOptionsPicker } from "@/components/fitness/FitnessBookingOptionsPicker";
 import {
+  computeFitnessPerSessionCents,
   computeFitnessWeeklyRecurringCents,
   formatFitnessBookingSummary,
   getDefaultFitnessBookingOptions,
+  getFitnessGroupPerPersonCents,
+  isFitnessGroupTraining,
   isFitnessRecurringBilling,
   type FitnessBookingOptions,
 } from "@/lib/booking/fitness-options";
@@ -126,12 +129,16 @@ export function ServiceCheckout({
   const ceremonyMedicineRecord = showCeremonyPicker ? getCeremonyMedicine(ceremonyMedicine) : undefined;
   const reikiAddOnRecords = resolveReikiAddOns(reikiAddOns);
   const fitnessRecurring = isFitnessBooking && isFitnessRecurringBilling(fitnessOptions);
+  const fitnessGroup = isFitnessBooking && isFitnessGroupTraining(fitnessOptions);
   const fitnessSummary = isFitnessBooking ? formatFitnessBookingSummary(fitnessOptions) : undefined;
-  const baseCheckoutCents = slidingScale
-    ? slidingAmountCents
-    : showPractitionerPicker
-      ? computeServiceCheckoutCents(priceCents, practitioner)
-      : priceCents;
+  const perSessionCents = isFitnessBooking
+    ? computeFitnessPerSessionCents(fitnessOptions, slidingAmountCents)
+    : slidingScale
+      ? slidingAmountCents
+      : showPractitionerPicker
+        ? computeServiceCheckoutCents(priceCents, practitioner)
+        : priceCents;
+  const baseCheckoutCents = perSessionCents;
   const checkoutPriceCents = fitnessRecurring
     ? computeFitnessWeeklyRecurringCents(baseCheckoutCents, fitnessOptions.sessionsPerWeek)
     : baseCheckoutCents + computeReikiAddOnTotalCents(reikiAddOns);
@@ -174,7 +181,19 @@ export function ServiceCheckout({
 
       <section className="card p-6 sm:p-8">
         <h2 className="font-display text-xl font-medium text-[var(--foreground)]">{serviceLabel}</h2>
-        {slidingScale ? (
+        {fitnessGroup ? (
+          <>
+            <p className="mt-2 text-lg font-medium text-[var(--rasta-green)]">
+              {formatUsd(getFitnessGroupPerPersonCents())} per person · {fitnessOptions.groupSize} people
+            </p>
+            <p className="mt-1 text-sm font-medium text-[var(--rasta-green)]">
+              {formatUsd(baseCheckoutCents)} per group session
+              {fitnessRecurring
+                ? ` · ${formatUsd(checkoutPriceCents)} billed weekly (${fitnessOptions.sessionsPerWeek}×/week)`
+                : null}
+            </p>
+          </>
+        ) : slidingScale ? (
           <>
             <p className="mt-2 text-lg font-medium text-[var(--rasta-green)]">
               {formatSlidingScaleRange(slidingScale)} sliding scale
@@ -272,7 +291,7 @@ export function ServiceCheckout({
         />
       ) : null}
 
-      {slidingScale ? (
+      {slidingScale && !fitnessGroup ? (
         <SlidingScalePicker
           scale={slidingScale}
           valueCents={slidingAmountCents}
@@ -298,13 +317,16 @@ export function ServiceCheckout({
               apiPath="/api/checkout/service"
               body={{
                 serviceSlug,
-                ...(slidingScale ? { amountCents: slidingAmountCents } : {}),
+                ...(slidingScale && !fitnessGroup ? { amountCents: slidingAmountCents } : {}),
                 ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
                 ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
                 reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
                 ...(isFitnessBooking
                   ? {
                       fitnessSession: fitnessOptions.sessionType,
+                      fitnessFormat: fitnessOptions.trainingFormat,
+                      fitnessGroup:
+                        fitnessOptions.trainingFormat === "group" ? fitnessOptions.groupSize : undefined,
                       fitnessAudience: fitnessOptions.audience,
                       fitnessFrequency: fitnessOptions.sessionsPerWeek,
                       fitnessBilling: fitnessOptions.billingMode,

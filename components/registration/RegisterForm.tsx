@@ -107,6 +107,11 @@ export function RegisterForm({
           ceremonyMedicine: showCeremonyPicker ? ceremonyMedicine : undefined,
           reikiAddOns: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
           fitnessSession: showFitnessOptionsPicker ? fitnessOptions.sessionType : undefined,
+          fitnessFormat: showFitnessOptionsPicker ? fitnessOptions.trainingFormat : undefined,
+          fitnessGroup:
+            showFitnessOptionsPicker && fitnessOptions.trainingFormat === "group"
+              ? fitnessOptions.groupSize
+              : undefined,
           fitnessAudience: showFitnessOptionsPicker ? fitnessOptions.audience : undefined,
           fitnessFrequency: showFitnessOptionsPicker ? fitnessOptions.sessionsPerWeek : undefined,
           fitnessBilling: showFitnessOptionsPicker ? fitnessOptions.billingMode : undefined,

@@ -380,12 +380,31 @@ export const site = {
       lead: "Choose your session type, age group, and how often you want to train. Pick a trainer, register if needed, then pay once per session or set up weekly billing for regular training.",
       trainerLegend: "Choose your trainer",
       sessionTypeLegend: "Session type",
+      formatLegend: "Individual or group",
       audienceLegend: "Age group",
       frequencyLegend: "Sessions per week",
+      groupSizeLegend: "Group size",
       billingLegend: "How would you like to pay?",
       serviceSlug: "fitness-training",
       serviceLabel: "Fitness training session",
       slidingScale: { minCents: 4500, maxCents: 12000, defaultCents: 7500 },
+      groupTraining: {
+        perPersonCents: 4000,
+        minSize: 2,
+        maxSize: 10,
+      },
+      trainingFormats: [
+        {
+          slug: "individual",
+          label: "Individual training",
+          summary: "One-on-one coaching on the sliding scale ($45–$120 per session).",
+        },
+        {
+          slug: "group",
+          label: "Group training",
+          summary: "$40 per person for groups of 2–10. One payment covers your whole group.",
+        },
+      ],
       sessionTypes: [
         {
           slug: "sports-specific",
