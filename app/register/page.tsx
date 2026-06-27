@@ -9,6 +9,7 @@ import { parseCeremonyMedicineSlug } from "@/lib/booking/ceremony-medicine";
 import { parseReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
 import { shouldIncludeFitnessOnlyPractitioner, isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
+import { parseFitnessBookingOptions } from "@/lib/booking/fitness-options";
 import { parseRegisterNext, redirectAfterRegistration } from "@/lib/registration/redirect";
 import { getBookableService, site } from "@/content/site";
 
@@ -26,6 +27,10 @@ type PageProps = {
     practitioner?: string;
     ceremony?: string;
     addon?: string;
+    session?: string;
+    audience?: string;
+    frequency?: string;
+    billing?: string;
   }>;
 };
 
@@ -40,6 +45,14 @@ export default async function RegisterPage({ searchParams }: PageProps) {
   });
   const ceremonyMedicineSlug = parseCeremonyMedicineSlug(params.ceremony);
   const reikiAddOnSlugs = parseReikiAddOnSlugs(params.addon);
+  const fitnessOptions = isFitnessTrainingService(serviceSlug)
+    ? parseFitnessBookingOptions({
+        session: params.session,
+        audience: params.audience,
+        frequency: params.frequency,
+        billing: params.billing,
+      })
+    : undefined;
   const existing = await getRegistration();
 
   if (existing) {
@@ -50,6 +63,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
       practitionerSlug,
       ceremonyMedicineSlug,
       reikiAddOnSlugs,
+      fitnessOptions,
     });
     if (external) {
       redirect(url);
@@ -75,6 +89,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
             initialPractitioner={practitionerSlug}
             initialCeremonyMedicine={ceremonyMedicineSlug}
             initialReikiAddOns={reikiAddOnSlugs}
+            initialFitnessOptions={fitnessOptions}
           />
           <p className="prose-content mt-8 text-sm">
             <Link

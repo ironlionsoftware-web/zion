@@ -1,5 +1,6 @@
 import { getPractitioner, getPractitionerCalendlyUrl } from "@/lib/booking/practitioners";
 import { serializeReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
+import { appendFitnessBookingOptions, type FitnessBookingOptions } from "@/lib/booking/fitness-options";
 import { getBookableService, isCalendlyConfigured, site } from "@/content/site";
 import type { ClientRegistration, RegisterNext } from "./types";
 
@@ -12,6 +13,7 @@ export function registerHref(
     practitionerSlug?: string;
     ceremonyMedicineSlug?: string;
     reikiAddOnSlugs?: readonly string[];
+    fitnessOptions?: FitnessBookingOptions;
   },
 ): string {
   const params = new URLSearchParams({ next });
@@ -30,6 +32,7 @@ export function registerHref(
     ? serializeReikiAddOnSlugs(options.reikiAddOnSlugs)
     : "";
   if (addonQuery) params.set("addon", addonQuery);
+  if (options?.fitnessOptions) appendFitnessBookingOptions(params, options.fitnessOptions);
   return `/register?${params.toString()}`;
 }
 
@@ -44,7 +47,12 @@ export function calendlyUrlWithPrefill(reg: ClientRegistration, practitionerSlug
 
 function serviceCheckoutUrl(
   serviceSlug: string,
-  options?: { practitionerSlug?: string; ceremonyMedicineSlug?: string; reikiAddOnSlugs?: readonly string[] },
+  options?: {
+    practitionerSlug?: string;
+    ceremonyMedicineSlug?: string;
+    reikiAddOnSlugs?: readonly string[];
+    fitnessOptions?: FitnessBookingOptions;
+  },
 ): string {
   const url = new URL("/checkout/service", "http://local");
   url.searchParams.set("service", serviceSlug);
@@ -52,6 +60,7 @@ function serviceCheckoutUrl(
   if (options?.ceremonyMedicineSlug) url.searchParams.set("ceremony", options.ceremonyMedicineSlug);
   const addonQuery = options?.reikiAddOnSlugs?.length ? serializeReikiAddOnSlugs(options.reikiAddOnSlugs) : "";
   if (addonQuery) url.searchParams.set("addon", addonQuery);
+  if (options?.fitnessOptions) appendFitnessBookingOptions(url.searchParams, options.fitnessOptions);
   return `${url.pathname}${url.search}`;
 }
 
@@ -65,6 +74,7 @@ export function redirectAfterRegistration(
     practitionerSlug?: string;
     ceremonyMedicineSlug?: string;
     reikiAddOnSlugs?: readonly string[];
+    fitnessOptions?: FitnessBookingOptions;
   },
 ): { url: string; external: boolean } {
   switch (next) {
@@ -93,6 +103,7 @@ export function redirectAfterRegistration(
             practitionerSlug: options?.practitionerSlug,
             ceremonyMedicineSlug: options?.ceremonyMedicineSlug,
             reikiAddOnSlugs: options?.reikiAddOnSlugs,
+            fitnessOptions: options?.fitnessOptions,
           }),
           external: false,
         };

@@ -1,4 +1,5 @@
 import type { RegisterNext } from "@/lib/registration/types";
+import { parseFitnessBookingOptions, type FitnessBookingOptions } from "@/lib/booking/fitness-options";
 
 export type RegistrationRedirectOptions = {
   next: RegisterNext;
@@ -8,6 +9,10 @@ export type RegistrationRedirectOptions = {
   practitioner?: string;
   ceremony?: string;
   addon?: string;
+  session?: string;
+  audience?: string;
+  frequency?: string;
+  billing?: string;
 };
 
 export function buildRegisterPath(options: RegistrationRedirectOptions): string {
@@ -20,5 +25,18 @@ export function buildRegisterPath(options: RegistrationRedirectOptions): string 
   if (options.practitioner?.trim()) params.set("practitioner", options.practitioner.trim());
   if (options.ceremony?.trim()) params.set("ceremony", options.ceremony.trim());
   if (options.addon?.trim()) params.set("addon", options.addon.trim());
+  if (options.session?.trim()) params.set("session", options.session.trim());
+  if (options.audience?.trim()) params.set("audience", options.audience.trim());
+  if (options.frequency?.trim()) params.set("frequency", options.frequency.trim());
+  if (options.billing?.trim()) params.set("billing", options.billing.trim());
   return `/register?${params.toString()}`;
+}
+
+export function fitnessOptionsFromRedirect(options: RegistrationRedirectOptions): FitnessBookingOptions | undefined {
+  return parseFitnessBookingOptions({
+    session: options.session,
+    audience: options.audience,
+    frequency: options.frequency,
+    billing: options.billing,
+  });
 }

@@ -8,6 +8,14 @@ import {
 } from "@/lib/booking/practitioners";
 import { isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
 import {
+  appendFitnessBookingOptions,
+  computeFitnessWeeklyRecurringCents,
+  formatFitnessBookingSummary,
+  getDefaultFitnessBookingOptions,
+  isFitnessRecurringBilling,
+  parseFitnessBookingOptions,
+} from "@/lib/booking/fitness-options";
+import {
   getCeremonyMedicine,
   isPlantMedicineCeremonyService,
   parseCeremonyMedicineSlug,
@@ -23,7 +31,7 @@ import { parseSlidingScaleAmount } from "@/lib/booking/sliding-scale";
 import { getBookableService, site } from "@/content/site";
 import { parsePaymentPlan } from "@/lib/payments/types";
 import { requireRegistration } from "@/lib/payments/require-registration";
-import { createStripeCheckoutSession } from "@/lib/stripe/checkout";
+import { createStripeCheckoutSession, createStripeSubscriptionCheckoutSession } from "@/lib/stripe/checkout";
 import type { CheckoutLineItem } from "@/lib/stripe/checkout";
 import { getStripe } from "@/lib/stripe/server";
 
@@ -55,6 +63,10 @@ export async function POST(request: Request) {
     ceremonyMedicineSlug?: unknown;
     reikiAddOnSlug?: unknown;
     reikiAddOnSlugs?: unknown;
+    fitnessSession?: unknown;
+    fitnessAudience?: unknown;
+    fitnessFrequency?: unknown;
+    fitnessBilling?: unknown;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -96,13 +108,30 @@ export async function POST(request: Request) {
     : [];
   const reikiAddOns = resolveReikiAddOns(reikiAddOnSlugs);
 
-  const paymentPlan = parsePaymentPlan(body.paymentPlan);
+  const isFitness = isFitnessTrainingService(service.slug);
+  const fitnessOptions = isFitness
+    ? parseFitnessBookingOptions({
+        session: typeof body.fitnessSession === "string" ? body.fitnessSession : undefined,
+        audience: typeof body.fitnessAudience === "string" ? body.fitnessAudience : undefined,
+        frequency:
+          typeof body.fitnessFrequency === "number"
+            ? body.fitnessFrequency
+            : typeof body.fitnessFrequency === "string"
+              ? body.fitnessFrequency
+              : undefined,
+        billing: typeof body.fitnessBilling === "string" ? body.fitnessBilling : undefined,
+      }) ?? getDefaultFitnessBookingOptions()
+    : undefined;
+  const fitnessRecurring = fitnessOptions ? isFitnessRecurringBilling(fitnessOptions) : false;
+
+  const paymentPlan = fitnessRecurring ? "full" : parsePaymentPlan(body.paymentPlan);
   const origin = new URL(request.url).origin;
   const checkoutQuery = new URLSearchParams({ service: service.slug });
   if (practitionerSlug) checkoutQuery.set("practitioner", practitionerSlug);
   if (ceremonyMedicineSlug) checkoutQuery.set("ceremony", ceremonyMedicineSlug);
   const addonQuery = reikiAddOnSlugs.length > 0 ? serializeReikiAddOnSlugs(reikiAddOnSlugs) : "";
   if (addonQuery) checkoutQuery.set("addon", addonQuery);
+  if (fitnessOptions) appendFitnessBookingOptions(checkoutQuery, fitnessOptions);
 
   const isDual = practitionerSlug ? isDualPractitionerSlug(practitionerSlug) : false;
 
@@ -128,11 +157,56 @@ export async function POST(request: Request) {
     ? "Dual session (both practitioners)"
     : practitioner!.name;
 
+  const fitnessSummary = fitnessOptions ? formatFitnessBookingSummary(fitnessOptions) : undefined;
+
   const lineDescription = classOffering
     ? `${classOffering.schedule} · ${classOffering.format}`
     : ceremonyMedicine
       ? `${site.payments.serviceLineDescription} · ${ceremonyMedicine.label} · ${practitionerLine}`
-      : `${site.payments.serviceLineDescription} · ${practitionerLine}`;
+      : fitnessSummary
+        ? `${site.payments.serviceLineDescription} · ${fitnessSummary} · ${practitionerLine}`
+        : `${site.payments.serviceLineDescription} · ${practitionerLine}`;
+
+  const fitnessMetadata: Record<string, string> = fitnessOptions
+    ? {
+        fitness_session_type: fitnessOptions.sessionType,
+        fitness_audience: fitnessOptions.audience,
+        fitness_sessions_per_week: String(fitnessOptions.sessionsPerWeek),
+        fitness_billing_mode: fitnessOptions.billingMode,
+        fitness_per_session_cents: String(serviceUnitCents),
+        ceremony_medicine_slug: fitnessOptions.sessionType,
+        ceremony_medicine_label: fitnessSummary ?? "",
+      }
+    : {};
+
+  if (fitnessRecurring && fitnessOptions) {
+    const weeklyCents = computeFitnessWeeklyRecurringCents(serviceUnitCents, fitnessOptions.sessionsPerWeek);
+    const session = await createStripeSubscriptionCheckoutSession({
+      stripe,
+      registration,
+      name: `${service.label} (weekly)`,
+      description: lineDescription,
+      unitAmountCents: weeklyCents,
+      interval: "week",
+      successUrl: `${origin}/checkout/service?${checkoutQuery.toString()}&success=1&session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${origin}/checkout/service?${checkoutQuery.toString()}&canceled=1`,
+      metadata: {
+        checkout_type: "service",
+        service_slug: service.slug,
+        service_label: service.label,
+        practitioner_slug: practitioner!.slug,
+        practitioner_name: practitioner!.name,
+        fitness_weekly_cents: String(weeklyCents),
+        ...fitnessMetadata,
+      },
+    });
+
+    if (!session.url) {
+      return NextResponse.json({ error: "Could not start checkout." }, { status: 500 });
+    }
+
+    return NextResponse.json({ url: session.url });
+  }
 
   const lineItems: CheckoutLineItem[] = [
     {
@@ -189,6 +263,7 @@ export async function POST(request: Request) {
             ceremony_medicine_label: reikiAddOns.map((a) => a.label).join(", "),
           }
         : {}),
+      ...fitnessMetadata,
     },
   });
 

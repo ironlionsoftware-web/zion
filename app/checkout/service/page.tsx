@@ -9,6 +9,7 @@ import { parseCeremonyMedicineSlug } from "@/lib/booking/ceremony-medicine";
 import { parseReikiAddOnSlugs, serializeReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
 import { isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
+import { parseFitnessBookingOptions } from "@/lib/booking/fitness-options";
 import { requireClientRegistration } from "@/lib/registration/require-page";
 
 type PageProps = {
@@ -19,6 +20,10 @@ type PageProps = {
     practitioner?: string;
     ceremony?: string;
     addon?: string;
+    session?: string;
+    audience?: string;
+    frequency?: string;
+    billing?: string;
   }>;
 };
 
@@ -42,12 +47,24 @@ export default async function ServiceCheckoutPage({ searchParams }: PageProps) {
   });
   const ceremonyMedicineSlug = parseCeremonyMedicineSlug(params.ceremony);
   const reikiAddOnSlugs = parseReikiAddOnSlugs(params.addon);
+  const fitnessOptions = isFitnessTrainingService(serviceSlug)
+    ? parseFitnessBookingOptions({
+        session: params.session,
+        audience: params.audience,
+        frequency: params.frequency,
+        billing: params.billing,
+      })
+    : undefined;
   const registration = await requireClientRegistration({
     next: "book",
     service: service.slug,
     practitioner: practitionerSlug,
     ceremony: ceremonyMedicineSlug,
     addon: reikiAddOnSlugs.length > 0 ? serializeReikiAddOnSlugs(reikiAddOnSlugs) : undefined,
+    session: params.session,
+    audience: params.audience,
+    frequency: params.frequency,
+    billing: params.billing,
   });
   const paymentsReady = Boolean(process.env.STRIPE_SECRET_KEY);
 
@@ -69,6 +86,7 @@ export default async function ServiceCheckoutPage({ searchParams }: PageProps) {
               initialPractitioner={practitionerSlug}
               initialCeremonyMedicine={ceremonyMedicineSlug}
               initialReikiAddOns={reikiAddOnSlugs}
+              initialFitnessOptions={fitnessOptions}
             />
           </Suspense>
         </Container>

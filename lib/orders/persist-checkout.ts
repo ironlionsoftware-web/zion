@@ -11,7 +11,10 @@ function meta(session: Stripe.Checkout.Session, key: string): string {
 }
 
 export async function persistCheckoutSession(session: Stripe.Checkout.Session): Promise<void> {
-  if (session.payment_status !== "paid" || !session.id) return;
+  const paid =
+    session.payment_status === "paid" ||
+    (session.mode === "subscription" && session.status === "complete");
+  if (!paid || !session.id) return;
 
   const checkoutType = meta(session, "checkout_type");
 
@@ -32,7 +35,9 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
   const paidAt = new Date().toISOString();
 
   if (checkoutType === "service") {
-    const amountCents = session.amount_total ?? 0;
+    const amountCents = (session.amount_total ?? Number(meta(session, "fitness_weekly_cents"))) || 0;
+    const fitnessBilling = meta(session, "fitness_billing_mode");
+    const fitnessSummary = meta(session, "ceremony_medicine_label");
     const booking = await insertServiceBooking({
       stripeSessionId: session.id,
       fullName,
@@ -43,9 +48,9 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
       practitionerSlug: meta(session, "practitioner_slug"),
       practitionerName: meta(session, "practitioner_name"),
       ceremonyMedicineSlug: meta(session, "ceremony_medicine_slug") || undefined,
-      ceremonyMedicineLabel: meta(session, "ceremony_medicine_label") || undefined,
+      ceremonyMedicineLabel: fitnessSummary || meta(session, "ceremony_medicine_label") || undefined,
       amountCents,
-      paymentPlan,
+      paymentPlan: fitnessBilling === "recurring" ? "recurring" : paymentPlan,
       paidAt,
     });
 
@@ -58,11 +63,14 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
           booking.ceremonyMedicineLabel
             ? booking.serviceSlug === "reiki"
               ? `Add-on: ${booking.ceremonyMedicineLabel}`
-              : `Ceremony: ${booking.ceremonyMedicineLabel}`
+              : booking.serviceSlug === "fitness-training"
+                ? `Training plan: ${booking.ceremonyMedicineLabel}`
+                : `Ceremony: ${booking.ceremonyMedicineLabel}`
             : null,
           `Practitioner: ${booking.practitionerName}`,
-          `Amount: $${(booking.amountCents / 100).toFixed(2)}`,
+          `Amount: $${(booking.amountCents / 100).toFixed(2)}${booking.paymentPlan === "recurring" ? " (weekly subscription)" : ""}`,
           `Payment plan: ${booking.paymentPlan}`,
+          session.subscription ? `Stripe subscription: ${session.subscription}` : null,
         ]
           .filter(Boolean)
           .join("\n"),

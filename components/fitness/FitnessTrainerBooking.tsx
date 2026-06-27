@@ -2,13 +2,22 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { FitnessBookingOptionsPicker } from "@/components/fitness/FitnessBookingOptionsPicker";
 import { FitnessTrainerPicker } from "@/components/fitness/FitnessTrainerPicker";
 import {
   FITNESS_TRAINING_SERVICE_SLUG,
   getFitnessTrainers,
 } from "@/lib/booking/fitness-trainers";
+import {
+  appendFitnessBookingOptions,
+  computeFitnessWeeklyRecurringCents,
+  getDefaultFitnessBookingOptions,
+  isFitnessRecurringBilling,
+  type FitnessBookingOptions,
+} from "@/lib/booking/fitness-options";
 import { registerHref } from "@/lib/registration/redirect";
 import { formatSlidingScaleRange } from "@/lib/booking/sliding-scale";
+import { formatUsd } from "@/lib/cart/products";
 import { isCalendlyConfigured } from "@/content/site";
 import type { ClientRegistration } from "@/lib/registration/types";
 import { site } from "@/content/site";
@@ -17,14 +26,29 @@ type FitnessTrainerBookingProps = {
   registration: ClientRegistration | null;
 };
 
+function buildFitnessCheckoutHref(trainerSlug: string, options: FitnessBookingOptions): string {
+  const params = new URLSearchParams({
+    service: FITNESS_TRAINING_SERVICE_SLUG,
+    practitioner: trainerSlug,
+  });
+  appendFitnessBookingOptions(params, options);
+  return `/checkout/service?${params.toString()}`;
+}
+
 export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingProps) {
   const cfg = site.fitnessTraining.booking;
   const trainers = getFitnessTrainers();
   const [selected, setSelected] = useState<string>(trainers[0]?.slug ?? "");
+  const [bookingOptions, setBookingOptions] = useState<FitnessBookingOptions>(getDefaultFitnessBookingOptions());
   const calendlyReady = isCalendlyConfigured();
 
   const activeTrainer = trainers.find((t) => t.slug === selected);
-  const checkoutHref = `/checkout/service?service=${FITNESS_TRAINING_SERVICE_SLUG}&practitioner=${encodeURIComponent(selected)}`;
+  const checkoutHref = buildFitnessCheckoutHref(selected, bookingOptions);
+  const recurring = isFitnessRecurringBilling(bookingOptions);
+  const weeklyEstimateCents = computeFitnessWeeklyRecurringCents(
+    cfg.slidingScale.defaultCents,
+    bookingOptions.sessionsPerWeek,
+  );
 
   return (
     <section
@@ -38,20 +62,23 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
       <p className="prose-content mt-4">{cfg.lead}</p>
       <p className="mt-2 text-sm font-medium text-[var(--rasta-green)]">
         {formatSlidingScaleRange(cfg.slidingScale)} sliding scale per session
+        {recurring ? ` · weekly billing from ${formatUsd(weeklyEstimateCents)} at the default rate` : null}
       </p>
 
       <fieldset className="card mt-8 p-6 sm:p-8">
+        <FitnessBookingOptionsPicker value={bookingOptions} onChange={setBookingOptions} />
         <FitnessTrainerPicker value={selected} onChange={setSelected} />
 
         {registration && activeTrainer ? (
           <Link href={checkoutHref} className="btn btn-primary mt-8 w-full sm:w-auto">
-            Pay & schedule with {activeTrainer.name}
+            {recurring ? "Set up weekly billing" : "Pay & schedule"} with {activeTrainer.name}
           </Link>
         ) : (
           <Link
             href={registerHref("book", {
               serviceSlug: FITNESS_TRAINING_SERVICE_SLUG,
               practitionerSlug: selected,
+              fitnessOptions: bookingOptions,
             })}
             className="btn btn-primary mt-8 w-full sm:w-auto"
           >
@@ -71,12 +98,14 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
 
         {registration ? (
           <p className="mt-4 text-sm text-muted">
-            Signed in as <strong className="text-[var(--foreground)]">{registration.fullName}</strong>. Pick a
-            trainer, choose your sliding scale amount, then schedule on Calendly.
+            Signed in as <strong className="text-[var(--foreground)]">{registration.fullName}</strong>. Confirm your
+            options, choose your sliding scale amount at checkout
+            {recurring ? ", then set up weekly billing" : ""}, and schedule on Calendly.
           </p>
         ) : (
           <p className="mt-4 text-sm text-muted">
-            Register once, then pay on the sliding scale and pick a time with your trainer on Calendly.
+            Register once, then pay on the sliding scale
+            {recurring ? " or set up weekly recurring billing" : ""} and pick a time with your trainer on Calendly.
           </p>
         )}
       </fieldset>

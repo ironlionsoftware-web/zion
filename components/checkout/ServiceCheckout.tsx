@@ -22,6 +22,14 @@ import { PaymentPlanPicker } from "@/components/payments/PaymentPlanPicker";
 import { SlidingScalePicker } from "@/components/payments/SlidingScalePicker";
 import { StripePayButton } from "@/components/payments/StripePayButton";
 import { FitnessTrainerPicker } from "@/components/fitness/FitnessTrainerPicker";
+import { FitnessBookingOptionsPicker } from "@/components/fitness/FitnessBookingOptionsPicker";
+import {
+  computeFitnessWeeklyRecurringCents,
+  formatFitnessBookingSummary,
+  getDefaultFitnessBookingOptions,
+  isFitnessRecurringBilling,
+  type FitnessBookingOptions,
+} from "@/lib/booking/fitness-options";
 import {
   computeServiceCheckoutCents,
   getPractitioner,
@@ -49,6 +57,7 @@ type ServiceCheckoutProps = {
   initialPractitioner?: string;
   initialCeremonyMedicine?: string;
   initialReikiAddOns?: readonly string[];
+  initialFitnessOptions?: FitnessBookingOptions;
 };
 
 export function ServiceCheckout({
@@ -63,6 +72,7 @@ export function ServiceCheckout({
   initialPractitioner,
   initialCeremonyMedicine,
   initialReikiAddOns,
+  initialFitnessOptions,
 }: ServiceCheckoutProps) {
   const isClass = isClassService(serviceSlug);
   const isFitnessBooking = isFitnessTrainingService(serviceSlug);
@@ -109,15 +119,22 @@ export function ServiceCheckout({
     showCeremonyPicker ? (initialCeremonyMedicine ?? ceremonyOptions[0]?.slug ?? "") : "",
   );
   const [reikiAddOns, setReikiAddOns] = useState<string[]>([...(initialReikiAddOns ?? [])]);
+  const [fitnessOptions, setFitnessOptions] = useState<FitnessBookingOptions>(
+    initialFitnessOptions ?? getDefaultFitnessBookingOptions(),
+  );
   const practitionerRecord = getPractitioner(practitioner);
   const ceremonyMedicineRecord = showCeremonyPicker ? getCeremonyMedicine(ceremonyMedicine) : undefined;
   const reikiAddOnRecords = resolveReikiAddOns(reikiAddOns);
+  const fitnessRecurring = isFitnessBooking && isFitnessRecurringBilling(fitnessOptions);
+  const fitnessSummary = isFitnessBooking ? formatFitnessBookingSummary(fitnessOptions) : undefined;
   const baseCheckoutCents = slidingScale
     ? slidingAmountCents
     : showPractitionerPicker
       ? computeServiceCheckoutCents(priceCents, practitioner)
       : priceCents;
-  const checkoutPriceCents = baseCheckoutCents + computeReikiAddOnTotalCents(reikiAddOns);
+  const checkoutPriceCents = fitnessRecurring
+    ? computeFitnessWeeklyRecurringCents(baseCheckoutCents, fitnessOptions.sessionsPerWeek)
+    : baseCheckoutCents + computeReikiAddOnTotalCents(reikiAddOns);
   const isDual = isDualPractitionerSlug(practitioner);
   const p = site.payments;
 
@@ -161,8 +178,16 @@ export function ServiceCheckout({
           <>
             <p className="mt-2 text-lg font-medium text-[var(--rasta-green)]">
               {formatSlidingScaleRange(slidingScale)} sliding scale
+              {fitnessRecurring ? " per session" : null}
             </p>
-            <p className="mt-1 text-xs text-muted">Choose what fits your situation</p>
+            {fitnessRecurring ? (
+              <p className="mt-1 text-sm font-medium text-[var(--rasta-green)]">
+                {formatUsd(checkoutPriceCents)} billed weekly ({formatUsd(baseCheckoutCents)} ×{" "}
+                {fitnessOptions.sessionsPerWeek} session{fitnessOptions.sessionsPerWeek === 1 ? "" : "s"}/week)
+              </p>
+            ) : (
+              <p className="mt-1 text-xs text-muted">Choose what fits your situation</p>
+            )}
           </>
         ) : (
           <>
@@ -180,6 +205,11 @@ export function ServiceCheckout({
           <p className="mt-3 text-sm text-muted">
             With <strong className="text-[var(--foreground)]">{practitionerRecord.name}</strong> ·{" "}
             {practitionerRecord.title}
+          </p>
+        ) : null}
+        {fitnessSummary ? (
+          <p className="mt-2 text-sm text-muted">
+            Plan: <strong className="text-[var(--foreground)]">{fitnessSummary}</strong>
           </p>
         ) : null}
         {ceremonyMedicineRecord ? (
@@ -226,6 +256,10 @@ export function ServiceCheckout({
         <ReikiAddOnPicker value={reikiAddOns} onChange={setReikiAddOns} />
       ) : null}
 
+      {isFitnessBooking ? (
+        <FitnessBookingOptionsPicker value={fitnessOptions} onChange={setFitnessOptions} />
+      ) : null}
+
       {showFitnessTrainerPicker ? (
         <FitnessTrainerPicker value={practitioner} onChange={setPractitioner} />
       ) : null}
@@ -243,7 +277,7 @@ export function ServiceCheckout({
           scale={slidingScale}
           valueCents={slidingAmountCents}
           onChange={setSlidingAmountCents}
-          label="Your contribution"
+          label={isFitnessBooking ? "Your per-session rate" : "Your contribution"}
           id={isFitnessBooking ? "fitness-training-amount" : "card-reading-amount"}
         />
       ) : null}
@@ -259,7 +293,7 @@ export function ServiceCheckout({
           </p>
         ) : (
           <>
-            <PaymentPlanPicker value={paymentPlan} onChange={setPaymentPlan} />
+            {!fitnessRecurring ? <PaymentPlanPicker value={paymentPlan} onChange={setPaymentPlan} /> : null}
             <StripePayButton
               apiPath="/api/checkout/service"
               body={{
@@ -268,6 +302,14 @@ export function ServiceCheckout({
                 ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
                 ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
                 reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
+                ...(isFitnessBooking
+                  ? {
+                      fitnessSession: fitnessOptions.sessionType,
+                      fitnessAudience: fitnessOptions.audience,
+                      fitnessFrequency: fitnessOptions.sessionsPerWeek,
+                      fitnessBilling: fitnessOptions.billingMode,
+                    }
+                  : {}),
               }}
               registerNext="book"
               registerOptions={{
@@ -275,14 +317,25 @@ export function ServiceCheckout({
                 ...(showPractitionerPicker || showFitnessTrainerPicker ? { practitionerSlug: practitioner } : {}),
                 ceremonyMedicineSlug: showCeremonyPicker ? ceremonyMedicine : undefined,
                 reikiAddOnSlugs: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
+                fitnessOptions: isFitnessBooking ? fitnessOptions : undefined,
               }}
               paymentPlan={paymentPlan}
               disabled={
                 ((showPractitionerPicker || showFitnessTrainerPicker) && !practitioner) ||
                 (showCeremonyPicker && !ceremonyMedicine)
               }
-              label={`Pay ${formatUsd(checkoutPriceCents)}`}
+              label={
+                fitnessRecurring
+                  ? `Subscribe · ${formatUsd(checkoutPriceCents)}/week`
+                  : `Pay ${formatUsd(checkoutPriceCents)}`
+              }
             />
+            {fitnessRecurring ? (
+              <p className="mt-3 max-w-md text-xs text-muted">
+                Weekly billing renews automatically until you cancel through Stripe. Your per-session sliding scale
+                rate × sessions per week determines each charge.
+              </p>
+            ) : null}
           </>
         )}
       </section>

@@ -14,6 +14,11 @@ import { isReikiService } from "@/lib/booking/reiki-addon";
 import { getBookableService } from "@/content/site";
 import { isFitnessOnlyPractitionerSlug, isFitnessTrainingService, getFitnessTrainers } from "@/lib/booking/fitness-trainers";
 import { FitnessTrainerPicker } from "@/components/fitness/FitnessTrainerPicker";
+import { FitnessBookingOptionsPicker } from "@/components/fitness/FitnessBookingOptionsPicker";
+import {
+  getDefaultFitnessBookingOptions,
+  type FitnessBookingOptions,
+} from "@/lib/booking/fitness-options";
 import { getPractitioners } from "@/lib/booking/practitioners";
 import type { RegisterNext } from "@/lib/registration/types";
 
@@ -26,6 +31,7 @@ type RegisterFormProps = {
   initialPractitioner?: string;
   initialCeremonyMedicine?: string;
   initialReikiAddOns?: readonly string[];
+  initialFitnessOptions?: FitnessBookingOptions;
 };
 
 export function RegisterForm({
@@ -37,11 +43,13 @@ export function RegisterForm({
   initialPractitioner,
   initialCeremonyMedicine,
   initialReikiAddOns,
+  initialFitnessOptions,
 }: RegisterFormProps) {
   const isFitnessBooking = isFitnessTrainingService(service);
   const fitnessTrainerPreselected =
     Boolean(initialPractitioner) &&
     ((isFitnessOnlyPractitionerSlug(initialPractitioner) && !service) || isFitnessBooking);
+  const showFitnessOptionsPicker = next === "book" && isFitnessBooking;
   const showFitnessTrainerPicker = next === "book" && isFitnessBooking && !fitnessTrainerPreselected;
   const showPractitionerPicker =
     next === "book" && !isClassService(service) && !fitnessTrainerPreselected && !isFitnessBooking;
@@ -58,6 +66,9 @@ export function RegisterForm({
     initialCeremonyMedicine ?? ceremonyOptions[0]?.slug ?? "",
   );
   const [reikiAddOns, setReikiAddOns] = useState<string[]>([...(initialReikiAddOns ?? [])]);
+  const [fitnessOptions, setFitnessOptions] = useState<FitnessBookingOptions>(
+    initialFitnessOptions ?? getDefaultFitnessBookingOptions(),
+  );
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -95,6 +106,10 @@ export function RegisterForm({
               : undefined,
           ceremonyMedicine: showCeremonyPicker ? ceremonyMedicine : undefined,
           reikiAddOns: showReikiAddOnPicker && reikiAddOns.length > 0 ? reikiAddOns : undefined,
+          fitnessSession: showFitnessOptionsPicker ? fitnessOptions.sessionType : undefined,
+          fitnessAudience: showFitnessOptionsPicker ? fitnessOptions.audience : undefined,
+          fitnessFrequency: showFitnessOptionsPicker ? fitnessOptions.sessionsPerWeek : undefined,
+          fitnessBilling: showFitnessOptionsPicker ? fitnessOptions.billingMode : undefined,
           booking: bookingId,
           participant: participantIndex,
           source: source ?? (service ? "healing-services" : "register"),
@@ -127,6 +142,9 @@ export function RegisterForm({
       {showReikiAddOnPicker ? (
         <ReikiAddOnPicker value={reikiAddOns} onChange={setReikiAddOns} disabled={loading} />
       ) : null}
+      {showFitnessOptionsPicker ? (
+        <FitnessBookingOptionsPicker value={fitnessOptions} onChange={setFitnessOptions} disabled={loading} />
+      ) : null}
       {showFitnessTrainerPicker ? (
         <FitnessTrainerPicker value={practitioner} onChange={setPractitioner} disabled={loading} />
       ) : null}
@@ -140,7 +158,11 @@ export function RegisterForm({
       ) : null}
       <div
         className={
-          showPractitionerPicker || showFitnessTrainerPicker || showCeremonyPicker || showReikiAddOnPicker
+          showPractitionerPicker ||
+          showFitnessTrainerPicker ||
+          showFitnessOptionsPicker ||
+          showCeremonyPicker ||
+          showReikiAddOnPicker
             ? "mt-8 space-y-5"
             : "space-y-5"
         }

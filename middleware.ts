@@ -78,6 +78,10 @@ export function middleware(request: NextRequest) {
         practitioner: request.nextUrl.searchParams.get("practitioner") ?? undefined,
         ceremony: request.nextUrl.searchParams.get("ceremony") ?? undefined,
         addon: request.nextUrl.searchParams.get("addon") ?? undefined,
+        session: request.nextUrl.searchParams.get("session") ?? undefined,
+        audience: request.nextUrl.searchParams.get("audience") ?? undefined,
+        frequency: request.nextUrl.searchParams.get("frequency") ?? undefined,
+        billing: request.nextUrl.searchParams.get("billing") ?? undefined,
       });
     }
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { registerHref } from "@/lib/registration/redirect";
 import type { PaymentPlan } from "@/lib/payments/types";
 import type { RegisterNext } from "@/lib/registration/types";
+import type { FitnessBookingOptions } from "@/lib/booking/fitness-options";
 
 type StripePayButtonProps = {
   apiPath: string;
@@ -16,6 +17,7 @@ type StripePayButtonProps = {
     practitionerSlug?: string;
     ceremonyMedicineSlug?: string;
     reikiAddOnSlugs?: string[];
+    fitnessOptions?: FitnessBookingOptions;
   };
   label?: string;
   paymentPlan: PaymentPlan;

@@ -19,6 +19,18 @@ type CreateCheckoutParams = {
   metadata: Record<string, string>;
 };
 
+type CreateSubscriptionCheckoutParams = {
+  stripe: Stripe;
+  registration: ClientRegistration;
+  name: string;
+  description?: string;
+  unitAmountCents: number;
+  interval: "week" | "month";
+  successUrl: string;
+  cancelUrl: string;
+  metadata: Record<string, string>;
+};
+
 function paymentMethodTypes(plan: PaymentPlan): ("card" | "klarna" | "affirm")[] {
   if (plan === "installments") {
     return ["card", "klarna", "affirm"];
@@ -53,6 +65,46 @@ export async function createStripeCheckoutSession(params: CreateCheckoutParams):
       phone: registration.phone,
       registered_at: registration.registeredAt,
       ...metadata,
+    },
+  });
+}
+
+export async function createStripeSubscriptionCheckoutSession(
+  params: CreateSubscriptionCheckoutParams,
+): Promise<Stripe.Checkout.Session> {
+  const { stripe, registration, name, description, unitAmountCents, interval, successUrl, cancelUrl, metadata } =
+    params;
+
+  return stripe.checkout.sessions.create({
+    mode: "subscription",
+    customer_email: registration.email,
+    client_reference_id: registration.email,
+    payment_method_types: ["card"],
+    line_items: [
+      {
+        quantity: 1,
+        price_data: {
+          currency: "usd",
+          unit_amount: unitAmountCents,
+          recurring: { interval },
+          product_data: {
+            name,
+            description,
+          },
+        },
+      },
+    ],
+    success_url: successUrl,
+    cancel_url: cancelUrl,
+    metadata: {
+      payment_plan: "recurring",
+      full_name: registration.fullName,
+      phone: registration.phone,
+      registered_at: registration.registeredAt,
+      ...metadata,
+    },
+    subscription_data: {
+      metadata,
     },
   });
 }

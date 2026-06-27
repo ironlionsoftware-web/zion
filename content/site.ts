@@ -377,11 +377,44 @@ export const site = {
     ],
     booking: {
       heading: "Book a training session",
-      lead: "Choose your trainer, then register (if needed), pay on a sliding scale ($45–$120), and schedule on Calendly.",
+      lead: "Choose your session type, age group, and how often you want to train. Pick a trainer, register if needed, then pay once per session or set up weekly billing for regular training.",
       trainerLegend: "Choose your trainer",
+      sessionTypeLegend: "Session type",
+      audienceLegend: "Age group",
+      frequencyLegend: "Sessions per week",
+      billingLegend: "How would you like to pay?",
       serviceSlug: "fitness-training",
       serviceLabel: "Fitness training session",
       slidingScale: { minCents: 4500, maxCents: 12000, defaultCents: 7500 },
+      sessionTypes: [
+        {
+          slug: "sports-specific",
+          label: "Sports-specific training",
+          summary: "Skill work, agility, and performance prep tailored to your sport.",
+        },
+        {
+          slug: "strength-conditioning",
+          label: "Strength & conditioning",
+          summary: "General strength, mobility, and conditioning for everyday life or athletics.",
+        },
+      ],
+      audienceTypes: [
+        { slug: "youth", label: "Youth", summary: "Ages 12–17 with coaching paced for growing bodies." },
+        { slug: "adult", label: "Adult", summary: "Ages 18+ with goals and recovery in mind." },
+      ],
+      sessionsPerWeekOptions: [1, 2, 3, 4],
+      billingModes: [
+        {
+          slug: "single",
+          label: "Pay per session",
+          summary: "One-time payment on the sliding scale, then schedule on Calendly.",
+        },
+        {
+          slug: "recurring",
+          label: "Weekly recurring billing",
+          summary: "Automatic weekly charge based on your rate × sessions per week. Cancel anytime in Stripe.",
+        },
+      ],
       trainerSlugs: ["johari-templin-jr", "johnny-lona", "pierre-middleton"],
       /** Fitness-only trainers — not offered on healing service booking flows */
       fitnessOnlyTrainers: [

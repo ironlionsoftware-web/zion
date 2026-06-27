@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { parseCeremonyMedicineSlug, isPlantMedicineCeremonyService } from "@/lib/booking/ceremony-medicine";
 import { isReikiService, parseReikiAddOnSlugs } from "@/lib/booking/reiki-addon";
 import { parsePractitionerSlug } from "@/lib/booking/practitioners";
-import { shouldIncludeFitnessOnlyPractitioner } from "@/lib/booking/fitness-trainers";
+import { shouldIncludeFitnessOnlyPractitioner, isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
+import { parseFitnessBookingOptions } from "@/lib/booking/fitness-options";
 import {
   encodeRegistrationCookie,
   registrationCookieOptions,
@@ -53,6 +54,22 @@ export async function POST(request: Request) {
             : undefined,
       )
     : [];
+  const fitnessOptions = isFitnessTrainingService(serviceSlug)
+    ? parseFitnessBookingOptions({
+        session: typeof body.fitnessSession === "string" ? body.fitnessSession : undefined,
+        audience: typeof body.fitnessAudience === "string" ? body.fitnessAudience : undefined,
+        frequency:
+          typeof body.fitnessFrequency === "number"
+            ? body.fitnessFrequency
+            : typeof body.fitnessFrequency === "string"
+              ? body.fitnessFrequency
+              : undefined,
+        billing: typeof body.fitnessBilling === "string" ? body.fitnessBilling : undefined,
+      })
+    : undefined;
+  if (isFitnessTrainingService(serviceSlug) && !fitnessOptions) {
+    return NextResponse.json({ error: "Please choose your fitness training options." }, { status: 400 });
+  }
   const bookingId = typeof body.booking === "string" ? body.booking.trim() : undefined;
   const participantIndex =
     typeof body.participant === "number"
@@ -86,6 +103,7 @@ export async function POST(request: Request) {
     practitionerSlug,
     ceremonyMedicineSlug,
     reikiAddOnSlugs: reikiAddOnSlugs.length > 0 ? reikiAddOnSlugs : undefined,
+    fitnessOptions,
   });
   const response = NextResponse.json({ redirect: url, external });
 
