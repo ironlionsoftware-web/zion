@@ -28,7 +28,7 @@ export default function HealingServicesPage() {
                     ? ", view available classes to register"
                     : service.kind === "donation"
                       ? ", register then choose your sliding scale amount"
-                      : ", choose a practitioner, register, pay, then schedule";
+                      : ", choose a practitioner, pick a time, register, then pay";
 
               return (
                 <li key={service.slug}>

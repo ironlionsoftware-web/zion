@@ -11,7 +11,9 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
   return (
     <div className="mx-auto max-w-md">
       <h1 className="font-display text-2xl font-medium text-[var(--foreground)]">Sign in</h1>
-      <p className="mt-2 text-sm text-muted">Enter your admin password to view registrations, bookings, and orders.</p>
+      <p className="mt-2 text-sm text-muted">
+        Enter your admin password to view registrations, bookings, shop orders, and mobile app users.
+      </p>
       <AdminLoginForm redirectTo={from} />
     </div>
   );

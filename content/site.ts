@@ -303,9 +303,9 @@ export const site = {
     serviceLineDescription: "Iron Lion healing service",
     serviceCheckoutTitle: "Pay for your service",
     serviceCheckoutIntro:
-      "Choose your practitioner (or a dual session with both), complete payment below, then schedule on Calendly. Installment options appear on Stripe checkout when eligible.",
+      "Choose your practitioner and options, pick a date and time on Calendly, then complete payment. Installment options appear on Stripe checkout when eligible.",
     serviceSuccessHint:
-      "Payment received. Schedule your session next on Calendly.",
+      "Payment received. Your session is booked for",
     classSuccessHint:
       "You are registered for this class. We will email you with any preparation details and reminders before the first session.",
   },
@@ -377,7 +377,7 @@ export const site = {
     ],
     booking: {
       heading: "Book a training session",
-      lead: "Choose your session type, age group, and how often you want to train. Pick a trainer, register if needed, then pay once per session or set up weekly billing for regular training.",
+      lead: "Choose your session type, age group, and how often you want to train. Pick a trainer, choose a date and time, then register if needed and pay once per session or set up weekly billing for regular training.",
       trainerLegend: "Choose your trainer",
       sessionTypeLegend: "Session type",
       formatLegend: "Individual or group",
@@ -426,7 +426,7 @@ export const site = {
         {
           slug: "single",
           label: "Pay per session",
-          summary: "One-time payment on the sliding scale, then schedule on Calendly.",
+          summary: "One-time payment on the sliding scale after you pick a time.",
         },
         {
           slug: "recurring",

@@ -34,8 +34,7 @@ export default function ServicesPage() {
               Book a healing session
             </h2>
             <p className="prose-content mt-4">
-              Healing services use a pay first flow: register, complete payment, then schedule on Calendly with your
-              practitioner.
+              Healing services: register, pick a date and time with your practitioner, then complete payment.
             </p>
             <Link href="/healing-services" className="btn btn-primary mt-6 inline-flex">
               View Healing Services & Classes

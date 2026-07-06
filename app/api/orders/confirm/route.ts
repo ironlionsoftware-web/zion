@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { getServiceBookingBySessionId } from "@/lib/db/service-bookings";
 import { getShopOrderBySessionId } from "@/lib/db/shop-orders";
 import { persistCheckoutSession } from "@/lib/orders/persist-checkout";
 import { getStripe } from "@/lib/stripe/server";
+
+function scheduledLabel(session: Stripe.Checkout.Session): string | undefined {
+  const label = session.metadata?.scheduled_label?.trim();
+  return label || undefined;
+}
 
 export async function POST(request: Request) {
   const stripe = getStripe();
@@ -24,10 +30,15 @@ export async function POST(request: Request) {
 
   const existingService = await getServiceBookingBySessionId(sessionId);
   const existingShop = await getShopOrderBySessionId(sessionId);
-  if (existingService) {
-    return NextResponse.json({ type: "service", booking: existingService });
-  }
-  if (existingShop) {
+  if (existingService || existingShop) {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (existingService) {
+      return NextResponse.json({
+        type: "service",
+        booking: existingService,
+        scheduledLabel: scheduledLabel(session),
+      });
+    }
     return NextResponse.json({ type: "shop", order: existingShop });
   }
 
@@ -49,7 +60,11 @@ export async function POST(request: Request) {
 
   const service = await getServiceBookingBySessionId(sessionId);
   if (service) {
-    return NextResponse.json({ type: "service", booking: service });
+    return NextResponse.json({
+      type: "service",
+      booking: service,
+      scheduledLabel: scheduledLabel(session),
+    });
   }
 
   const order = await getShopOrderBySessionId(sessionId);

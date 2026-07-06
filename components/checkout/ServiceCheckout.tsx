@@ -41,12 +41,13 @@ import {
 } from "@/lib/booking/practitioners";
 import { getFitnessTrainers, isFitnessTrainingService } from "@/lib/booking/fitness-trainers";
 import { formatSlidingScaleRange } from "@/lib/booking/sliding-scale";
-import { calendlyUrlWithPrefill } from "@/lib/registration/redirect";
+import { CalendlyScheduler } from "@/components/booking/CalendlyScheduler";
+import { formatScheduledSlot, type ScheduledSlot } from "@/lib/booking/calendly-schedule";
 import { formatUsd } from "@/lib/cart/products";
 import type { PaymentPlan } from "@/lib/payments/types";
 import type { ClientRegistration } from "@/lib/registration/types";
 import type { SlidingScale } from "@/content/site";
-import { site } from "@/content/site";
+import { isCalendlyConfigured, site } from "@/content/site";
 
 type ServiceCheckoutProps = {
   serviceSlug: string;
@@ -89,6 +90,7 @@ export function ServiceCheckout({
   const sessionId = searchParams.get("session_id");
   const [confirmed, setConfirmed] = useState(false);
   const [confirmError, setConfirmError] = useState("");
+  const [confirmedScheduleLabel, setConfirmedScheduleLabel] = useState<string | null>(null);
   const success = successProp || confirmed;
 
   useEffect(() => {
@@ -100,6 +102,8 @@ export function ServiceCheckout({
     })
       .then(async (res) => {
         if (res.ok) {
+          const data = (await res.json()) as { scheduledLabel?: string };
+          if (data.scheduledLabel) setConfirmedScheduleLabel(data.scheduledLabel);
           setConfirmed(true);
           return;
         }
@@ -125,6 +129,7 @@ export function ServiceCheckout({
   const [fitnessOptions, setFitnessOptions] = useState<FitnessBookingOptions>(
     initialFitnessOptions ?? getDefaultFitnessBookingOptions(),
   );
+  const [scheduledSlot, setScheduledSlot] = useState<ScheduledSlot | null>(null);
   const practitionerRecord = getPractitioner(practitioner);
   const ceremonyMedicineRecord = showCeremonyPicker ? getCeremonyMedicine(ceremonyMedicine) : undefined;
   const reikiAddOnRecords = resolveReikiAddOns(reikiAddOns);
@@ -143,6 +148,8 @@ export function ServiceCheckout({
     ? computeFitnessWeeklyRecurringCents(baseCheckoutCents, fitnessOptions.sessionsPerWeek)
     : baseCheckoutCents + computeReikiAddOnTotalCents(reikiAddOns);
   const isDual = isDualPractitionerSlug(practitioner);
+  const requiresScheduling = !isClass && Boolean(practitioner);
+  const schedulingReady = !requiresScheduling || (isCalendlyConfigured() && scheduledSlot != null);
   const p = site.payments;
 
   return (
@@ -156,20 +163,15 @@ export function ServiceCheckout({
         <p className="card border-[var(--rasta-green)] p-5 text-sm leading-relaxed" role="status">
           {isClass ? (
             p.classSuccessHint
-          ) : (
+          ) : confirmedScheduleLabel || scheduledSlot ? (
             <>
               {p.serviceSuccessHint}{" "}
-              {registration && site.calendly.url && practitioner ? (
-                <a
-                  href={calendlyUrlWithPrefill(registration, practitioner)}
-                  className="link-accent font-semibold hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {isDual ? "Schedule your dual session" : `Schedule with ${practitionerRecord?.name ?? "your practitioner"}`} on Calendly →
-                </a>
-              ) : null}
+              <strong className="text-[var(--foreground)]">
+                {confirmedScheduleLabel ?? (scheduledSlot ? formatScheduledSlot(scheduledSlot) : "")}
+              </strong>
             </>
+          ) : (
+            p.serviceSuccessHint
           )}
         </p>
       ) : null}
@@ -301,6 +303,16 @@ export function ServiceCheckout({
         />
       ) : null}
 
+      {requiresScheduling && practitioner ? (
+        <CalendlyScheduler
+          registration={registration}
+          practitionerSlug={practitioner}
+          value={scheduledSlot}
+          onChange={setScheduledSlot}
+          disabled={success}
+        />
+      ) : null}
+
       <section className="border-t border-subtle pt-10">
         <p className="text-sm text-[var(--foreground)]">
           Paying as <strong>{registration.fullName}</strong> · {registration.email}
@@ -332,6 +344,13 @@ export function ServiceCheckout({
                       fitnessBilling: fitnessOptions.billingMode,
                     }
                   : {}),
+                ...(scheduledSlot
+                  ? {
+                      scheduledStart: scheduledSlot.startTime,
+                      scheduledEnd: scheduledSlot.endTime,
+                      calendlyEventUri: scheduledSlot.eventUri,
+                    }
+                  : {}),
               }}
               registerNext="book"
               registerOptions={{
@@ -343,6 +362,7 @@ export function ServiceCheckout({
               }}
               paymentPlan={paymentPlan}
               disabled={
+                !schedulingReady ||
                 ((showPractitionerPicker || showFitnessTrainerPicker) && !practitioner) ||
                 (showCeremonyPicker && !ceremonyMedicine)
               }
@@ -352,6 +372,9 @@ export function ServiceCheckout({
                   : `Pay ${formatUsd(checkoutPriceCents)}`
               }
             />
+            {requiresScheduling && !scheduledSlot && isCalendlyConfigured() ? (
+              <p className="mt-3 max-w-md text-xs text-muted">Choose your date and time above to unlock payment.</p>
+            ) : null}
             {fitnessRecurring ? (
               <p className="mt-3 max-w-md text-xs text-muted">
                 Weekly billing renews automatically until you cancel through Stripe. Your per-session sliding scale

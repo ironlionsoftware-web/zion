@@ -6,8 +6,9 @@ import type { AdminMetrics } from "@/lib/analytics/types";
 import type { DbRegistration } from "@/lib/db/types";
 import type { DbServiceBooking } from "@/lib/db/types";
 import type { DbShopOrder } from "@/lib/db/types";
+import type { AppUserRecord, AppUserStatsResponse } from "@/lib/admin/mbs-healing";
 
-type Tab = "overview" | "registrations" | "bookings" | "orders";
+type Tab = "overview" | "registrations" | "bookings" | "orders" | "app-users";
 
 export function AdminDashboard() {
   const [tab, setTab] = useState<Tab>("overview");
@@ -19,6 +20,8 @@ export function AdminDashboard() {
   const [registrations, setRegistrations] = useState<DbRegistration[]>([]);
   const [bookings, setBookings] = useState<DbServiceBooking[]>([]);
   const [orders, setOrders] = useState<DbShopOrder[]>([]);
+  const [appUsers, setAppUsers] = useState<AppUserRecord[]>([]);
+  const [appUserStats, setAppUserStats] = useState<AppUserStatsResponse | null>(null);
   const [orderStatusFilter, setOrderStatusFilter] = useState<"" | "pending" | "fulfilled">("");
 
   const loadMetrics = useCallback(async () => {
@@ -56,6 +59,16 @@ export function AdminDashboard() {
         const data = (await res.json()) as { bookings?: DbServiceBooking[]; error?: string };
         if (!res.ok) throw new Error(data.error ?? "Failed to load");
         setBookings(data.bookings ?? []);
+      } else if (tab === "app-users") {
+        const [usersRes, statsRes] = await Promise.all([
+          fetch("/api/admin/app-users"),
+          fetch("/api/admin/app-users?stats=1"),
+        ]);
+        const usersData = (await usersRes.json()) as { users?: AppUserRecord[]; error?: string };
+        const statsData = (await statsRes.json()) as { stats?: AppUserStatsResponse; error?: string };
+        if (!usersRes.ok) throw new Error(usersData.error ?? "Failed to load app users");
+        setAppUsers(usersData.users ?? []);
+        setAppUserStats(statsRes.ok ? (statsData.stats ?? null) : null);
       } else {
         const params = new URLSearchParams();
         if (search.trim()) params.set("search", search.trim());
@@ -104,7 +117,18 @@ export function AdminDashboard() {
     { id: "registrations", label: "Registrations" },
     { id: "bookings", label: "Service bookings" },
     { id: "orders", label: "Shop orders" },
+    { id: "app-users", label: "App users" },
   ];
+
+  const filteredAppUsers = appUsers.filter((u) => {
+    if (!search.trim()) return true;
+    const q = search.trim().toLowerCase();
+    return (
+      u.email.toLowerCase().includes(q) ||
+      (u.name?.toLowerCase().includes(q) ?? false) ||
+      (u.active_pillar?.toLowerCase().includes(q) ?? false)
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -320,6 +344,67 @@ export function AdminDashboard() {
             <p className="text-sm text-muted">No shop orders yet.</p>
           ) : null}
         </ul>
+      ) : null}
+
+      {tab === "app-users" ? (
+        <div className="space-y-6">
+          {appUserStats ? (
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="card p-5">
+                <p className="eyebrow">Total app users</p>
+                <p className="mt-2 font-display text-3xl font-medium text-[var(--foreground)]">
+                  {appUserStats.total.toLocaleString()}
+                </p>
+              </div>
+              <div className="card p-5">
+                <p className="eyebrow">New this week</p>
+                <p className="mt-2 font-display text-3xl font-medium text-[var(--foreground)]">
+                  {appUserStats.new_this_week.toLocaleString()}
+                </p>
+              </div>
+              <div className="card p-5">
+                <p className="eyebrow">Active this week</p>
+                <p className="mt-2 font-display text-3xl font-medium text-[var(--foreground)]">
+                  {appUserStats.active_this_week.toLocaleString()}
+                </p>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="overflow-x-auto rounded-sm border border-subtle">
+            <table className="w-full min-w-[720px] text-left text-sm">
+              <thead className="bg-[var(--surface-muted)] text-xs uppercase tracking-wide text-muted">
+                <tr>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Email</th>
+                  <th className="px-4 py-3">Registered</th>
+                  <th className="px-4 py-3">Last active</th>
+                  <th className="px-4 py-3">Pillar</th>
+                  <th className="px-4 py-3">Mind profile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAppUsers.map((u) => (
+                  <tr key={u.user_id} className="border-t border-subtle">
+                    <td className="px-4 py-3 font-medium">{u.name ?? "—"}</td>
+                    <td className="px-4 py-3">{u.email}</td>
+                    <td className="px-4 py-3 text-muted">{new Date(u.registered_at).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-muted">
+                      {u.last_active_at ? new Date(u.last_active_at).toLocaleString() : "—"}
+                    </td>
+                    <td className="px-4 py-3 capitalize">{u.active_pillar ?? "—"}</td>
+                    <td className="px-4 py-3">{u.has_mind_profile ? "Yes" : "No"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {filteredAppUsers.length === 0 && !loading ? (
+              <p className="p-6 text-sm text-muted">
+                {search.trim() ? "No app users match your search." : "No mobile app users yet."}
+              </p>
+            ) : null}
+          </div>
+        </div>
       ) : null}
     </div>
   );

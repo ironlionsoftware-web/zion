@@ -4,6 +4,8 @@ import type { CartLine } from "@/lib/cart/types";
 import { insertServiceBooking } from "@/lib/db/service-bookings";
 import { insertShopOrder } from "@/lib/db/shop-orders";
 import { notifyAdmin } from "@/lib/notifications/email";
+import { formatServiceBookingAdminEmail } from "@/lib/notifications/format-service-booking";
+import { formatShopOrderAdminEmail } from "@/lib/notifications/format-shop-order";
 import { confirmRetreatPayment, notifyDonationPayment } from "@/lib/orders/retreat-payment";
 
 function meta(session: Stripe.Checkout.Session, key: string): string {
@@ -55,25 +57,11 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
     });
 
     if (booking) {
+      const email = formatServiceBookingAdminEmail(session, booking);
       void notifyAdmin({
-        subject: `Service booking paid: ${booking.serviceLabel}`,
-        text: [
-          `Customer: ${booking.fullName} (${booking.email})`,
-          `Service: ${booking.serviceLabel}`,
-          booking.ceremonyMedicineLabel
-            ? booking.serviceSlug === "reiki"
-              ? `Add-on: ${booking.ceremonyMedicineLabel}`
-              : booking.serviceSlug === "fitness-training"
-                ? `Training plan: ${booking.ceremonyMedicineLabel}`
-                : `Ceremony: ${booking.ceremonyMedicineLabel}`
-            : null,
-          `Practitioner: ${booking.practitionerName}`,
-          `Amount: $${(booking.amountCents / 100).toFixed(2)}${booking.paymentPlan === "recurring" ? " (weekly subscription)" : ""}`,
-          `Payment plan: ${booking.paymentPlan}`,
-          session.subscription ? `Stripe subscription: ${session.subscription}` : null,
-        ]
-          .filter(Boolean)
-          .join("\n"),
+        subject: email.subject,
+        text: email.text,
+        replyTo: booking.email,
       });
     }
     return;
@@ -120,19 +108,11 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
     });
 
     if (order) {
-      const itemsText = order.lineItems.map((l) => `${l.name} x${l.quantity}`).join(", ");
-      const freeDelivery = meta(session, "free_delivery") === "true";
+      const email = formatShopOrderAdminEmail(session, order);
       void notifyAdmin({
-        subject: `New shop order: ${order.fullName}`,
-        text: [
-          `Customer: ${order.fullName} (${order.email})`,
-          `Items: ${itemsText}`,
-          `Total: $${(order.subtotalCents / 100).toFixed(2)}`,
-          freeDelivery ? "Delivery: Free (Greater Austin)" : `Delivery fee: $${(deliveryFeeCents / 100).toFixed(2)}`,
-          order.fulfillmentNote ? `Delivery address:\n${order.fulfillmentNote}` : null,
-        ]
-          .filter(Boolean)
-          .join("\n"),
+        subject: email.subject,
+        text: email.text,
+        replyTo: order.email,
       });
     }
   }

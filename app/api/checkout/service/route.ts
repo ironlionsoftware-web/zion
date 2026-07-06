@@ -29,6 +29,7 @@ import {
   resolveReikiAddOns,
   serializeReikiAddOnSlugs,
 } from "@/lib/booking/reiki-addon";
+import { parseScheduledSlot, scheduledSlotMetadata } from "@/lib/booking/calendly-schedule";
 import { parseSlidingScaleAmount } from "@/lib/booking/sliding-scale";
 import { getBookableService, site } from "@/content/site";
 import { parsePaymentPlan } from "@/lib/payments/types";
@@ -71,6 +72,9 @@ export async function POST(request: Request) {
     fitnessAudience?: unknown;
     fitnessFrequency?: unknown;
     fitnessBilling?: unknown;
+    scheduledStart?: unknown;
+    scheduledEnd?: unknown;
+    calendlyEventUri?: unknown;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -134,6 +138,18 @@ export async function POST(request: Request) {
       }) ?? getDefaultFitnessBookingOptions()
     : undefined;
   const fitnessRecurring = fitnessOptions ? isFitnessRecurringBilling(fitnessOptions) : false;
+
+  const scheduledSlot = !isClass
+    ? parseScheduledSlot({
+        scheduledStart: body.scheduledStart,
+        scheduledEnd: body.scheduledEnd,
+        calendlyEventUri: body.calendlyEventUri,
+      })
+    : undefined;
+  if (!isClass && !scheduledSlot) {
+    return NextResponse.json({ error: "Please choose a date and time before paying." }, { status: 400 });
+  }
+  const scheduleMetadata = scheduledSlot ? scheduledSlotMetadata(scheduledSlot) : {};
 
   const paymentPlan = fitnessRecurring ? "full" : parsePaymentPlan(body.paymentPlan);
   const origin = new URL(request.url).origin;
@@ -213,6 +229,7 @@ export async function POST(request: Request) {
         practitioner_name: practitioner!.name,
         fitness_weekly_cents: String(weeklyCents),
         ...fitnessMetadata,
+        ...scheduleMetadata,
       },
     });
 
@@ -274,11 +291,12 @@ export async function POST(request: Request) {
         : {}),
       ...(reikiAddOns.length > 0
         ? {
-            ceremony_medicine_slug: reikiAddOns.map((a) => a.slug).join(","),
-            ceremony_medicine_label: reikiAddOns.map((a) => a.label).join(", "),
+            reiki_add_on_slugs: reikiAddOns.map((a) => a.slug).join(","),
+            reiki_add_on_labels: reikiAddOns.map((a) => a.label).join(", "),
           }
         : {}),
       ...fitnessMetadata,
+      ...scheduleMetadata,
     },
   });
 

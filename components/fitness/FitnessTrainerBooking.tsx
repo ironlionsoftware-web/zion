@@ -78,7 +78,7 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
 
         {registration && activeTrainer ? (
           <Link href={checkoutHref} className="btn btn-primary mt-8 w-full sm:w-auto">
-            {recurring ? "Set up weekly billing" : "Pay & schedule"} with {activeTrainer.name}
+            {recurring ? "Set up weekly billing" : "Choose time & pay"} with {activeTrainer.name}
           </Link>
         ) : (
           <Link
@@ -106,13 +106,13 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
         {registration ? (
           <p className="mt-4 text-sm text-muted">
             Signed in as <strong className="text-[var(--foreground)]">{registration.fullName}</strong>. Confirm your
-            options{groupSelected ? "" : ", choose your sliding scale amount at checkout"}
-            {recurring ? ", then set up weekly billing" : ""}, and schedule on Calendly.
+            options{groupSelected ? "" : ", choose your sliding scale amount"}
+            {recurring ? ", then set up weekly billing" : ""} on the checkout page after you pick a time.
           </p>
         ) : (
           <p className="mt-4 text-sm text-muted">
             Register once, then {groupSelected ? "pay the group rate" : "pay on the sliding scale"}
-            {recurring ? " or set up weekly recurring billing" : ""} and pick a time with your trainer on Calendly.
+            {recurring ? " or set up weekly recurring billing" : ""} after choosing your date and time at checkout.
           </p>
         )}
       </fieldset>
