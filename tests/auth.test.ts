@@ -103,6 +103,28 @@ describe("registration cookie", () => {
   });
 });
 
+describe("admin password check", () => {
+  it("accepts the configured password and rejects everything else", async () => {
+    process.env.ADMIN_PASSWORD = "a-long-random-admin-password-value";
+    const { verifyAdminPassword } = await import("@/lib/admin/auth");
+
+    assert.equal(verifyAdminPassword("a-long-random-admin-password-value"), true);
+    assert.equal(verifyAdminPassword("a-long-random-admin-password-valu"), false, "prefix must not pass");
+    assert.equal(verifyAdminPassword("A-Long-Random-Admin-Password-Value"), false, "case must matter");
+    assert.equal(verifyAdminPassword(""), false);
+    // Hashing both sides means a wrong-length guess is compared, not rejected by a throw.
+    assert.equal(verifyAdminPassword("x"), false);
+    assert.equal(verifyAdminPassword("x".repeat(5000)), false);
+  });
+
+  it("refuses every password when none is configured", async () => {
+    delete process.env.ADMIN_PASSWORD;
+    const { verifyAdminPassword } = await import("@/lib/admin/auth");
+    assert.equal(verifyAdminPassword(""), false);
+    assert.equal(verifyAdminPassword("anything"), false);
+  });
+});
+
 describe("retreat booking ownership", () => {
   const booking = {
     participants: [
