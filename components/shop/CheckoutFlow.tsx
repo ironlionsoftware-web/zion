@@ -14,6 +14,7 @@ import {
 } from "@/components/shop/DeliveryAddressForm";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatUsd } from "@/lib/cart/products";
+import { MAX_CART_QUANTITY } from "@/lib/cart/types";
 import { parseDeliveryAddress } from "@/lib/shipping/delivery";
 import type { PaymentPlan } from "@/lib/payments/types";
 import type { ClientRegistration } from "@/lib/registration/types";
@@ -130,7 +131,7 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
                       id={`qty-${line.key}`}
                       type="number"
                       min={1}
-                      max={99}
+                      max={MAX_CART_QUANTITY}
                       inputMode="numeric"
                       aria-label={`Quantity for ${line.name}`}
                       value={line.quantity}

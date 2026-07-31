@@ -278,7 +278,6 @@ export function RetreatBookingForm() {
               <label className="flex cursor-pointer gap-3 text-sm leading-relaxed sm:col-span-2">
                 <input
                   type="checkbox"
-                  required
                   checked={participant.marketingConsent}
                   onChange={(e) => updateParticipant(index, "marketingConsent", e.target.checked)}
                   className="mt-1 size-5 shrink-0 accent-[var(--rasta-green)]"

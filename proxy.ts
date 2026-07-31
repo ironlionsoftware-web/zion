@@ -1,21 +1,25 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ADMIN_COOKIE } from "@/lib/admin/constants";
+import { hasValidAdminCookie, hasValidRegistrationCookie } from "@/lib/auth/edge-cookies";
 import { buildRegisterPath } from "@/lib/registration/register-path";
 import { REGISTRATION_COOKIE } from "@/lib/registration/constants";
 
-function isRegistered(request: NextRequest): boolean {
-  const value = request.cookies.get(REGISTRATION_COOKIE)?.value;
-  if (!value) return false;
-  const [payload, signature] = value.split(".");
-  return Boolean(payload && signature && payload.length > 8);
+/**
+ * These verify the cookie's HMAC, not just its shape.
+ *
+ * They previously checked only that the value looked like `payload.signature` with a segment
+ * longer than eight characters, so any forged string got past the proxy. Nothing was exploitable,
+ * because every admin route and page re-checks properly one layer in — but it meant a single new
+ * route trusting the proxy would have turned into a full authentication bypass. Real verification
+ * here costs microseconds and removes that trap.
+ */
+function isRegistered(request: NextRequest): Promise<boolean> {
+  return hasValidRegistrationCookie(request.cookies.get(REGISTRATION_COOKIE)?.value);
 }
 
-function isAdmin(request: NextRequest): boolean {
-  const value = request.cookies.get(ADMIN_COOKIE)?.value;
-  if (!value) return false;
-  const [payload, signature] = value.split(".");
-  return Boolean(payload && signature && signature.length > 8);
+function isAdmin(request: NextRequest): Promise<boolean> {
+  return hasValidAdminCookie(request.cookies.get(ADMIN_COOKIE)?.value);
 }
 
 function redirectToRegister(request: NextRequest, options: Parameters<typeof buildRegisterPath>[0]): NextResponse {
@@ -25,14 +29,14 @@ function redirectToRegister(request: NextRequest, options: Parameters<typeof bui
   return NextResponse.redirect(url);
 }
 
-export function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api/admin/")) {
     if (pathname === "/api/admin/login") {
       return NextResponse.next();
     }
-    if (!isAdmin(request)) {
+    if (!(await isAdmin(request))) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
     return NextResponse.next();
@@ -42,7 +46,7 @@ export function middleware(request: NextRequest) {
     if (pathname === "/admin/login") {
       return NextResponse.next();
     }
-    if (!isAdmin(request)) {
+    if (!(await isAdmin(request))) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin/login";
       url.searchParams.set("from", pathname);
@@ -52,7 +56,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith("/api/checkout/")) {
-    if (!isRegistered(request)) {
+    if (!(await isRegistered(request))) {
       return NextResponse.json(
         { error: "Please complete registration before checkout.", code: "registration_required" },
         { status: 401 },
@@ -61,7 +65,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (!isRegistered(request)) {
+  if (!(await isRegistered(request))) {
     if (pathname === "/donation") {
       return redirectToRegister(request, { next: "donation" });
     }

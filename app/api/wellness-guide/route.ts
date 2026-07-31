@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { wellnessDisclaimer } from "@/content/wellness-catalog";
+import { enforceRateLimit } from "@/lib/rate-limit";
 import { aiWellnessRecommendations, isWellnessAiEnabled } from "@/lib/wellness-guide/ai";
 import { matchWellnessOfferings } from "@/lib/wellness-guide/match";
 
@@ -19,6 +20,16 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // Each call bills an OpenAI request. Twelve in ten minutes covers someone genuinely exploring
+  // their options; anything beyond that is a script running up the API bill.
+  const limited = enforceRateLimit(request, {
+    name: "wellness-guide",
+    limit: 12,
+    windowMs: 10 * 60 * 1000,
+    message: "You have made several requests. Please wait a moment before searching again.",
+  });
+  if (limited) return limited;
+
   let body: { query?: string };
   try {
     body = (await request.json()) as { query?: string };

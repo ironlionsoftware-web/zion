@@ -41,11 +41,22 @@ yarn-error.log*
 # local performance audits
 /lighthouse-reports/
 
+# --- Local-only documentation ---
+# This repo is PUBLIC on GitHub. Everything below is either a map of the site's
+# weak points or private business material, and must not be published while that
+# is true. Delete this whole block once the repo is private — the documentation
+# is meant to live in the repo, it just cannot live in a public one.
+/docs/history/
+/docs/audit/
+/docs/journal/
+/docs/research/
+/docs/ROADMAP.md
+/docs/SECURITY-CHECKLIST.md
+/docs/QUESTIONS-FOR-JOHARI.md
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-.vercel

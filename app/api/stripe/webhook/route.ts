@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import { insertSubscriptionPayment } from "@/lib/db/subscription-payments";
 import { persistCheckoutSession } from "@/lib/orders/persist-checkout";
 import { notifyAdmin } from "@/lib/notifications/email";
 import { getStripe } from "@/lib/stripe/server";
@@ -48,16 +49,44 @@ export async function POST(request: Request) {
       return NextResponse.json({ received: true });
     }
 
-    void notifyAdmin({
-      subject: `Fitness subscription renewed: ${meta(subscription, "service_label") || "Fitness training"}`,
-      text: [
-        `Customer email: ${invoice.customer_email ?? "unknown"}`,
-        `Training plan: ${meta(subscription, "ceremony_medicine_label") || "—"}`,
-        `Trainer: ${meta(subscription, "practitioner_name") || "—"}`,
-        `Amount: $${((invoice.amount_paid ?? 0) / 100).toFixed(2)}`,
-        `Stripe subscription: ${subscriptionId}`,
-      ].join("\n"),
-    });
+    const serviceLabel = meta(subscription, "service_label") || "Fitness training";
+    const planSummary = meta(subscription, "ceremony_medicine_label");
+    const practitionerName = meta(subscription, "practitioner_name");
+    const amountCents = invoice.amount_paid ?? 0;
+    const paidAtSeconds = invoice.status_transitions?.paid_at ?? Math.floor(Date.now() / 1000);
+
+    // Record the renewal before notifying. Email used to be the only trace, so a failed send or an
+    // unread inbox meant a customer was charged with no record anywhere in this app. The unique
+    // constraint on the invoice id also makes Stripe's webhook retries idempotent, so the null
+    // return doubles as the guard against duplicate notification emails.
+    const recorded = invoice.id
+      ? await insertSubscriptionPayment({
+          stripeInvoiceId: invoice.id,
+          stripeSubscriptionId: subscriptionId,
+          email: (invoice.customer_email ?? "").trim().toLowerCase(),
+          serviceSlug: meta(subscription, "service_slug") || "fitness-training",
+          serviceLabel,
+          practitionerSlug: meta(subscription, "practitioner_slug") || undefined,
+          practitionerName: practitionerName || undefined,
+          planSummary: planSummary || undefined,
+          amountCents,
+          paidAt: new Date(paidAtSeconds * 1000).toISOString(),
+        })
+      : null;
+
+    if (recorded) {
+      void notifyAdmin({
+        subject: `Fitness subscription renewed: ${serviceLabel}`,
+        text: [
+          `Customer email: ${invoice.customer_email ?? "unknown"}`,
+          `Training plan: ${planSummary || "—"}`,
+          `Trainer: ${practitionerName || "—"}`,
+          `Amount: $${(amountCents / 100).toFixed(2)}`,
+          `Stripe subscription: ${subscriptionId}`,
+          `Stripe invoice: ${invoice.id}`,
+        ].join("\n"),
+      });
+    }
   }
 
   return NextResponse.json({ received: true });

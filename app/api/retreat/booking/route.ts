@@ -44,7 +44,23 @@ export async function POST(request: Request) {
     participants: validated.participants,
   };
 
-  await saveRetreatBooking(booking);
+  // The booking record is the product here — if it does not save, the visitor must not be sent on
+  // to pay for something that does not exist. This was previously unguarded, and because the old
+  // file-based storage always threw on Vercel's read-only filesystem, retreat registration
+  // returned a bare 500 in production for every visitor who tried it.
+  try {
+    await saveRetreatBooking(booking);
+  } catch (error) {
+    console.error("saveRetreatBooking failed:", error);
+    return NextResponse.json(
+      {
+        error:
+          "We could not save your retreat registration, and nothing has been charged. " +
+          "Please try again, or email us and we will book you in directly.",
+      },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({ bookingId: booking.id });
 }

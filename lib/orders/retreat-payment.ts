@@ -1,8 +1,10 @@
 import type Stripe from "stripe";
 import { markCheckoutNotified } from "@/lib/db/checkout-notifications";
-import { notifyAdmin } from "@/lib/notifications/email";
+import { retreatPaymentCustomerEmail } from "@/lib/notifications/customer-emails";
+import { notifyAdmin, sendCustomerEmail } from "@/lib/notifications/email";
+import { claimRetreatParticipantPayment } from "@/lib/db/retreat-bookings";
 import { retreatTypeLabelForBooking } from "@/lib/retreat/booking";
-import { getRetreatBooking, updateRetreatParticipant } from "@/lib/retreat/storage";
+import { retreatPricingForBooking } from "@/lib/retreat/pricing";
 import type { RetreatBooking } from "@/lib/retreat/types";
 import type { RetreatPaymentType } from "@/lib/retreat/types";
 
@@ -26,26 +28,25 @@ export async function confirmRetreatPayment(
     return null;
   }
 
-  const existing = await getRetreatBooking(bookingId);
-  const participant = existing?.participants[participantIndex];
-  if (!existing || !participant) return null;
-
-  const alreadyRecorded =
-    paymentType === "deposit" ? Boolean(participant.depositPaidAt) : Boolean(participant.balancePaidAt);
-
+  const paidAt = new Date().toISOString();
   const update =
     paymentType === "deposit"
-      ? { depositPaidAt: participant.depositPaidAt ?? new Date().toISOString() }
+      ? { depositPaidAt: paidAt }
       : {
-          balancePaidAt: participant.balancePaidAt ?? new Date().toISOString(),
+          balancePaidAt: paidAt,
           balancePaymentPlan:
             meta(session, "payment_plan") === "installments" ? ("installments" as const) : ("full" as const),
         };
 
-  const booking = alreadyRecorded ? existing : await updateRetreatParticipant(bookingId, participantIndex, update);
-  if (!booking) return null;
+  // Check-and-set in one locked transaction. The Stripe webhook and the browser's
+  // `/api/retreat/confirm-payment` fallback both fire for the same payment; only the caller that
+  // actually recorded it gets `claimed`, so the notifications below are sent exactly once.
+  const claim = await claimRetreatParticipantPayment(bookingId, participantIndex, update);
+  if (!claim) return null;
 
-  if (!alreadyRecorded) {
+  const { booking, claimed } = claim;
+
+  if (claimed) {
     const updatedParticipant = booking.participants[participantIndex];
     const retreatLabel = meta(session, "retreat_type_label") || retreatTypeLabelForBooking(booking);
     const amountCents = session.amount_total ?? 0;
@@ -65,6 +66,21 @@ export async function confirmRetreatPayment(
       ]
         .filter(Boolean)
         .join("\n"),
+    });
+
+    // Guarded by `alreadyRecorded`, so a retried webhook cannot send a duplicate confirmation.
+    const confirmation = retreatPaymentCustomerEmail({
+      participant: updatedParticipant,
+      retreatLabel,
+      paymentType,
+      amountCents,
+      balanceCents: retreatPricingForBooking(booking).balanceCents,
+      bookingId,
+    });
+    void sendCustomerEmail({
+      to: updatedParticipant.email,
+      subject: confirmation.subject,
+      text: confirmation.text,
     });
   }
 

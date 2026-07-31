@@ -1,4 +1,4 @@
-import type { CartLine } from "./types";
+import { MAX_CART_QUANTITY, type CartLine } from "./types";
 
 export const CART_STORAGE_KEY = "iron-lion-cart";
 
@@ -17,7 +17,7 @@ export function readCartFromStorage(): CartLine[] {
         const variantId =
           "variantId" in row && typeof row.variantId === "string" ? row.variantId : undefined;
         if (!slug || !Number.isInteger(quantity) || quantity < 1) return null;
-        const line: CartLine = { slug, quantity };
+        const line: CartLine = { slug, quantity: Math.min(quantity, MAX_CART_QUANTITY) };
         if (variantId) line.variantId = variantId;
         return line;
       })

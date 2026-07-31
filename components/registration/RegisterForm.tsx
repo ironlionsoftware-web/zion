@@ -222,7 +222,6 @@ export function RegisterForm({
             type="checkbox"
             checked={marketingConsent}
             onChange={(e) => setMarketingConsent(e.target.checked)}
-            required
             className="mt-1 size-5 shrink-0 accent-[var(--rasta-green)]"
           />
           <span>{site.registration.marketingConsentLabel}</span>

@@ -57,3 +57,22 @@ export type DbShopOrder = {
   fulfillmentUpdatedAt: string | null;
   createdAt: string;
 };
+
+/**
+ * One recurring charge on a subscription (currently weekly fitness training).
+ * The first payment is recorded in `service_bookings`; every renewal after it lands here.
+ */
+export type DbSubscriptionPayment = {
+  id: number;
+  stripeInvoiceId: string;
+  stripeSubscriptionId: string;
+  email: string;
+  serviceSlug: string;
+  serviceLabel: string;
+  practitionerSlug: string | null;
+  practitionerName: string | null;
+  planSummary: string | null;
+  amountCents: number;
+  paidAt: string;
+  createdAt: string;
+};

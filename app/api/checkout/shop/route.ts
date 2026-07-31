@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { formatCartMetaLine, resolveCartLines } from "@/lib/cart/products";
-import type { CartLine } from "@/lib/cart/types";
+import { MAX_CART_QUANTITY, type CartLine } from "@/lib/cart/types";
 import { parsePaymentPlan } from "@/lib/payments/types";
 import { requireRegistration } from "@/lib/payments/require-registration";
 import {
@@ -51,6 +51,13 @@ export async function POST(request: Request) {
       return line;
     })
     .filter((row): row is CartLine => row !== null);
+
+  if (rawItems.some((line) => line.quantity > MAX_CART_QUANTITY)) {
+    return NextResponse.json(
+      { error: `Quantity cannot exceed ${MAX_CART_QUANTITY} per item.` },
+      { status: 400 },
+    );
+  }
 
   const lines = resolveCartLines(rawItems);
   if (lines.length === 0) {

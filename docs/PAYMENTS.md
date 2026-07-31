@@ -22,7 +22,7 @@ Optional **installments** (Klarna, Affirm) appear when the customer chooses “I
 Add to `iron-lion/.env.local`:
 
 ```env
-STRIPE_SECRET_KEY=sk_test_xxxxxxxx
+STRIPE_SECRET_KEY=[REDACTED]
 REGISTRATION_SECRET=<long random string>
 ```
 

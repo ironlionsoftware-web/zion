@@ -1,8 +1,18 @@
 import { NextResponse } from "next/server";
 import { normalizePath } from "@/lib/analytics/path-labels";
 import { recordPageView } from "@/lib/db/page-views";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  // Writes an unbounded number of rows. The ceiling is generous because one visitor browsing
+  // quickly is normal, but it caps how fast a script can inflate the analytics table.
+  const limited = enforceRateLimit(request, {
+    name: "pageview",
+    limit: 120,
+    windowMs: 60 * 1000,
+  });
+  if (limited) return limited;
+
   let body: { sessionId?: unknown; path?: unknown; referrer?: unknown };
   try {
     body = await request.json();

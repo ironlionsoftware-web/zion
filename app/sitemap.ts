@@ -12,13 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/retreat",
     "/retreat/book",
     "/shop",
-    "/shop/checkout",
-    "/checkout/service",
     "/services",
     "/reiki",
     "/contact",
     "/register",
-    "/donation",
     "/legal/privacy",
     "/legal/terms",
   ] as const;

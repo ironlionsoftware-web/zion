@@ -21,9 +21,10 @@ export function validateRegistrationInput(body: {
   if (phoneDigits.length < 10) {
     return { ok: false, error: "Please enter a valid phone number (at least 10 digits)." };
   }
-  if (!marketingConsent) {
-    return { ok: false, error: "Please agree to receive updates so we can stay in touch." };
-  }
-
+  // Marketing consent is recorded but never required. Consent that is a condition of buying is not
+  // freely given, so it is worth little legally and nothing ethically — and gating registration on
+  // it turned away anyone unwilling to join a mailing list, including retreat clients spending
+  // thousands. The value is captured either way: `marketingConsent` still gates who may be added
+  // to a mailing audience later.
   return { ok: true, fullName, email, phone, marketingConsent };
 }

@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { cartSubtotalCents, cartLineKey, isValidCartLine, resolveCartLines } from "@/lib/cart/products";
 import { readCartFromStorage, writeCartToStorage } from "@/lib/cart/storage";
-import type { CartLine, CartLineWithProduct } from "@/lib/cart/types";
+import { MAX_CART_QUANTITY, type CartLine, type CartLineWithProduct } from "@/lib/cart/types";
 
 type CartContextValue = {
   lines: CartLineWithProduct[];
@@ -53,7 +53,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const existing = prev.find((line) => lineMatchesKey(line, key));
         if (existing) {
           return prev.map((line) =>
-            lineMatchesKey(line, key) ? { ...line, quantity: line.quantity + 1 } : line,
+            lineMatchesKey(line, key)
+              ? { ...line, quantity: Math.min(line.quantity + 1, MAX_CART_QUANTITY) }
+              : line,
           );
         }
         return [...prev, candidate];
@@ -68,8 +70,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setItems((prev) => prev.filter((line) => !lineMatchesKey(line, key)));
         return;
       }
+      const capped = Math.min(quantity, MAX_CART_QUANTITY);
       setItems((prev) =>
-        prev.map((line) => (lineMatchesKey(line, key) ? { ...line, quantity } : line)),
+        prev.map((line) => (lineMatchesKey(line, key) ? { ...line, quantity: capped } : line)),
       );
     },
     [setItems],

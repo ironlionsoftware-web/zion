@@ -3,7 +3,11 @@ import { parseCartMetaLine, resolveCartLines } from "@/lib/cart/products";
 import type { CartLine } from "@/lib/cart/types";
 import { insertServiceBooking } from "@/lib/db/service-bookings";
 import { insertShopOrder } from "@/lib/db/shop-orders";
-import { notifyAdmin } from "@/lib/notifications/email";
+import {
+  serviceBookingCustomerEmail,
+  shopOrderCustomerEmail,
+} from "@/lib/notifications/customer-emails";
+import { notifyAdmin, sendCustomerEmail } from "@/lib/notifications/email";
 import { formatServiceBookingAdminEmail } from "@/lib/notifications/format-service-booking";
 import { formatShopOrderAdminEmail } from "@/lib/notifications/format-shop-order";
 import { confirmRetreatPayment, notifyDonationPayment } from "@/lib/orders/retreat-payment";
@@ -31,7 +35,8 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
   }
 
   const fullName = meta(session, "full_name");
-  const email = (session.customer_email ?? meta(session, "email")).trim().toLowerCase();
+  // `createStripeCheckoutSession` always sets `customer_email`, so this never falls back to "".
+  const email = (session.customer_email ?? "").trim().toLowerCase();
   const phone = meta(session, "phone");
   const paymentPlan = meta(session, "payment_plan") || "full";
   const paidAt = new Date().toISOString();
@@ -56,12 +61,21 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
       paidAt,
     });
 
+    // `insertServiceBooking` returns null when this session was already recorded, so a retried
+    // Stripe webhook cannot send a duplicate confirmation.
     if (booking) {
-      const email = formatServiceBookingAdminEmail(session, booking);
+      const adminEmail = formatServiceBookingAdminEmail(session, booking);
       void notifyAdmin({
-        subject: email.subject,
-        text: email.text,
+        subject: adminEmail.subject,
+        text: adminEmail.text,
         replyTo: booking.email,
+      });
+
+      const confirmation = serviceBookingCustomerEmail(booking);
+      void sendCustomerEmail({
+        to: booking.email,
+        subject: confirmation.subject,
+        text: confirmation.text,
       });
     }
     return;
@@ -108,11 +122,18 @@ export async function persistCheckoutSession(session: Stripe.Checkout.Session): 
     });
 
     if (order) {
-      const email = formatShopOrderAdminEmail(session, order);
+      const adminEmail = formatShopOrderAdminEmail(session, order);
       void notifyAdmin({
-        subject: email.subject,
-        text: email.text,
+        subject: adminEmail.subject,
+        text: adminEmail.text,
         replyTo: order.email,
+      });
+
+      const confirmation = shopOrderCustomerEmail(order);
+      void sendCustomerEmail({
+        to: order.email,
+        subject: confirmation.subject,
+        text: confirmation.text,
       });
     }
   }

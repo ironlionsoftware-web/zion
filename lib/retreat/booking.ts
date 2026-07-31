@@ -187,3 +187,21 @@ export function participantMatchesRegistration(
 ): boolean {
   return participant.email.toLowerCase() === registration.email.toLowerCase();
 }
+
+/**
+ * True when the signed-in visitor is one of the participants on this booking.
+ *
+ * A retreat booking holds every participant's name, email, phone, age, dietary restrictions and
+ * mobility level. The booking id travels in Stripe success/cancel URLs, so it reaches browser
+ * history, screenshots, and support threads — possession of the id must not be treated as
+ * authorisation. Anyone can self-register with an unverified email, so registration alone proves
+ * nothing about *which* booking a visitor may read.
+ */
+export function registrationOwnsBooking(
+  booking: { participants: RetreatParticipant[] },
+  registration: { email: string },
+): boolean {
+  return booking.participants.some((participant) =>
+    participantMatchesRegistration(participant, registration),
+  );
+}

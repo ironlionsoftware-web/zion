@@ -9,12 +9,23 @@ import {
   registrationCookieOptions,
   REGISTRATION_COOKIE,
 } from "@/lib/registration/cookie";
+import { enforceRateLimit } from "@/lib/rate-limit";
 import { parseRegisterNext, redirectAfterRegistration } from "@/lib/registration/redirect";
 import { saveRegistration } from "@/lib/registration/storage";
 import type { RegisterNext } from "@/lib/registration/types";
 import { validateRegistrationInput } from "@/lib/registration/validate";
 
 export async function POST(request: Request) {
+  // Registration writes a row and emails the business. Allow retries and genuine multi-person
+  // sign-ups from one household, but not automated flooding.
+  const limited = enforceRateLimit(request, {
+    name: "register",
+    limit: 10,
+    windowMs: 10 * 60 * 1000,
+    message: "Too many registration attempts. Please wait a few minutes and try again.",
+  });
+  if (limited) return limited;
+
   let body: Record<string, unknown>;
   try {
     body = (await request.json()) as Record<string, unknown>;
@@ -94,14 +105,22 @@ export async function POST(request: Request) {
     registeredAt,
   };
 
-  await saveRegistration({
-    ...client,
-    marketingConsent: validated.marketingConsent,
-    next,
-    service: serviceSlug || undefined,
-    practitioner: practitionerSlug,
-    source,
-  });
+  // Deliberately non-fatal, unlike the retreat booking route. This row is a lead record, not the
+  // thing being bought — losing it costs a line in the admin list, whereas blocking here would
+  // stop someone completing a purchase they were ready to make. The failure is logged so it can
+  // be reconciled against Stripe later.
+  try {
+    await saveRegistration({
+      ...client,
+      marketingConsent: validated.marketingConsent,
+      next,
+      service: serviceSlug || undefined,
+      practitioner: practitionerSlug,
+      source,
+    });
+  } catch (error) {
+    console.error("saveRegistration failed; letting the visitor continue anyway:", error);
+  }
 
   const { url, external } = redirectAfterRegistration(next, client, {
     serviceSlug,

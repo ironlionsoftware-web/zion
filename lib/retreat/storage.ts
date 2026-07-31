@@ -1,25 +1,27 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
-import path from "path";
+import {
+  mutateRetreatParticipant,
+  selectRetreatBooking,
+  upsertRetreatBooking,
+} from "@/lib/db/retreat-bookings";
 import type { RetreatBooking, RetreatParticipant } from "./types";
 
-const DATA_DIR = path.join(process.cwd(), "data", "retreat-bookings");
-
-function bookingPath(id: string): string {
-  return path.join(DATA_DIR, `${id}.json`);
-}
+/**
+ * Retreat bookings live in the database, not on disk.
+ *
+ * These previously wrote JSON files under `process.cwd()/data/retreat-bookings`. That works
+ * locally and fails in production: Vercel's filesystem is read-only outside /tmp, and every
+ * request may be served by a different instance, so a booking written by one request is not
+ * visible to the next. Retreats are the highest-value product on the site, so they get the same
+ * durable storage as everything else. Any existing JSON files are imported on first boot — see
+ * `migrateRetreatBookingFiles` in `lib/db/client.ts`.
+ */
 
 export async function saveRetreatBooking(booking: RetreatBooking): Promise<void> {
-  await mkdir(DATA_DIR, { recursive: true });
-  await writeFile(bookingPath(booking.id), `${JSON.stringify(booking, null, 2)}\n`, "utf8");
+  await upsertRetreatBooking(booking);
 }
 
 export async function getRetreatBooking(id: string): Promise<RetreatBooking | null> {
-  try {
-    const raw = await readFile(bookingPath(id), "utf8");
-    return JSON.parse(raw) as RetreatBooking;
-  } catch {
-    return null;
-  }
+  return selectRetreatBooking(id);
 }
 
 export async function updateRetreatParticipant(
@@ -27,16 +29,5 @@ export async function updateRetreatParticipant(
   participantIndex: number,
   update: Partial<RetreatParticipant>,
 ): Promise<RetreatBooking | null> {
-  const booking = await getRetreatBooking(bookingId);
-  if (!booking || participantIndex < 0 || participantIndex >= booking.participants.length) {
-    return null;
-  }
-
-  booking.participants[participantIndex] = {
-    ...booking.participants[participantIndex],
-    ...update,
-  };
-
-  await saveRetreatBooking(booking);
-  return booking;
+  return mutateRetreatParticipant(bookingId, participantIndex, update);
 }

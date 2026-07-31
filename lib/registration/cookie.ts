@@ -1,17 +1,29 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
+import { DEV_REGISTRATION_SECRET } from "@/lib/auth/constants";
 import type { ClientRegistration } from "./types";
 import { REGISTRATION_COOKIE } from "./constants";
 
 export { REGISTRATION_COOKIE };
 
+/**
+ * Returns the key used to sign registration cookies.
+ *
+ * Throws in production when unset, rather than falling back to a string committed in this public
+ * repo. A forged registration cookie impersonates a registered client — and since retreat booking
+ * access is now tied to the registered email, that would expose other participants' contact and
+ * health details. Checkout amounts stay server-computed regardless of cookie contents.
+ */
 function secret(): string {
-  const key = process.env.REGISTRATION_SECRET;
+  const key = process.env.REGISTRATION_SECRET?.trim();
   if (key) return key;
   if (process.env.NODE_ENV === "production") {
-    console.warn("REGISTRATION_SECRET is not set; registration cookies are insecure.");
+    throw new Error(
+      "REGISTRATION_SECRET is not set. Refusing to sign or verify registration cookies — set it " +
+        "in your host's environment variables and redeploy.",
+    );
   }
-  return "dev-only-registration-secret-change-me";
+  return DEV_REGISTRATION_SECRET;
 }
 
 function sign(payload: string): string {
@@ -29,12 +41,14 @@ export function decodeRegistrationCookie(value: string | undefined): ClientRegis
   const [payload, signature] = value.split(".");
   if (!payload || !signature) return null;
 
-  const expected = sign(payload);
-  const a = Buffer.from(signature);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
-
   try {
+    // `sign` throws when REGISTRATION_SECRET is missing in production. Treating that as an
+    // invalid cookie is the fail-closed outcome.
+    const expected = sign(payload);
+    const a = Buffer.from(signature);
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+
     const parsed = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as ClientRegistration;
     if (!parsed.fullName?.trim() || !parsed.email?.trim() || !parsed.phone?.trim()) return null;
     return {

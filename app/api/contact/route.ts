@@ -1,8 +1,19 @@
 import { NextResponse } from "next/server";
 import { validateContactInput } from "@/lib/contact/validate";
 import { notifyAdmin } from "@/lib/notifications/email";
+import { enforceRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  // Every accepted request sends an email. Five in ten minutes is more than a genuine enquiry
+  // needs, and stops the inbox being usable as a spam target.
+  const limited = enforceRateLimit(request, {
+    name: "contact",
+    limit: 5,
+    windowMs: 10 * 60 * 1000,
+    message: "You have already sent a few messages. Please wait a moment, or email us directly.",
+  });
+  if (limited) return limited;
+
   let body: Record<string, unknown>;
   try {
     body = (await request.json()) as Record<string, unknown>;

@@ -1,9 +1,11 @@
 import { mkdirSync } from "fs";
-import { readFile } from "fs/promises";
+import { readdir, readFile } from "fs/promises";
+import { createRequire } from "module";
 import path from "path";
 import postgres from "postgres";
 import { resolveDatabaseUrl } from "@/lib/db/database-url";
 import type { RegisterNext } from "@/lib/registration/types";
+import type { RetreatBooking } from "@/lib/retreat/types";
 
 type SqliteDatabase = import("better-sqlite3").Database;
 
@@ -24,10 +26,30 @@ function getPostgres() {
   return pgSql;
 }
 
+/**
+ * `better-sqlite3` is a CommonJS native module and is only ever loaded on the local dev path, so
+ * it stays behind a lazy require rather than a top-level import that production would pay for.
+ * `createRequire` is used instead of a bare `require` so this resolves under plain Node ESM (the
+ * test runner) as well as inside the Next.js bundle.
+ */
+const nodeRequire = createRequire(import.meta.url);
+
 function getSqlite(): SqliteDatabase {
   if (sqliteDb) return sqliteDb;
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const Database = require("better-sqlite3") as typeof import("better-sqlite3");
+
+  // SQLite is the local development backend only. Reaching here in production means DATABASE_URL
+  // is missing, and the next line would fail on a read-only serverless filesystem with an
+  // EROFS error that says nothing about the real cause. Say the real cause instead — this is
+  // exactly how retreat bookings silently broke in production for two months.
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "DATABASE_URL is not set. Production requires Postgres — the local SQLite fallback cannot " +
+        "work on a read-only serverless filesystem. Set DATABASE_URL in your host's environment " +
+        "variables and redeploy.",
+    );
+  }
+
+  const Database = nodeRequire("better-sqlite3") as typeof import("better-sqlite3");
   const dir = path.join(process.cwd(), "data");
   mkdirSync(dir, { recursive: true });
   sqliteDb = new Database(path.join(dir, "iron-lion.db"));
@@ -90,6 +112,33 @@ CREATE TABLE IF NOT EXISTS shop_orders (
 
 CREATE INDEX IF NOT EXISTS idx_shop_orders_status ON shop_orders (status);
 CREATE INDEX IF NOT EXISTS idx_shop_orders_paid_at ON shop_orders (paid_at DESC);
+
+CREATE TABLE IF NOT EXISTS retreat_bookings (
+  id TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  data JSONB NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_retreat_bookings_created_at ON retreat_bookings (created_at DESC);
+
+CREATE TABLE IF NOT EXISTS subscription_payments (
+  id SERIAL PRIMARY KEY,
+  stripe_invoice_id TEXT NOT NULL UNIQUE,
+  stripe_subscription_id TEXT NOT NULL,
+  email TEXT NOT NULL,
+  service_slug TEXT NOT NULL,
+  service_label TEXT NOT NULL,
+  practitioner_slug TEXT,
+  practitioner_name TEXT,
+  plan_summary TEXT,
+  amount_cents INTEGER NOT NULL,
+  paid_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscription_payments_paid_at ON subscription_payments (paid_at DESC);
+CREATE INDEX IF NOT EXISTS idx_subscription_payments_subscription ON subscription_payments (stripe_subscription_id);
 
 CREATE TABLE IF NOT EXISTS schema_migrations (
   id TEXT PRIMARY KEY,
@@ -164,6 +213,33 @@ CREATE TABLE IF NOT EXISTS shop_orders (
 
 CREATE INDEX IF NOT EXISTS idx_shop_orders_status ON shop_orders (status);
 CREATE INDEX IF NOT EXISTS idx_shop_orders_paid_at ON shop_orders (paid_at DESC);
+
+CREATE TABLE IF NOT EXISTS retreat_bookings (
+  id TEXT PRIMARY KEY,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  data TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_retreat_bookings_created_at ON retreat_bookings (created_at DESC);
+
+CREATE TABLE IF NOT EXISTS subscription_payments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  stripe_invoice_id TEXT NOT NULL UNIQUE,
+  stripe_subscription_id TEXT NOT NULL,
+  email TEXT NOT NULL,
+  service_slug TEXT NOT NULL,
+  service_label TEXT NOT NULL,
+  practitioner_slug TEXT,
+  practitioner_name TEXT,
+  plan_summary TEXT,
+  amount_cents INTEGER NOT NULL,
+  paid_at TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscription_payments_paid_at ON subscription_payments (paid_at DESC);
+CREATE INDEX IF NOT EXISTS idx_subscription_payments_subscription ON subscription_payments (stripe_subscription_id);
 
 CREATE TABLE IF NOT EXISTS schema_migrations (
   id TEXT PRIMARY KEY,
@@ -282,6 +358,57 @@ async function migrateServiceBookingCeremonyMedicine(): Promise<void> {
   db.prepare(`INSERT OR IGNORE INTO schema_migrations (id) VALUES (?)`).run(migrationId);
 }
 
+/**
+ * Imports retreat bookings that were written as JSON files before they moved into the database.
+ * Runs once; safe to call on every boot. Only reads the local filesystem, so on Vercel (where
+ * the directory never existed) it exits immediately.
+ */
+async function migrateRetreatBookingFiles(): Promise<void> {
+  const migrationId = "retreat_bookings_from_files";
+
+  if (usesPostgres()) {
+    const sql = getPostgres()!;
+    const [applied] = await sql<{ id: string }[]>`
+      SELECT id FROM schema_migrations WHERE id = ${migrationId}
+    `;
+    if (applied) return;
+  } else {
+    const db = getSqlite();
+    if (db.prepare(`SELECT id FROM schema_migrations WHERE id = ?`).get(migrationId)) return;
+  }
+
+  const dir = path.join(process.cwd(), "data", "retreat-bookings");
+  let files: string[] = [];
+  try {
+    files = (await readdir(dir)).filter((name) => name.endsWith(".json"));
+  } catch {
+    files = [];
+  }
+
+  if (files.length > 0) {
+    const { upsertRetreatBooking } = await import("./retreat-bookings");
+    for (const name of files) {
+      try {
+        const raw = await readFile(path.join(dir, name), "utf8");
+        const booking = JSON.parse(raw) as RetreatBooking;
+        if (booking?.id && Array.isArray(booking.participants)) {
+          await upsertRetreatBooking(booking);
+        }
+      } catch {
+        /* skip unreadable or malformed booking files */
+      }
+    }
+  }
+
+  if (usesPostgres()) {
+    const sql = getPostgres()!;
+    await sql`INSERT INTO schema_migrations (id) VALUES (${migrationId}) ON CONFLICT DO NOTHING`;
+  } else {
+    const db = getSqlite();
+    db.prepare(`INSERT OR IGNORE INTO schema_migrations (id) VALUES (?)`).run(migrationId);
+  }
+}
+
 async function initSchema(): Promise<void> {
   if (usesPostgres()) {
     const sql = getPostgres()!;
@@ -292,6 +419,7 @@ async function initSchema(): Promise<void> {
   }
   await migrateJsonlRegistrations();
   await migrateServiceBookingCeremonyMedicine();
+  await migrateRetreatBookingFiles();
 }
 
 export async function ensureDb(): Promise<void> {
