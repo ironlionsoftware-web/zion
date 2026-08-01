@@ -1,5 +1,5 @@
 import { site } from "@/content/site";
-import { activeProvider, providerNames } from "./providers";
+import { activeProvider, providerKeyNames } from "./providers";
 
 type SendParams = {
   to: string;
@@ -42,8 +42,7 @@ export async function sendEmail({ to, subject, text, replyTo }: SendParams): Pro
     }
     console.error(
       `[email] No email provider configured — dropped "${subject}" to ${to}. ` +
-        `Set one of: ${providerNames().map((n) => n.toUpperCase() + "_API_KEY").join(", ")}. ` +
-        `See docs/EMAIL-SETUP.md`,
+        `Set one of: ${providerKeyNames().join(", ")}. See docs/EMAIL-SETUP.md`,
     );
     return false;
   }

@@ -117,3 +117,12 @@ export function activeProvider(): { provider: Provider; key: string } | null {
 export function providerNames(): ProviderName[] {
   return PROVIDERS.map((p) => p.name);
 }
+
+/**
+ * The environment variable each provider looks for. Used in the "nothing configured" error so it
+ * names the real variables — these are not derivable from the provider names, and Postmark's in
+ * particular is `POSTMARK_SERVER_TOKEN`, not `POSTMARK_API_KEY`.
+ */
+export function providerKeyNames(): string[] {
+  return PROVIDERS.map((p) => p.keyEnv);
+}
