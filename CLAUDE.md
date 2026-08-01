@@ -93,7 +93,9 @@ Existing documentation:
 | `docs/audit/CODE-AUDIT.md` | Full code audit, ranked by impact |
 | `docs/research/MARKET-RESEARCH.md` | Competitive/pricing/marketing research |
 | `docs/PAYMENTS.md` | Stripe setup |
+| `docs/EMAIL-SETUP.md` | Email providers and why Resend doesn't work here |
 | `docs/ROADMAP.md` | What's planned and in what order |
+| `docs/OPEN-THREADS.md` | **Deliberately deferred work — check this before starting anything new** |
 
 ## How to work here
 

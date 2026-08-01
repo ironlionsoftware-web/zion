@@ -53,6 +53,7 @@ yarn-error.log*
 /docs/ROADMAP.md
 /docs/SECURITY-CHECKLIST.md
 /docs/QUESTIONS-FOR-JOHARI.md
+/docs/OPEN-THREADS.md
 
 # vercel
 .vercel
