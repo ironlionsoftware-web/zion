@@ -1,4 +1,5 @@
 import { site } from "@/content/site";
+import { activeProvider, providerNames } from "./providers";
 
 type SendParams = {
   to: string;
@@ -16,51 +17,49 @@ type NotifyParams = {
 /** Resend's shared sandbox sender. It can only deliver to the Resend account owner. */
 const SANDBOX_FROM = "Iron Lion <onboarding@resend.dev>";
 
+/**
+ * The address mail is sent from. Must be on a domain verified with whichever provider is active,
+ * or messages are rejected outright.
+ */
 function resolveFrom(): string {
-  return process.env.RESEND_FROM?.trim() || SANDBOX_FROM;
+  return process.env.EMAIL_FROM?.trim() || process.env.RESEND_FROM?.trim() || SANDBOX_FROM;
 }
 
 /**
- * Sends one email through Resend.
+ * Sends one email through whichever provider is configured — see `providers.ts`.
  *
  * Returns false rather than throwing: email must never fail a Stripe webhook or a checkout.
  * A dropped confirmation is recoverable; a failed webhook loses the order record.
  */
 export async function sendEmail({ to, subject, text, replyTo }: SendParams): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const active = activeProvider();
   const from = resolveFrom();
 
-  if (!apiKey) {
+  if (!active) {
     if (process.env.NODE_ENV !== "production") {
       console.info(`[email] To: ${to}\nSubject: ${subject}\n${text}`);
       return true;
     }
-    console.error(`[email] RESEND_API_KEY is not set — dropped "${subject}" to ${to}`);
+    console.error(
+      `[email] No email provider configured — dropped "${subject}" to ${to}. ` +
+        `Set one of: ${providerNames().map((n) => n.toUpperCase() + "_API_KEY").join(", ")}. ` +
+        `See docs/EMAIL-SETUP.md`,
+    );
     return false;
   }
 
+  const { provider, key } = active;
+
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from,
-        to: [to],
-        subject,
-        text,
-        ...(replyTo ? { reply_to: replyTo } : {}),
-      }),
-    });
+    const { url, init } = provider.request(key, { from, to, subject, text, replyTo });
+    const res = await fetch(url, init);
     if (!res.ok) {
-      console.error(`[email] Resend rejected "${subject}" to ${to}:`, await res.text());
+      console.error(`[email] ${provider.name} rejected "${subject}" to ${to}:`, await res.text());
       return false;
     }
     return true;
   } catch (error) {
-    console.error(`[email] Resend error sending "${subject}" to ${to}:`, error);
+    console.error(`[email] ${provider.name} error sending "${subject}" to ${to}:`, error);
     return false;
   }
 }
@@ -76,7 +75,7 @@ export async function notifyAdmin({ subject, text, replyTo }: NotifyParams): Pro
  *
  * Guarded separately from `notifyAdmin` because the sandbox sender silently refuses to deliver to
  * anyone but the Resend account owner — which would look like "email works" in testing while no
- * customer ever receives anything. Requires a verified domain in `RESEND_FROM`.
+ * customer ever receives anything. Requires a verified domain in `EMAIL_FROM`.
  * See `docs/EMAIL-SETUP.md`.
  */
 export async function sendCustomerEmail({ to, subject, text, replyTo }: SendParams): Promise<boolean> {
@@ -86,11 +85,13 @@ export async function sendCustomerEmail({ to, subject, text, replyTo }: SendPara
     return false;
   }
 
-  if (resolveFrom() === SANDBOX_FROM && process.env.RESEND_API_KEY?.trim()) {
+  // Every provider rejects (or silently swallows) mail from an unverified sender. Left unset, this
+  // looks like success in testing while no customer receives anything — so say so loudly.
+  if (resolveFrom() === SANDBOX_FROM && activeProvider()) {
     console.error(
-      `[email] RESEND_FROM is not configured. Customer mail would be sent from the Resend ` +
-        `sandbox sender, which only delivers to the Resend account owner — ${recipient} will ` +
-        `not receive "${subject}". Set RESEND_FROM to a verified domain address.`,
+      `[email] EMAIL_FROM is not configured, so mail would be sent from a sandbox sender that ` +
+        `only delivers to the account owner — ${recipient} will not receive "${subject}". ` +
+        `Set EMAIL_FROM to an address on your verified domain.`,
     );
   }
 
