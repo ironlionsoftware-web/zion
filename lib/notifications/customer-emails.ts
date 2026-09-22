@@ -86,8 +86,8 @@ export function shopOrderCustomerEmail(order: DbShopOrder): { subject: string; t
       "",
       "WHAT HAPPENS NEXT",
       "We'll be in touch by email or text to arrange delivery or pickup. If you're in the",
-      // serviceArea reads "Greater Austin area. Nationwide by arrangement." — only the first
-      // sentence belongs mid-sentence here.
+      // serviceArea is written as two sentences ("<region>. Nationwide by arrangement.");
+      // only the first belongs mid-sentence here.
       `${site.contact.serviceArea.split(".")[0].trim()}, that's usually quick.`,
       "",
       "Questions about how to use anything you ordered? Just reply — we're happy to walk you",

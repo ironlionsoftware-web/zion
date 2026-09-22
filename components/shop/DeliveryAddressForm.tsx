@@ -4,7 +4,7 @@ import {
   computeDeliveryFeeCents,
   DELIVERY_FEE_CENTS,
   formatDeliveryAddressInline,
-  isGreaterAustinArea,
+  isLocalDeliveryArea,
   parseDeliveryAddress,
   type DeliveryAddressInput,
 } from "@/lib/shipping/delivery";
@@ -157,7 +157,7 @@ export function DeliveryAddressForm({ value, onChange, disabled }: DeliveryAddre
             <>
               Delivery to {parsed.city}, {parsed.state}:{" "}
               <span className="font-medium">{formatUsd(DELIVERY_FEE_CENTS)}</span>
-              {!isGreaterAustinArea(parsed) && parsed.state === "TX" ? (
+              {!isLocalDeliveryArea(parsed) && parsed.state === "TX" ? (
                 <span className="text-muted"> (outside Greater Austin)</span>
               ) : null}
             </>

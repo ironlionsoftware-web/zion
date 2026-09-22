@@ -121,6 +121,19 @@ export const site = {
       height: 947,
     },
   },
+  /** Where local delivery is free. Anywhere else pays feeCents. */
+  delivery: {
+    feeCents: 1000,
+    state: "NC",
+    areaLabel: "Greater Asheville area",
+    cities: [
+      "asheville", "black mountain", "weaverville", "arden", "fletcher",
+      "hendersonville", "swannanoa", "candler", "fairview", "leicester",
+      "mars hill", "marshall",
+    ],
+    zips: ["28704", "28715", "28711", "28730", "28732", "28748", "28753", "28754", "28778"],
+    zipRanges: [{ from: 28801, to: 28816 }],
+  },
   contact: {
     /** Public inbox for shop orders, bookings, and general inquiries */
     email: "willowcreekhealing@gmail.com",
@@ -197,6 +210,8 @@ export const site = {
    * Leave empty until you have a live page, book links fall back to Contact.
    */
   calendly: {
+    /** IANA zone the practice books in; shown to clients on confirmations. */
+    timeZone: "America/New_York",
     url: "https://calendly.com/willowcreeksoftware",
     heading: "Schedule a session",
     lead: "Choose your practitioner, then pick a time for Reiki, personal training, pranayama, or a consultation. Questions before you book? Email us anytime.",

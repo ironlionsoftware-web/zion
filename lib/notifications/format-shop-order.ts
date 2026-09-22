@@ -59,7 +59,7 @@ export function formatShopOrderAdminEmail(
     section("DELIVERY & PAYMENT", [
       line("Items subtotal", formatUsd(itemsSubtotalCents)),
       freeDelivery
-        ? "Delivery: Free (Greater Austin area)"
+        ? `Delivery: Free (${site.delivery.areaLabel})`
         : line("Delivery fee", formatUsd(deliveryFeeCents)),
       line("Order total", formatUsd(order.subtotalCents)),
       line("Payment plan", order.paymentPlan),

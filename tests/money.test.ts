@@ -4,7 +4,7 @@ import { parseSlidingScaleAmount } from "@/lib/booking/sliding-scale";
 import { cartSubtotalCents, resolveCartLines } from "@/lib/cart/products";
 import { MAX_CART_QUANTITY, type CartLine } from "@/lib/cart/types";
 import { resolveRetreatPricing, retreatPricingForBooking } from "@/lib/retreat/pricing";
-import { computeDeliveryFeeCents, isGreaterAustinArea } from "@/lib/shipping/delivery";
+import { computeDeliveryFeeCents, isLocalDeliveryArea } from "@/lib/shipping/delivery";
 import type { RetreatBooking } from "@/lib/retreat/types";
 
 /**
@@ -152,14 +152,14 @@ describe("delivery fees", () => {
   });
 
   it("never treats another state as local, whatever the city is called", () => {
-    assert.equal(isGreaterAustinArea({ city: "Austin", state: "MN", postalCode: "55912" }), false);
+    assert.equal(isLocalDeliveryArea({ city: "Austin", state: "MN", postalCode: "55912" }), false);
   });
 
   it("tolerates casing and whitespace in the address", () => {
-    assert.equal(isGreaterAustinArea({ city: "  austin ", state: " tx ", postalCode: " 78701 " }), true);
+    assert.equal(isLocalDeliveryArea({ city: "  austin ", state: " tx ", postalCode: " 78701 " }), true);
   });
 
   it("falls back to the city when the postcode is malformed", () => {
-    assert.equal(isGreaterAustinArea({ city: "Austin", state: "TX", postalCode: "not-a-zip" }), true);
+    assert.equal(isLocalDeliveryArea({ city: "Austin", state: "TX", postalCode: "not-a-zip" }), true);
   });
 });

@@ -120,6 +120,27 @@ export const site = {
       height: 947,
     },
   },
+  /** Where local delivery is free. Anywhere else pays feeCents. */
+  delivery: {
+    feeCents: 1000,
+    state: "TX",
+    /** Region name used in customer-facing copy. */
+    areaLabel: "Greater Austin area",
+    cities: [
+      "austin", "round rock", "cedar park", "pflugerville", "leander",
+      "georgetown", "kyle", "buda", "lakeway", "bee cave", "dripping springs",
+      "hutto", "manor", "del valle", "west lake hills", "rollingwood",
+      "sunset valley", "san marcos", "liberty hill", "spicewood", "elgin",
+      "cedar creek", "driftwood",
+    ],
+    zips: [
+      "78610", "78612", "78613", "78615", "78617", "78620", "78621", "78626",
+      "78628", "78633", "78634", "78640", "78641", "78642", "78645", "78652",
+      "78653", "78660", "78664", "78665", "78666", "78669", "78681", "78691",
+    ],
+    /** Inclusive ranges, expanded at load. Travis County core is 78701-78799. */
+    zipRanges: [{ from: 78701, to: 78799 }],
+  },
   contact: {
     /** Public inbox for shop orders, bookings, and general inquiries */
     email: "ironlionhealing@gmail.com",
@@ -196,6 +217,8 @@ export const site = {
    * Leave empty until you have a live page, book links fall back to Contact.
    */
   calendly: {
+    /** IANA zone the practice books in; shown to clients on confirmations. */
+    timeZone: "America/Chicago",
     url: "https://calendly.com/ironlionsoftware",
     heading: "Schedule a session",
     lead: "Choose your practitioner, then pick a time for Reiki, personal training, pranayama, or a consultation. Questions before you book? Email us anytime.",

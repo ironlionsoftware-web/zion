@@ -41,7 +41,10 @@ export function parseScheduledSlot(input: {
   return { startTime: start.toISOString(), endTime: end.toISOString(), eventUri };
 }
 
-export function formatScheduledSlot(slot: ScheduledSlot, timeZone = "America/Chicago"): string {
+export function formatScheduledSlot(
+  slot: ScheduledSlot,
+  timeZone = site.calendly.timeZone,
+): string {
   const start = new Date(slot.startTime);
   const end = new Date(slot.endTime);
   const date = new Intl.DateTimeFormat("en-US", {
