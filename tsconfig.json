@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@/tenant/*": ["./tenants/iron-lion/*"],
       "@/*": ["./*"]
     }
   },
