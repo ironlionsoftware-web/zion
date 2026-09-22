@@ -17,7 +17,7 @@ export function Footer() {
               {site.brandName}
             </p>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">{site.tagline}</p>
-            <p className="mt-6 flex gap-2 text-lg text-[var(--rasta-green)]/40" aria-hidden="true">
+            <p className="mt-6 flex gap-2 text-lg text-[var(--brand-primary)]/40" aria-hidden="true">
               <span>☀</span>
               <span>☥</span>
               <span>✦</span>

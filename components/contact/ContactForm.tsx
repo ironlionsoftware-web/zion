@@ -46,7 +46,7 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <p className="card border-[var(--rasta-green)] p-5 text-sm leading-relaxed text-[var(--foreground)]" role="status">
+      <p className="card border-[var(--brand-primary)] p-5 text-sm leading-relaxed text-[var(--foreground)]" role="status">
         {form.successMessage}
       </p>
     );
@@ -75,7 +75,7 @@ export function ContactForm() {
 
         <div>
           <label htmlFor="contact-name" className="block text-sm font-semibold text-[var(--foreground)]">
-            {form.nameLabel} <span className="text-[var(--rasta-red)]">*</span>
+            {form.nameLabel} <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="contact-name"
@@ -91,7 +91,7 @@ export function ContactForm() {
 
         <div>
           <label htmlFor="contact-email" className="block text-sm font-semibold text-[var(--foreground)]">
-            {form.emailLabel} <span className="text-[var(--rasta-red)]">*</span>
+            {form.emailLabel} <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="contact-email"
@@ -107,7 +107,7 @@ export function ContactForm() {
 
         <div>
           <label htmlFor="contact-phone" className="block text-sm font-semibold text-[var(--foreground)]">
-            {form.phoneLabel} <span className="text-[var(--rasta-red)]">*</span>
+            {form.phoneLabel} <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="contact-phone"
@@ -123,7 +123,7 @@ export function ContactForm() {
 
         <div>
           <label htmlFor="contact-message" className="block text-sm font-semibold text-[var(--foreground)]">
-            {form.messageLabel} <span className="text-[var(--rasta-red)]">*</span>
+            {form.messageLabel} <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <textarea
             id="contact-message"
@@ -147,7 +147,7 @@ export function ContactForm() {
       </button>
 
       {error ? (
-        <p className="mt-4 text-sm text-[var(--rasta-red)]" role="alert">
+        <p className="mt-4 text-sm text-[var(--brand-emphasis)]" role="alert">
           {error}
         </p>
       ) : null}

@@ -46,7 +46,7 @@ function OptionGroupPicker({
           </select>
           {selectedChoice?.description ? (
             <p
-              className="mt-3 rounded-sm border border-[var(--rasta-green)]/30 bg-surface-muted p-3 text-sm leading-relaxed text-[var(--foreground)]"
+              className="mt-3 rounded-sm border border-[var(--brand-primary)]/30 bg-surface-muted p-3 text-sm leading-relaxed text-[var(--foreground)]"
               role="status"
             >
               <span className="font-medium">{selectedChoice.label}:</span> {selectedChoice.description}
@@ -63,7 +63,7 @@ function OptionGroupPicker({
           {group.choices.map((choice) => (
             <label
               key={choice.id}
-              className={`flex cursor-pointer items-center gap-2 rounded-sm border px-3 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${selection[group.id] === choice.id ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"}`}
+              className={`flex cursor-pointer items-center gap-2 rounded-sm border px-3 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${selection[group.id] === choice.id ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : "border-subtle"}`}
             >
               <input
                 type="radio"
@@ -71,7 +71,7 @@ function OptionGroupPicker({
                 value={choice.id}
                 checked={selection[group.id] === choice.id}
                 onChange={() => onChange({ ...selection, [group.id]: choice.id })}
-                className="accent-[var(--rasta-green)]"
+                className="accent-[var(--brand-primary)]"
               />
               <span className="font-medium text-[var(--foreground)]">{choice.label}</span>
             </label>
@@ -100,7 +100,7 @@ function VariantPicker({
         {product.variants!.map((variant) => (
           <label
             key={variant.id}
-            className={`flex cursor-pointer flex-col gap-1 rounded-sm border px-3 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 sm:flex-row sm:items-center sm:justify-between ${variantId === variant.id ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"}`}
+            className={`flex cursor-pointer flex-col gap-1 rounded-sm border px-3 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 sm:flex-row sm:items-center sm:justify-between ${variantId === variant.id ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : "border-subtle"}`}
           >
             <span className="flex items-center gap-2">
               <input
@@ -109,11 +109,11 @@ function VariantPicker({
                 value={variant.id}
                 checked={variantId === variant.id}
                 onChange={() => onChange(variant.id)}
-                className="accent-[var(--rasta-green)]"
+                className="accent-[var(--brand-primary)]"
               />
               <span className="font-medium text-[var(--foreground)]">{variant.label}</span>
             </span>
-            <span className="pl-6 text-[var(--rasta-green)] sm:pl-0">{formatUsd(variant.priceCents)}</span>
+            <span className="pl-6 text-[var(--brand-primary)] sm:pl-0">{formatUsd(variant.priceCents)}</span>
           </label>
         ))}
       </div>
@@ -180,7 +180,7 @@ function ProductCard({ product, hydrated }: { product: ShopProduct; hydrated: bo
         {hasVariants ? <VariantPicker product={product} variantId={variantId} onChange={setVariantId} /> : null}
 
         <div className="mt-auto pt-4">
-          <p className="text-base font-medium text-[var(--rasta-green)]">
+          <p className="text-base font-medium text-[var(--brand-primary)]">
             {selection ? formatUsd(displayPrice ?? 0) : productPriceLabel(product)}
           </p>
           <p className="mt-1 text-xs text-muted">Excluding sales tax</p>

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "iron-lion",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "willow-creek-demo",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:demo"],
+      "port": 3001
+    }
+  ]
+}

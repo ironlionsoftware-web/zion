@@ -89,11 +89,11 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
     return (
       <div className="space-y-6">
         {confirmError ? (
-          <p className="card border-[var(--rasta-red)] p-4 text-sm text-[var(--rasta-red)]" role="alert">
+          <p className="card border-[var(--brand-emphasis)] p-4 text-sm text-[var(--brand-emphasis)]" role="alert">
             {confirmError}
           </p>
         ) : null}
-        <p className="card border-[var(--rasta-green)] p-5 text-sm leading-relaxed" role="status">
+        <p className="card border-[var(--brand-primary)] p-5 text-sm leading-relaxed" role="status">
           Thank you for your order. Payment was successful. We will follow up about delivery to your address.
         </p>
         <Link href="/shop" className="link-accent text-sm font-medium hover:underline">
@@ -142,13 +142,13 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
                   <button
                     type="button"
                     onClick={() => removeItem(line.key)}
-                    className="min-h-11 rounded-sm px-2 text-sm font-medium text-[var(--rasta-red)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2"
+                    className="min-h-11 rounded-sm px-2 text-sm font-medium text-[var(--brand-emphasis)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2"
                   >
                     Remove {line.name}
                   </button>
                 </div>
               </div>
-              <p className="shrink-0 font-medium text-[var(--rasta-green)]">{formatUsd(line.lineTotalCents)}</p>
+              <p className="shrink-0 font-medium text-[var(--brand-primary)]">{formatUsd(line.lineTotalCents)}</p>
             </li>
           ))}
         </ul>
@@ -163,7 +163,7 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
               {!deliveryReady ? (
                 <span className="text-muted">Enter address below</span>
               ) : deliveryFeeCents === 0 ? (
-                <span className="text-[var(--rasta-green)]">Free (Greater Austin)</span>
+                <span className="text-[var(--brand-primary)]">Free (Greater Austin)</span>
               ) : (
                 formatUsd(deliveryFeeCents)
               )}
@@ -171,7 +171,7 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
           </div>
           <div className="flex justify-end gap-4 text-lg font-semibold text-[var(--foreground)]">
             <dt>Total</dt>
-            <dd className="text-[var(--rasta-green)]">{formatUsd(deliveryReady ? totalCents : subtotalCents)}</dd>
+            <dd className="text-[var(--brand-primary)]">{formatUsd(deliveryReady ? totalCents : subtotalCents)}</dd>
           </div>
         </dl>
         <p className="mt-2 text-right text-xs text-muted">Excluding sales tax</p>

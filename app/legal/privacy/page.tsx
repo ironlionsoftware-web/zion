@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <PageHeader title="Privacy policy (draft)" centered />
       <div className="section-pad pt-0">
         <Container className="max-w-3xl">
-          <p className="text-sm font-medium text-[var(--rasta-red)]">
+          <p className="text-sm font-medium text-[var(--brand-emphasis)]">
             Placeholder, not legal advice. Review with counsel before publishing.
           </p>
           <div className="prose-content mt-8 space-y-4">

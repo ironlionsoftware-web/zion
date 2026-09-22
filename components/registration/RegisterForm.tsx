@@ -174,7 +174,7 @@ export function RegisterForm({
       >
         <div>
           <label htmlFor="reg-name" className="block text-sm font-semibold text-[var(--foreground)]">
-            Full name <span className="text-[var(--rasta-red)]">*</span>
+            Full name <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="reg-name"
@@ -189,7 +189,7 @@ export function RegisterForm({
         </div>
         <div>
           <label htmlFor="reg-email" className="block text-sm font-semibold text-[var(--foreground)]">
-            Email <span className="text-[var(--rasta-red)]">*</span>
+            Email <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="reg-email"
@@ -204,7 +204,7 @@ export function RegisterForm({
         </div>
         <div>
           <label htmlFor="reg-phone" className="block text-sm font-semibold text-[var(--foreground)]">
-            Phone number <span className="text-[var(--rasta-red)]">*</span>
+            Phone number <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="reg-phone"
@@ -222,7 +222,7 @@ export function RegisterForm({
             type="checkbox"
             checked={marketingConsent}
             onChange={(e) => setMarketingConsent(e.target.checked)}
-            className="mt-1 size-5 shrink-0 accent-[var(--rasta-green)]"
+            className="mt-1 size-5 shrink-0 accent-[var(--brand-primary)]"
           />
           <span>{site.registration.marketingConsentLabel}</span>
         </label>
@@ -237,7 +237,7 @@ export function RegisterForm({
       </button>
 
       {error ? (
-        <p className="mt-4 text-sm text-[var(--rasta-red)]" role="alert">
+        <p className="mt-4 text-sm text-[var(--brand-emphasis)]" role="alert">
           {error}
         </p>
       ) : null}

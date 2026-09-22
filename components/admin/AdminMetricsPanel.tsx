@@ -39,9 +39,9 @@ function StatCard({
         <p
           className={`mt-1 text-xs font-medium ${
             trend.startsWith("+")
-              ? "text-[var(--rasta-green)]"
+              ? "text-[var(--brand-primary)]"
               : trend.startsWith("-")
-                ? "text-[var(--rasta-red)]"
+                ? "text-[var(--brand-emphasis)]"
                 : "text-muted"
           }`}
         >
@@ -62,7 +62,7 @@ function BarRow({ label, value, max }: { label: string; value: number; max: numb
         <span className="shrink-0 font-medium tabular-nums">{value.toLocaleString()}</span>
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-[var(--surface-muted)]">
-        <div className="h-full rounded-full bg-[var(--rasta-green)]" style={{ width: `${width}%` }} />
+        <div className="h-full rounded-full bg-[var(--brand-primary)]" style={{ width: `${width}%` }} />
       </div>
     </li>
   );
@@ -75,7 +75,7 @@ function FunnelStep({ label, value, nextValue }: { label: string; value: number;
     <div className="card flex flex-col items-center p-4 text-center">
       <p className="text-2xl font-medium tabular-nums text-[var(--foreground)]">{value.toLocaleString()}</p>
       <p className="mt-1 text-xs text-muted">{label}</p>
-      {rate ? <p className="mt-2 text-[10px] uppercase tracking-wide text-[var(--rasta-green)]">{rate}</p> : null}
+      {rate ? <p className="mt-2 text-[10px] uppercase tracking-wide text-[var(--brand-primary)]">{rate}</p> : null}
     </div>
   );
 }

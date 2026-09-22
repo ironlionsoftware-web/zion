@@ -89,7 +89,7 @@ export function MobileMenu({ nav }: MobileMenuProps) {
           </p>
           <button
             type="button"
-            className="min-h-11 min-w-11 rounded-sm px-3 text-sm font-semibold text-[var(--rasta-green)] outline-none active:text-[var(--rasta-red)] focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2"
+            className="min-h-11 min-w-11 rounded-sm px-3 text-sm font-semibold text-[var(--brand-primary)] outline-none active:text-[var(--brand-emphasis)] focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2"
             onClick={closeMenu}
           >
             Close
@@ -100,7 +100,7 @@ export function MobileMenu({ nav }: MobileMenuProps) {
             <a
               key={item.href}
               href={item.href}
-              className="block rounded-sm px-3 py-4 text-base font-medium leading-snug text-earth no-underline outline-none active:bg-surface-muted focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2"
+              className="block rounded-sm px-3 py-4 text-base font-medium leading-snug text-earth no-underline outline-none active:bg-surface-muted focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2"
               onClick={(event) => {
                 event.preventDefault();
                 navigate(item.href);
@@ -128,7 +128,7 @@ export function MobileMenu({ nav }: MobileMenuProps) {
     <>
       <button
         type="button"
-        className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-sm border border-subtle text-earth outline-none active:border-[var(--rasta-green)] active:text-[var(--rasta-green)] focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2 lg:hidden motion-reduce:transition-none"
+        className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-sm border border-subtle text-earth outline-none active:border-[var(--brand-primary)] active:text-[var(--brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2 lg:hidden motion-reduce:transition-none"
         aria-expanded={open}
         aria-controls="site-mobile-menu"
         aria-haspopup="dialog"

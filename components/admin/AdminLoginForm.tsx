@@ -50,11 +50,11 @@ export function AdminLoginForm({ redirectTo }: AdminLoginFormProps) {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-2 w-full rounded-sm border border-subtle bg-[var(--cream)] px-4 py-3 text-[var(--foreground)] outline-none focus-visible:border-[var(--rasta-green)] focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)]"
+          className="mt-2 w-full rounded-sm border border-subtle bg-[var(--cream)] px-4 py-3 text-[var(--foreground)] outline-none focus-visible:border-[var(--brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
         />
       </div>
       {error ? (
-        <p className="text-sm text-[var(--rasta-red)]" role="alert">
+        <p className="text-sm text-[var(--brand-emphasis)]" role="alert">
           {error}
         </p>
       ) : null}

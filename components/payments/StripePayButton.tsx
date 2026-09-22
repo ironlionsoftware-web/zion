@@ -80,7 +80,7 @@ export function StripePayButton({
         {loading ? "Redirecting to secure checkout…" : label}
       </button>
       {error ? (
-        <p className="mt-3 text-sm text-[var(--rasta-red)]" role="alert">
+        <p className="mt-3 text-sm text-[var(--brand-emphasis)]" role="alert">
           {error}
         </p>
       ) : null}

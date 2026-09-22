@@ -25,7 +25,7 @@ export function SlidingScalePicker({
       <label htmlFor={id} className="block text-sm font-semibold text-[var(--foreground)]">
         {label}
       </label>
-      <p id={`${id}-display`} className="mt-2 font-display text-3xl font-medium text-[var(--rasta-green)]">
+      <p id={`${id}-display`} className="mt-2 font-display text-3xl font-medium text-[var(--brand-primary)]">
         {formatUsd(valueCents)}
       </p>
       <input
@@ -36,7 +36,7 @@ export function SlidingScalePicker({
         step={500}
         value={valueCents}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="mt-6 w-full accent-[var(--rasta-green)]"
+        className="mt-6 w-full accent-[var(--brand-primary)]"
         aria-valuemin={scale.minCents / 100}
         aria-valuemax={scale.maxCents / 100}
         aria-valuenow={valueCents / 100}

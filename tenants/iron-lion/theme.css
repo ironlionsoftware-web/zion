@@ -1,0 +1,24 @@
+/* Iron Lion Fitness & Holistic Healing — palette.
+   Red, gold and green are the Rasta colours the brand is built on. */
+:root {
+  --background: #faf7f0;
+  --foreground: #2a2218;
+  --muted: #5c4f3a;
+  --surface: #ffffff;
+  --surface-muted: #f3efe6;
+  --border: #e5ddd0;
+  --brand-emphasis: #b11226;
+  --brand-accent: #c9a227;
+  --brand-primary: #17633a;
+  --earth: #3b2414;
+  --cream: #fffdf8;
+  /* Channel form of the brand colours, so translucent washes can be built
+     with rgb(var(--token) / alpha) instead of repeating literals. */
+  --brand-primary-rgb: 23 99 58;
+  --brand-accent-rgb: 201 162 39;
+  --brand-emphasis-rgb: 177 18 38;
+  --brand-primary-hover: #0f4d2c;
+  /* Used only under prefers-contrast: more. */
+  --muted-contrast: #3d3224;
+  --border-contrast: #8a7a62;
+}

@@ -26,7 +26,7 @@ export function FitnessTrainerPicker({
         {trainers.map((trainer) => (
           <label
             key={trainer.slug}
-            className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value === trainer.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+            className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value === trainer.slug ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
           >
             <input
               type="radio"

@@ -72,7 +72,7 @@ export function RetreatParticipantPayment({
         <li>
           <span className="font-medium">Deposit ({formatRetreatUsd(quote.depositCents)}):</span>{" "}
           {participant.depositPaidAt ? (
-            <span className="text-[var(--rasta-green)]">Paid {new Date(participant.depositPaidAt).toLocaleDateString()}</span>
+            <span className="text-[var(--brand-primary)]">Paid {new Date(participant.depositPaidAt).toLocaleDateString()}</span>
           ) : (
             <span className="text-muted">Due now</span>
           )}
@@ -80,7 +80,7 @@ export function RetreatParticipantPayment({
         <li>
           <span className="font-medium">Balance ({formatRetreatUsd(quote.balanceCents)}):</span>{" "}
           {participant.balancePaidAt ? (
-            <span className="text-[var(--rasta-green)]">
+            <span className="text-[var(--brand-primary)]">
               Paid {new Date(participant.balancePaidAt).toLocaleDateString()}
               {participant.balancePaymentPlan === "installments" ? " (installments)" : ""}
             </span>
@@ -147,7 +147,7 @@ export function RetreatParticipantPayment({
           ) : null}
         </div>
       ) : participant.depositPaidAt && participant.balancePaidAt ? (
-        <p className="mt-5 text-sm font-medium text-[var(--rasta-green)]">Fully paid. Thank you!</p>
+        <p className="mt-5 text-sm font-medium text-[var(--brand-primary)]">Fully paid. Thank you!</p>
       ) : null}
     </article>
   );

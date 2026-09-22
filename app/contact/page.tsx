@@ -32,7 +32,7 @@ export default function ContactPage() {
               <dd className="mt-2">
                 <a
                   href={mailto}
-                  className="link-accent inline-flex min-h-11 items-center text-lg font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2"
+                  className="link-accent inline-flex min-h-11 items-center text-lg font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2"
                 >
                   {site.contact.email}
                 </a>
@@ -43,7 +43,7 @@ export default function ContactPage() {
               <dd className="mt-2">
                 <a
                   href={`tel:${site.contact.phoneTel}`}
-                  className="link-accent inline-flex min-h-11 items-center text-lg font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2"
+                  className="link-accent inline-flex min-h-11 items-center text-lg font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2"
                 >
                   {site.contact.phoneDisplay}
                 </a>
@@ -62,14 +62,14 @@ export default function ContactPage() {
             Prefer to start with a topic? See{" "}
             <a
               href="/healing-services"
-              className="link-accent font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2"
+              className="link-accent font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2"
             >
               Healing Services & Classes
             </a>{" "}
             to book a specific offering, or{" "}
             <a
               href="/shop"
-              className="link-accent font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2"
+              className="link-accent font-medium outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2"
             >
               Shop plant medicine
             </a>{" "}

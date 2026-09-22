@@ -1,0 +1,22 @@
+/* Willow Creek Healing Arts — palette.
+   Demo tenant: soft sage and clay, deliberately unlike Iron Lion so a
+   colour left hard-coded in a component is obvious on screen. */
+:root {
+  --background: #f7f6f2;
+  --foreground: #2b2c26;
+  --muted: #5a5c52;
+  --surface: #ffffff;
+  --surface-muted: #eeefe8;
+  --border: #dcddd2;
+  --brand-emphasis: #8c4a3f;
+  --brand-accent: #c08a4a;
+  --brand-primary: #4a6b52;
+  --earth: #3a3428;
+  --cream: #fffefa;
+  --brand-primary-rgb: 74 107 82;
+  --brand-accent-rgb: 192 138 74;
+  --brand-emphasis-rgb: 140 74 63;
+  --brand-primary-hover: #3a5641;
+  --muted-contrast: #3b3d34;
+  --border-contrast: #8c8e80;
+}

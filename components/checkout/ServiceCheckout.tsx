@@ -155,12 +155,12 @@ export function ServiceCheckout({
   return (
     <div className="space-y-10">
       {confirmError ? (
-        <p className="card border-[var(--rasta-red)] p-4 text-sm text-[var(--rasta-red)]" role="alert">
+        <p className="card border-[var(--brand-emphasis)] p-4 text-sm text-[var(--brand-emphasis)]" role="alert">
           {confirmError}
         </p>
       ) : null}
       {success ? (
-        <p className="card border-[var(--rasta-green)] p-5 text-sm leading-relaxed" role="status">
+        <p className="card border-[var(--brand-primary)] p-5 text-sm leading-relaxed" role="status">
           {isClass ? (
             p.classSuccessHint
           ) : confirmedScheduleLabel || scheduledSlot ? (
@@ -185,10 +185,10 @@ export function ServiceCheckout({
         <h2 className="font-display text-xl font-medium text-[var(--foreground)]">{serviceLabel}</h2>
         {fitnessGroup ? (
           <>
-            <p className="mt-2 text-lg font-medium text-[var(--rasta-green)]">
+            <p className="mt-2 text-lg font-medium text-[var(--brand-primary)]">
               {formatUsd(getFitnessGroupPerPersonCents())} per person · {fitnessOptions.groupSize} people
             </p>
-            <p className="mt-1 text-sm font-medium text-[var(--rasta-green)]">
+            <p className="mt-1 text-sm font-medium text-[var(--brand-primary)]">
               {formatUsd(baseCheckoutCents)} per group session
               {fitnessRecurring
                 ? ` · ${formatUsd(checkoutPriceCents)} billed weekly (${fitnessOptions.sessionsPerWeek}×/week)`
@@ -197,12 +197,12 @@ export function ServiceCheckout({
           </>
         ) : slidingScale ? (
           <>
-            <p className="mt-2 text-lg font-medium text-[var(--rasta-green)]">
+            <p className="mt-2 text-lg font-medium text-[var(--brand-primary)]">
               {formatSlidingScaleRange(slidingScale)} sliding scale
               {fitnessRecurring ? " per session" : null}
             </p>
             {fitnessRecurring ? (
-              <p className="mt-1 text-sm font-medium text-[var(--rasta-green)]">
+              <p className="mt-1 text-sm font-medium text-[var(--brand-primary)]">
                 {formatUsd(checkoutPriceCents)} billed weekly ({formatUsd(baseCheckoutCents)} ×{" "}
                 {fitnessOptions.sessionsPerWeek} session{fitnessOptions.sessionsPerWeek === 1 ? "" : "s"}/week)
               </p>
@@ -212,7 +212,7 @@ export function ServiceCheckout({
           </>
         ) : (
           <>
-            <p className="mt-2 text-2xl font-medium text-[var(--rasta-green)]">{formatUsd(checkoutPriceCents)}</p>
+            <p className="mt-2 text-2xl font-medium text-[var(--brand-primary)]">{formatUsd(checkoutPriceCents)}</p>
             {isDual && baseCheckoutCents !== priceCents ? (
               <p className="mt-1 text-xs text-muted">
                 Dual session ({site.practitioners.dualSession.priceMultiplier}× single practitioner rate)

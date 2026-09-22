@@ -92,7 +92,7 @@ export function WellnessGuideFinder({ compact = false }: { compact?: boolean }) 
         Describe your conditions, goals, or how you are feeling. We will suggest the best-fit services and plant
         medicine from our offerings.
         {aiEnabled === true ? (
-          <span className="mt-2 block text-xs font-medium text-[var(--rasta-green)]">AI guide is active on this site.</span>
+          <span className="mt-2 block text-xs font-medium text-[var(--brand-primary)]">AI guide is active on this site.</span>
         ) : null}
       </p>
 
@@ -139,7 +139,7 @@ export function WellnessGuideFinder({ compact = false }: { compact?: boolean }) 
             type="button"
             disabled={loading}
             onClick={() => void runSearch(example)}
-            className="min-h-10 rounded-full border border-subtle bg-[var(--surface-muted)] px-3 py-2 text-xs font-medium text-earth transition hover:border-[var(--rasta-green)] hover:text-[var(--rasta-green)] disabled:opacity-50 motion-reduce:transition-none"
+            className="min-h-10 rounded-full border border-subtle bg-[var(--surface-muted)] px-3 py-2 text-xs font-medium text-earth transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] disabled:opacity-50 motion-reduce:transition-none"
           >
             {example}
           </button>
@@ -147,7 +147,7 @@ export function WellnessGuideFinder({ compact = false }: { compact?: boolean }) 
       </div>
 
       {error ? (
-        <p className="mt-4 text-sm text-[var(--rasta-red)]" role="alert">
+        <p className="mt-4 text-sm text-[var(--brand-emphasis)]" role="alert">
           {error}
         </p>
       ) : null}
@@ -162,7 +162,7 @@ export function WellnessGuideFinder({ compact = false }: { compact?: boolean }) 
                   : "Top matches from our wellness catalog"}
               </p>
               {result.aiIssue ? (
-                <p className="mt-2 text-sm text-[var(--rasta-gold)]" role="status">
+                <p className="mt-2 text-sm text-[var(--brand-accent)]" role="status">
                   {result.aiIssue}
                 </p>
               ) : null}
@@ -170,7 +170,7 @@ export function WellnessGuideFinder({ compact = false }: { compact?: boolean }) 
                 {result.recommendations.map((rec, index) => (
                   <li key={rec.id} className="card p-5">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <span className="text-xs font-semibold uppercase tracking-wide text-[var(--rasta-green)]">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-primary)]">
                         {index + 1}. {kindLabels[rec.kind] ?? rec.kind}
                       </span>
                     </div>

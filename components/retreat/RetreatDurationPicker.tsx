@@ -32,7 +32,7 @@ export function RetreatDurationPicker({
           return (
             <label
               key={option.slug}
-              className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value === option.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : ""} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value === option.slug ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : ""} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
             >
               <input
                 type="radio"
@@ -43,7 +43,7 @@ export function RetreatDurationPicker({
                 className="sr-only"
               />
               <span className="block font-medium text-[var(--foreground)]">{option.label}</span>
-              <span className="mt-1 block text-sm text-[var(--rasta-green)]">
+              <span className="mt-1 block text-sm text-[var(--brand-primary)]">
                 {formatRetreatUsd(option.totalCents)} all inclusive
               </span>
               <span className="mt-1 block text-xs text-muted">

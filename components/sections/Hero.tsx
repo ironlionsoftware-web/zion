@@ -12,7 +12,7 @@ export function Hero() {
     >
       <Container className="section-pad">
         <BrandEmblem className="mx-auto" />
-        <p className="font-display mx-auto mt-8 max-w-full px-1 text-lg tracking-[0.12em] text-balance text-[var(--rasta-green)] sm:mt-10 sm:text-2xl sm:tracking-[0.28em] md:text-3xl md:tracking-[0.35em]">
+        <p className="font-display mx-auto mt-8 max-w-full px-1 text-lg tracking-[0.12em] text-balance text-[var(--brand-primary)] sm:mt-10 sm:text-2xl sm:tracking-[0.28em] md:text-3xl md:tracking-[0.35em]">
           {site.home.heroMantra.join(" · ")}
         </p>
         <p className="eyebrow mt-6 sm:mt-8">{site.home.heroEyebrow}</p>
@@ -31,7 +31,7 @@ export function Hero() {
             Healing Services & Classes
           </Link>
         </div>
-        <p className="mt-14 flex justify-center gap-4 text-xl text-[var(--rasta-gold)]/50" aria-hidden="true">
+        <p className="mt-14 flex justify-center gap-4 text-xl text-[var(--brand-accent)]/50" aria-hidden="true">
           <span>☀</span>
           <span>☥</span>
           <span>✦</span>

@@ -100,7 +100,7 @@ export function CalendlyScheduler({
       </p>
 
       {value ? (
-        <p className="mt-4 rounded-sm border border-[var(--rasta-green)] bg-[var(--rasta-green)]/10 p-4 text-sm" role="status">
+        <p className="mt-4 rounded-sm border border-[var(--brand-primary)] bg-[var(--brand-primary)]/10 p-4 text-sm" role="status">
           <span className="font-semibold text-[var(--foreground)]">Time selected:</span>{" "}
           {formatScheduledSlot(value)}
           {!disabled ? (

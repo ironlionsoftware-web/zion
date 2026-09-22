@@ -23,7 +23,7 @@ export function RetreatTypePicker({ value, onChange, disabled, name = "retreat-t
         {types.map((type) => (
           <label
             key={type.slug}
-            className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value === type.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : ""} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+            className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value === type.slug ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : ""} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
           >
             <input
               type="radio"
@@ -36,18 +36,18 @@ export function RetreatTypePicker({ value, onChange, disabled, name = "retreat-t
             <span className="block font-medium text-[var(--foreground)]">{type.label}</span>
             {type.summary ? <span className="mt-1 block text-xs text-muted">{type.summary}</span> : null}
             {"durationOptions" in type && type.durationOptions.length > 0 ? (
-              <span className="mt-1 block text-xs font-medium text-[var(--rasta-green)]">
+              <span className="mt-1 block text-xs font-medium text-[var(--brand-primary)]">
                 {type.durationOptions
                   .map((d) => `${d.label} ${formatRetreatUsd(d.totalCents)}`)
                   .join(" · ")}
               </span>
             ) : "totalCents" in type && typeof type.totalCents === "number" ? (
-              <span className="mt-1 block text-xs font-medium text-[var(--rasta-green)]">
+              <span className="mt-1 block text-xs font-medium text-[var(--brand-primary)]">
                 {"duration" in type && type.duration ? `${type.duration} · ` : ""}
                 {formatRetreatUsd(type.totalCents)} per person · all-inclusive
               </span>
             ) : "duration" in type && type.duration ? (
-              <span className="mt-1 block text-xs font-medium text-[var(--rasta-green)]">
+              <span className="mt-1 block text-xs font-medium text-[var(--brand-primary)]">
                 {type.duration} · {formatRetreatUsd(site.retreat.booking.totalCents)} all-inclusive
               </span>
             ) : null}

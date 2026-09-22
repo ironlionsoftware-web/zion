@@ -27,7 +27,7 @@ export function DonationForm({ paymentsReady }: DonationFormProps) {
       <label htmlFor="donation-amount" className="block text-sm font-semibold text-[var(--foreground)]">
         Your contribution
       </label>
-      <p id="donation-amount-display" className="mt-2 font-display text-3xl font-medium text-[var(--rasta-green)]">
+      <p id="donation-amount-display" className="mt-2 font-display text-3xl font-medium text-[var(--brand-primary)]">
         {formatUsd(amountCents)}
       </p>
       <input
@@ -38,7 +38,7 @@ export function DonationForm({ paymentsReady }: DonationFormProps) {
         step={500}
         value={amountCents}
         onChange={(e) => setAmountCents(Number(e.target.value))}
-        className="mt-6 w-full accent-[var(--rasta-green)]"
+        className="mt-6 w-full accent-[var(--brand-primary)]"
         aria-valuemin={minCents / 100}
         aria-valuemax={maxCents / 100}
         aria-valuenow={amountCents / 100}

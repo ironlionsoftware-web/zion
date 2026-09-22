@@ -29,7 +29,7 @@ export function ReikiAddOnPicker({ value, onChange, disabled }: ReikiAddOnPicker
       <legend className="text-sm font-semibold text-[var(--foreground)]">{cfg.legend}</legend>
       <p className="mt-2 text-sm text-muted">{cfg.lead}</p>
       {value.length > 0 ? (
-        <p className="mt-2 text-sm font-medium text-[var(--rasta-green)]">
+        <p className="mt-2 text-sm font-medium text-[var(--brand-primary)]">
           {value.length} selected · +{formatUsd(value.length * addOnPrice)} total add-ons
         </p>
       ) : (
@@ -41,7 +41,7 @@ export function ReikiAddOnPicker({ value, onChange, disabled }: ReikiAddOnPicker
           return (
             <label
               key={option.slug}
-              className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${checked ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : ""} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${checked ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : ""} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
             >
               <input
                 type="checkbox"
@@ -53,7 +53,7 @@ export function ReikiAddOnPicker({ value, onChange, disabled }: ReikiAddOnPicker
               />
               <span className="block font-medium text-[var(--foreground)]">
                 {option.label}{" "}
-                <span className="font-normal text-[var(--rasta-green)]">+{formatUsd(addOnPrice)}</span>
+                <span className="font-normal text-[var(--brand-primary)]">+{formatUsd(addOnPrice)}</span>
               </span>
               <span className="mt-1 block text-xs text-muted">{option.summary}</span>
             </label>

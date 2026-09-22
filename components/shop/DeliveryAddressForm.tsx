@@ -66,7 +66,7 @@ export function DeliveryAddressForm({ value, onChange, disabled }: DeliveryAddre
 
       <div>
         <label htmlFor="delivery-line1" className="block text-sm font-semibold text-[var(--foreground)]">
-          Street address <span className="text-[var(--rasta-red)]">*</span>
+          Street address <span className="text-[var(--brand-emphasis)]">*</span>
         </label>
         <input
           id="delivery-line1"
@@ -98,7 +98,7 @@ export function DeliveryAddressForm({ value, onChange, disabled }: DeliveryAddre
       <div className="grid max-w-xl gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label htmlFor="delivery-city" className="block text-sm font-semibold text-[var(--foreground)]">
-            City <span className="text-[var(--rasta-red)]">*</span>
+            City <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="delivery-city"
@@ -113,7 +113,7 @@ export function DeliveryAddressForm({ value, onChange, disabled }: DeliveryAddre
         </div>
         <div>
           <label htmlFor="delivery-state" className="block text-sm font-semibold text-[var(--foreground)]">
-            State <span className="text-[var(--rasta-red)]">*</span>
+            State <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="delivery-state"
@@ -129,7 +129,7 @@ export function DeliveryAddressForm({ value, onChange, disabled }: DeliveryAddre
         </div>
         <div>
           <label htmlFor="delivery-postal" className="block text-sm font-semibold text-[var(--foreground)]">
-            ZIP code <span className="text-[var(--rasta-red)]">*</span>
+            ZIP code <span className="text-[var(--brand-emphasis)]">*</span>
           </label>
           <input
             id="delivery-postal"
@@ -150,7 +150,7 @@ export function DeliveryAddressForm({ value, onChange, disabled }: DeliveryAddre
         <p className="text-sm text-[var(--foreground)]" role="status">
           {preview.freeDelivery ? (
             <>
-              <span className="font-medium text-[var(--rasta-green)]">Free delivery</span> — your address is in the
+              <span className="font-medium text-[var(--brand-primary)]">Free delivery</span> — your address is in the
               Greater Austin area ({formatDeliveryAddressInline(parsed)}).
             </>
           ) : (

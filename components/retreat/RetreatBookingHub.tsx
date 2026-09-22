@@ -82,7 +82,7 @@ export function RetreatBookingHub({
           <li
             key={`${participant.email}-${index}`}
             className={
-              highlightParticipant === index ? "ring-2 ring-[var(--rasta-green)] ring-offset-2 rounded-xl" : undefined
+              highlightParticipant === index ? "ring-2 ring-[var(--brand-primary)] ring-offset-2 rounded-xl" : undefined
             }
           >
             <RetreatParticipantPayment

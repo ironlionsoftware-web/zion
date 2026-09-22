@@ -141,7 +141,7 @@ export function AdminDashboard() {
               onClick={() => setTab(t.id)}
               className={`rounded-sm px-4 py-2 text-sm font-medium transition ${
                 tab === t.id
-                  ? "bg-[var(--rasta-green)] text-white"
+                  ? "bg-[var(--brand-primary)] text-white"
                   : "border border-subtle bg-[var(--surface)] text-[var(--foreground)] hover:bg-[var(--surface-muted)]"
               }`}
             >
@@ -207,7 +207,7 @@ export function AdminDashboard() {
       )}
 
       {error ? (
-        <p className="text-sm text-[var(--rasta-red)]" role="alert">
+        <p className="text-sm text-[var(--brand-emphasis)]" role="alert">
           {error}
         </p>
       ) : null}
@@ -311,8 +311,8 @@ export function AdminDashboard() {
                 <span
                   className={`rounded-sm px-2 py-1 text-xs font-medium ${
                     o.status === "fulfilled"
-                      ? "bg-[var(--rasta-green)]/15 text-[var(--rasta-green)]"
-                      : "bg-[var(--rasta-gold)]/20 text-[var(--foreground)]"
+                      ? "bg-[var(--brand-primary)]/15 text-[var(--brand-primary)]"
+                      : "bg-[var(--brand-accent)]/20 text-[var(--foreground)]"
                   }`}
                 >
                   {o.status}

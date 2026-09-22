@@ -32,7 +32,7 @@ export default async function DonationPage({ searchParams }: PageProps) {
             <DonationConfirm />
           </Suspense>
           {params.success ? (
-            <p className="card mb-8 border-[var(--rasta-green)] p-4 text-sm leading-relaxed text-[var(--foreground)]" role="status">
+            <p className="card mb-8 border-[var(--brand-primary)] p-4 text-sm leading-relaxed text-[var(--foreground)]" role="status">
               Thank you for your contribution. We received your payment and appreciate your support.
             </p>
           ) : null}

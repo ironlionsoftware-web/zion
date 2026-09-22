@@ -11,12 +11,12 @@ export function Header() {
       <Container className="flex items-center justify-between gap-2 py-3 sm:gap-6 sm:py-5">
         <Link
           href="/"
-          className="group min-w-0 flex-1 flex-col justify-center pr-2 outline-none focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2 sm:max-w-xs sm:flex-none sm:pr-0"
+          className="group min-w-0 flex-1 flex-col justify-center pr-2 outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2 sm:max-w-xs sm:flex-none sm:pr-0"
         >
-          <span className="font-display text-sm font-medium leading-snug text-[var(--foreground)] transition group-hover:text-[var(--rasta-green)] sm:text-base md:text-lg motion-reduce:transition-none lg:hidden">
+          <span className="font-display text-sm font-medium leading-snug text-[var(--foreground)] transition group-hover:text-[var(--brand-primary)] sm:text-base md:text-lg motion-reduce:transition-none lg:hidden">
             {site.shortName}
           </span>
-          <span className="font-display hidden text-sm font-medium leading-snug break-words text-[var(--foreground)] transition group-hover:text-[var(--rasta-green)] lg:inline lg:text-base xl:text-lg motion-reduce:transition-none">
+          <span className="font-display hidden text-sm font-medium leading-snug break-words text-[var(--foreground)] transition group-hover:text-[var(--brand-primary)] lg:inline lg:text-base xl:text-lg motion-reduce:transition-none">
             {site.brandName}
           </span>
         </Link>
@@ -26,7 +26,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-sm px-3 py-2 text-sm font-medium text-earth outline-none transition hover:text-[var(--rasta-green)] focus-visible:ring-2 focus-visible:ring-[var(--rasta-gold)] focus-visible:ring-offset-2 motion-reduce:transition-none"
+              className="rounded-sm px-3 py-2 text-sm font-medium text-earth outline-none transition hover:text-[var(--brand-primary)] focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2 motion-reduce:transition-none"
             >
               {item.label}
             </Link>

@@ -38,7 +38,7 @@ export function PractitionerPicker({
         {practitioners.map((practitioner) => (
           <label
             key={practitioner.slug}
-            className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value === practitioner.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : ""} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+            className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value === practitioner.slug ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : ""} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
           >
             <input
               type="radio"
@@ -53,7 +53,7 @@ export function PractitionerPicker({
           </label>
         ))}
         <label
-          className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 sm:col-span-2 ${value === DUAL_PRACTITIONER_SLUG ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-[var(--rasta-gold)]/40"}`}
+          className={`card cursor-pointer p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 sm:col-span-2 ${value === DUAL_PRACTITIONER_SLUG ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : "border-[var(--brand-accent)]/40"}`}
         >
           <input
             type="radio"
@@ -68,7 +68,7 @@ export function PractitionerPicker({
           <span className="mt-1 block text-xs text-muted">{dual.title}</span>
           <p className="mt-2 text-xs leading-relaxed text-muted">{dual.description}</p>
           {dualPriceCents != null ? (
-            <p className="mt-2 text-sm font-medium text-[var(--rasta-green)]">
+            <p className="mt-2 text-sm font-medium text-[var(--brand-primary)]">
               {formatUsd(dualPriceCents)}
               <span className="ml-1 font-normal text-muted">
                 ({dual.priceMultiplier}× single session)

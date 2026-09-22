@@ -38,7 +38,7 @@ export default function RetreatPage() {
                   <h3 className="font-medium text-[var(--foreground)]">{type.label}</h3>
                   {type.summary ? <p className="mt-2 text-sm text-muted">{type.summary}</p> : null}
                   {"durationOptions" in type && type.durationOptions.length > 0 ? (
-                    <ul className="mt-3 space-y-1 text-xs font-medium text-[var(--rasta-green)]">
+                    <ul className="mt-3 space-y-1 text-xs font-medium text-[var(--brand-primary)]">
                       {type.durationOptions.map((d) => (
                         <li key={d.slug}>
                           {d.label}: {formatRetreatUsd(d.totalCents)} all inclusive · $500 deposit
@@ -46,12 +46,12 @@ export default function RetreatPage() {
                       ))}
                     </ul>
                   ) : "totalCents" in type && typeof type.totalCents === "number" ? (
-                    <p className="mt-2 text-xs font-medium text-[var(--rasta-green)]">
+                    <p className="mt-2 text-xs font-medium text-[var(--brand-primary)]">
                       {"duration" in type && type.duration ? `${type.duration} · ` : ""}
                       {formatRetreatUsd(type.totalCents)} per person · $500 deposit
                     </p>
                   ) : "duration" in type && type.duration ? (
-                    <p className="mt-2 text-xs font-medium text-[var(--rasta-green)]">{type.duration}</p>
+                    <p className="mt-2 text-xs font-medium text-[var(--brand-primary)]">{type.duration}</p>
                   ) : null}
                 </li>
               ))}

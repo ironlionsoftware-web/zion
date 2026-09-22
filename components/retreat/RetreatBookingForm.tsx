@@ -280,7 +280,7 @@ export function RetreatBookingForm() {
                   type="checkbox"
                   checked={participant.marketingConsent}
                   onChange={(e) => updateParticipant(index, "marketingConsent", e.target.checked)}
-                  className="mt-1 size-5 shrink-0 accent-[var(--rasta-green)]"
+                  className="mt-1 size-5 shrink-0 accent-[var(--brand-primary)]"
                 />
                 <span>{cfg.marketingConsentLabel}</span>
               </label>
@@ -294,7 +294,7 @@ export function RetreatBookingForm() {
       </button>
 
       {error ? (
-        <p className="text-sm text-[var(--rasta-red)]" role="alert">
+        <p className="text-sm text-[var(--brand-emphasis)]" role="alert">
           {error}
         </p>
       ) : null}

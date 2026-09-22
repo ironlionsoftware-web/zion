@@ -43,7 +43,7 @@ export function FitnessBookingOptionsPicker({
           {trainingFormats.map((option) => (
             <label
               key={option.slug}
-              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value.trainingFormat === option.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value.trainingFormat === option.slug ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
             >
               <input
                 type="radio"
@@ -76,7 +76,7 @@ export function FitnessBookingOptionsPicker({
             {groupSizeOptions.map((size) => (
               <label
                 key={size}
-                className={`cursor-pointer rounded-sm border px-4 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value.groupSize === size ? "border-[var(--rasta-green)] bg-[var(--rasta-green)]/10 font-medium text-[var(--foreground)] ring-1 ring-[var(--rasta-green)]" : "border-subtle text-muted"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+                className={`cursor-pointer rounded-sm border px-4 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value.groupSize === size ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/10 font-medium text-[var(--foreground)] ring-1 ring-[var(--brand-primary)]" : "border-subtle text-muted"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
               >
                 <input
                   type="radio"
@@ -99,7 +99,7 @@ export function FitnessBookingOptionsPicker({
           {sessionTypes.map((option) => (
             <label
               key={option.slug}
-              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value.sessionType === option.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value.sessionType === option.slug ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
             >
               <input
                 type="radio"
@@ -122,7 +122,7 @@ export function FitnessBookingOptionsPicker({
           {audienceTypes.map((option) => (
             <label
               key={option.slug}
-              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value.audience === option.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value.audience === option.slug ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
             >
               <input
                 type="radio"
@@ -145,7 +145,7 @@ export function FitnessBookingOptionsPicker({
           {frequencyOptions.map((count) => (
             <label
               key={count}
-              className={`cursor-pointer rounded-sm border px-4 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value.sessionsPerWeek === count ? "border-[var(--rasta-green)] bg-[var(--rasta-green)]/10 font-medium text-[var(--foreground)] ring-1 ring-[var(--rasta-green)]" : "border-subtle text-muted"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`cursor-pointer rounded-sm border px-4 py-2 text-sm transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value.sessionsPerWeek === count ? "border-[var(--brand-primary)] bg-[var(--brand-primary)]/10 font-medium text-[var(--foreground)] ring-1 ring-[var(--brand-primary)]" : "border-subtle text-muted"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
             >
               <input
                 type="radio"
@@ -167,7 +167,7 @@ export function FitnessBookingOptionsPicker({
           {billingModes.map((option) => (
             <label
               key={option.slug}
-              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--rasta-gold)] has-focus-visible:ring-offset-2 ${value.billingMode === option.slug ? "border-[var(--rasta-green)] ring-1 ring-[var(--rasta-green)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`cursor-pointer rounded-sm border p-4 transition has-focus-visible:ring-2 has-focus-visible:ring-[var(--brand-accent)] has-focus-visible:ring-offset-2 ${value.billingMode === option.slug ? "border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]" : "border-subtle"} ${disabled ? "cursor-not-allowed opacity-60" : ""}`}
             >
               <input
                 type="radio"

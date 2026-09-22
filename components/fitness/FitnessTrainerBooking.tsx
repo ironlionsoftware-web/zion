@@ -65,7 +65,7 @@ export function FitnessTrainerBooking({ registration }: FitnessTrainerBookingPro
         {cfg.heading}
       </h2>
       <p className="prose-content mt-4">{cfg.lead}</p>
-      <p className="mt-2 text-sm font-medium text-[var(--rasta-green)]">
+      <p className="mt-2 text-sm font-medium text-[var(--brand-primary)]">
         {groupSelected
           ? `${formatUsd(getFitnessGroupPerPersonCents())} per person for groups of ${cfg.groupTraining.minSize}–${cfg.groupTraining.maxSize}`
           : `${formatSlidingScaleRange(cfg.slidingScale)} sliding scale per session`}
