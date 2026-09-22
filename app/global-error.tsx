@@ -1,5 +1,7 @@
 "use client";
 
+import { site } from "@/content/site";
+
 /**
  * Catches errors thrown by the root layout itself. This replaces the entire root layout when it
  * fires, so it must render its own <html> and <body> — RootShell, globals.css, and the
@@ -125,7 +127,7 @@ export default function GlobalError({
       </head>
       <body className="ge-body">
         <div className="ge-card">
-          <p className="ge-eyebrow">Iron Lion Fitness &amp; Holistic Healing</p>
+          <p className="ge-eyebrow">{site.name}</p>
           <h1 className="ge-title">Something went wrong</h1>
           <p className="ge-lead">This wasn&rsquo;t your fault. Please try again in a moment.</p>
           <div className="ge-actions">

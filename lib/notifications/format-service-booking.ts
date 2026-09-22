@@ -2,6 +2,7 @@ import type Stripe from "stripe";
 import { formatScheduledSlot } from "@/lib/booking/calendly-schedule";
 import { formatUsd } from "@/lib/cart/products";
 import type { DbServiceBooking } from "@/lib/db/types";
+import { site } from "@/content/site";
 
 function meta(session: Stripe.Checkout.Session, key: string): string {
   return session.metadata?.[key]?.trim() ?? "";
@@ -92,7 +93,7 @@ export function formatServiceBookingAdminEmail(
   const recurring = booking.paymentPlan === "recurring";
 
   const text = [
-    `A customer completed a service booking on Iron Lion.`,
+    `A customer completed a service booking on ${site.shortName}.`,
     "",
     section("CUSTOMER", [
       line("Name", booking.fullName),

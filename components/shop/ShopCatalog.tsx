@@ -217,19 +217,21 @@ export function ShopCatalog() {
           </li>
         ))}
       </ul>
-      <p className="prose-content mt-10 text-sm">
-        Prefer to browse on our previous storefront?{" "}
-        <Link
-          href="https://www.ironlionfitnessandhealing.com/shop"
-          className="link-accent font-medium hover:underline"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Visit the apothecary shop
-          <span className="sr-only"> (opens in new tab)</span>
-        </Link>
-        .
-      </p>
+      {site.shop.legacyStorefront.url ? (
+        <p className="prose-content mt-10 text-sm">
+          {site.shop.legacyStorefront.prompt}{" "}
+          <Link
+            href={site.shop.legacyStorefront.url}
+            className="link-accent font-medium hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {site.shop.legacyStorefront.label}
+            <span className="sr-only"> (opens in new tab)</span>
+          </Link>
+          .
+        </p>
+      ) : null}
       <p className="prose-content mt-12 max-w-3xl border-t border-subtle pt-10 text-sm leading-relaxed text-muted">
         {site.shop.disclaimer}
       </p>

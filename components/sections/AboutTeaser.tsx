@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { dominicaPhotos, site } from "@/content/site";
+import { retreatPhotos, site } from "@/content/site";
 import { Container } from "@/components/layout/Container";
 
 export function AboutTeaser() {
@@ -11,7 +11,7 @@ export function AboutTeaser() {
             <div className="relative aspect-[4/3] sm:aspect-[3/2]">
               <Image
                 src={site.home.aboutImage}
-                alt={dominicaPhotos[2].alt}
+                alt={retreatPhotos[2].alt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

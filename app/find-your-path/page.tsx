@@ -3,10 +3,11 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { WellnessGuideFinder } from "@/components/wellness-guide/WellnessGuideFinder";
+import { site } from "@/content/site";
 export const metadata: Metadata = {
   title: "Find your path",
   description:
-    "Describe what you want to heal or work on and get personalized suggestions for Iron Lion healing services and plant medicine.",
+    `Describe what you want to heal or work on and get personalized suggestions for ${site.shortName} healing services and plant medicine.`,
 };
 
 export default function FindYourPathPage() {

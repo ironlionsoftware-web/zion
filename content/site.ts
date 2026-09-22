@@ -29,12 +29,12 @@ import {
   site,
   services,
   shopProducts,
-  dominicaPhotos,
-  austinLandscapePhotos,
+  retreatPhotos,
+  homeLandscapePhotos,
   natureGalleryPhotos,
-} from "@/tenant/content";
+} from "@/tenants/active";
 
-export { site, services, shopProducts, dominicaPhotos, austinLandscapePhotos, natureGalleryPhotos };
+export { site, services, shopProducts, retreatPhotos, homeLandscapePhotos, natureGalleryPhotos };
 
 export function getService(slug: string): Service | undefined {
   return services.find((s) => s.slug === slug);

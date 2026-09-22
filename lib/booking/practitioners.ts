@@ -10,12 +10,19 @@ export type PractitionerSelection =
   | FitnessOnlyTrainer
   | (typeof site.practitioners.dualSession);
 
-const CALENDLY_ENV_KEYS: Record<string, string> = {
-  "johari-templin-jr": "CALENDLY_URL_JOHARI_TEMPLIN_JR",
-  "johnny-lona": "CALENDLY_URL_JOHNNY_LONA",
-  "pierre-middleton": "CALENDLY_URL_PIERRE_MIDDLETON",
-  [DUAL_PRACTITIONER_SLUG]: "CALENDLY_URL_DUAL_SESSION",
-};
+/**
+ * Env var that can override a practitioner's Calendly link, derived from their
+ * slug so any tenant's roster works without a code change:
+ *   "rosa-delgado" -> CALENDLY_URL_ROSA_DELGADO
+ *
+ * The dual session keeps its own name for backwards compatibility with the
+ * variables already set in production.
+ */
+function calendlyEnvKey(slug: string): string {
+  if (slug === DUAL_PRACTITIONER_SLUG) return "CALENDLY_URL_DUAL_SESSION";
+  const suffix = slug.trim().toUpperCase().replace(/[^A-Z0-9]+/g, "_").replace(/^_|_$/g, "");
+  return suffix ? `CALENDLY_URL_${suffix}` : "";
+}
 
 export function isDualPractitionerSlug(slug: string | undefined): boolean {
   return slug?.trim().toLowerCase() === DUAL_PRACTITIONER_SLUG;
@@ -26,7 +33,7 @@ export function getDualSessionConfig() {
 }
 
 export function getPractitionerCalendlyUrl(practitioner: PractitionerSelection): string {
-  const envKey = CALENDLY_ENV_KEYS[practitioner.slug];
+  const envKey = calendlyEnvKey(practitioner.slug);
   const fromEnv = envKey ? process.env[envKey]?.trim() : "";
   if (fromEnv) return fromEnv;
   return practitioner.calendlyUrl.trim() || site.calendly.url.trim();

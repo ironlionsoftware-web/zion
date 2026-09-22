@@ -1,6 +1,7 @@
 import type Stripe from "stripe";
 import { formatUsd } from "@/lib/cart/products";
 import type { DbShopOrder } from "@/lib/db/types";
+import { site } from "@/content/site";
 
 function meta(session: Stripe.Checkout.Session, key: string): string {
   return session.metadata?.[key]?.trim() ?? "";
@@ -32,7 +33,7 @@ export function formatShopOrderAdminEmail(
     .map((item) => `- ${item.name} × ${item.quantity} — ${formatUsd(item.priceCents)} each`);
 
   const text = [
-    `A customer placed a shop order on Iron Lion.`,
+    `A customer placed a shop order on ${site.shortName}.`,
     "",
     section("CUSTOMER", [
       line("Name", order.fullName),

@@ -1,11 +1,12 @@
 /**
- * Iron Lion Fitness & Holistic Healing — tenant content.
+ * Willow Creek Healing Arts — DEMO tenant.
  *
- * This is Iron Lion's own business data: its copy, practitioners, prices,
- * services, shop catalogue and photography. Another practitioner licensing
- * this platform gets their own directory alongside this one; no code changes.
+ * A fictional practice used to prove the platform runs for someone other than
+ * Iron Lion, and to catch business-specific values still hiding in code rather
+ * than in a tenant directory. Not a real business; the contact details,
+ * practitioners and imagery are invented.
  *
- * Selected at build time by the TENANT env var (see next.config.ts).
+ * Build against it with TENANT=willow-creek.
  */
 
 import type {
@@ -17,116 +18,116 @@ import type {
   ShopProduct,
 } from "@/content/types";
 
-/** Your Dominica photography, used across the site */
+/** Your Costa Rica photography, used across the site */
 export const retreatPhotos = [
   {
-    src: "/images/dominica/01-scotts-head.png",
-    alt: "Aerial view of Scotts Head peninsula and turquoise bays in Dominica",
+    src: "/images/costa-rica/01-scotts-head.png",
+    alt: "Aerial view of Scotts Head peninsula and turquoise bays in Costa Rica",
   },
   {
-    src: "/images/dominica/02-river-canoe.png",
-    alt: "Canoe on a calm jungle river in Dominica",
+    src: "/images/costa-rica/02-river-canoe.png",
+    alt: "Canoe on a calm jungle river in Costa Rica",
   },
   {
-    src: "/images/dominica/03-volcanic-lake.png",
-    alt: "Volcanic lake and rainforest mountains in Dominica",
+    src: "/images/costa-rica/03-volcanic-lake.png",
+    alt: "Volcanic lake and rainforest mountains in Costa Rica",
   },
   {
-    src: "/images/dominica/04-island-road.png",
-    alt: "Winding road through tropical hills in Dominica",
+    src: "/images/costa-rica/04-island-road.png",
+    alt: "Winding road through tropical hills in Costa Rica",
   },
   {
-    src: "/images/dominica/05-tropical-fruits.png",
-    alt: "Fresh tropical fruits and sugarcane from Dominica",
+    src: "/images/costa-rica/05-tropical-fruits.png",
+    alt: "Fresh tropical fruits and sugarcane from Costa Rica",
   },
   {
-    src: "/images/dominica/06-valley-road.png",
-    alt: "Road through a lush green valley in Dominica",
+    src: "/images/costa-rica/06-valley-road.png",
+    alt: "Road through a lush green valley in Costa Rica",
   },
   {
-    src: "/images/dominica/07-waterfall.png",
-    alt: "Waterfall flowing into a clear pool in the Dominica rainforest",
+    src: "/images/costa-rica/07-waterfall.png",
+    alt: "Waterfall flowing into a clear pool in the Costa Rica rainforest",
   },
   {
-    src: "/images/dominica/08-river-boat.png",
-    alt: "Boat on a river surrounded by tropical forest in Dominica",
+    src: "/images/costa-rica/08-river-boat.png",
+    alt: "Boat on a river surrounded by tropical forest in Costa Rica",
   },
   {
-    src: "/images/dominica/09-mountain-valley.png",
-    alt: "Mountain valley and forest under clouds in Dominica",
+    src: "/images/costa-rica/09-mountain-valley.png",
+    alt: "Mountain valley and forest under clouds in Costa Rica",
   },
   {
-    src: "/images/dominica/10-iron-lion-zion.png",
-    alt: "Iron Lion Zion building in Dominica with Rasta colors",
+    src: "/images/costa-rica/10-willow-creek-zion.png",
+    alt: "Willow Creek Zion building in Costa Rica with Rasta colors",
   },
   {
-    src: "/images/dominica/11-coastline.png",
-    alt: "Black sand beach and turquoise coast in Dominica",
+    src: "/images/costa-rica/11-coastline.png",
+    alt: "Black sand beach and turquoise coast in Costa Rica",
   },
   {
-    src: "/images/dominica/12-trafalgar-falls.png",
-    alt: "Twin waterfalls of Trafalgar Falls in Dominica, with lush cliffs and volcanic rocks",
+    src: "/images/costa-rica/12-trafalgar-falls.png",
+    alt: "Twin waterfalls of Trafalgar Falls in Costa Rica, with lush cliffs and volcanic rocks",
   },
 ] as const satisfies readonly NaturePhoto[];
 
-/** Austin-area landscapes for the home gallery (5 of 12 slots). */
+/** Asheville-area landscapes for the home gallery (5 of 12 slots). */
 export const homeLandscapePhotos = [
   {
-    src: "/images/austin/landscapes/01-cave-forest.png",
+    src: "/images/asheville/landscapes/01-cave-forest.png",
     alt: "Sunlit forest viewed from inside a mossy cave in Central Texas",
   },
   {
-    src: "/images/austin/landscapes/02-hamilton-pool.png",
-    alt: "Hamilton Pool Preserve waterfall and turquoise pool near Austin, Texas",
+    src: "/images/asheville/landscapes/02-hamilton-pool.png",
+    alt: "Hamilton Pool Preserve waterfall and turquoise pool near Asheville, Texas",
   },
   {
-    src: "/images/austin/landscapes/03-barton-springs.png",
-    alt: "Barton Springs Pool on a sunny day in Austin, Texas",
+    src: "/images/asheville/landscapes/03-barton-springs.png",
+    alt: "Barton Springs Pool on a sunny day in Asheville, Texas",
   },
   {
-    src: "/images/austin/austin-skyline-sunset.png",
-    alt: "Austin skyline at sunset along Lady Bird Lake with Congress Avenue Bridge and kayakers on the water",
+    src: "/images/asheville/asheville-skyline-sunset.png",
+    alt: "Asheville skyline at sunset along Lady Bird Lake with Congress Avenue Bridge and kayakers on the water",
   },
   {
-    src: "/images/austin/landscapes/05-greenbelt-creek.png",
+    src: "/images/asheville/landscapes/05-greenbelt-creek.png",
     alt: "Rocky creek and limestone cliffs along the Barton Creek Greenbelt",
   },
 ] as const satisfies readonly NaturePhoto[];
 
-/** Home “Landscapes” gallery: five Austin scenes + seven Dominica photos. */
+/** Home “Landscapes” gallery: five Asheville scenes + seven Costa Rica photos. */
 export const natureGalleryPhotos = [
   ...homeLandscapePhotos,
   ...retreatPhotos.slice(5),
 ] as const satisfies readonly NaturePhoto[];
 
 export const site = {
-  name: "Iron Lion Fitness & Holistic Healing",
+  name: "Willow Creek Healing Arts",
   /** Written brand line shown next to the lion emblem */
-  brandName: "Iron Lion Fitness and Holistic Healing",
-  shortName: "Iron Lion",
+  brandName: "Willow Creek Healing Arts",
+  shortName: "Willow Creek",
   /** Shown under the header lockup (with shortName, reads as the full business name). */
-  headerSubtitle: "Fitness & Holistic Healing",
+  headerSubtitle: "Healing Arts",
   tagline: "Movement, energy, and plant forward care rooted in respect for every body.",
   description:
     "Holistic fitness, Reiki, and healing. Book sessions, shop plant medicine, and register online.",
   /** Production URL for metadata and sitemap; update when domain is live. */
-  url: "https://www.ironlionfitnessandhealing.com",
+  url: "https://www.willowcreekfitnessandhealing.com",
   /** Emblem shown above the business name in the header and page titles. */
   brand: {
     emblem: {
-      src: "/images/iron-lion-emblem.png",
-      alt: "Iron Lion emblem, lion of Judah",
+      src: "/images/willow-creek-emblem.png",
+      alt: "Willow Creek Healing Arts emblem",
       width: 1024,
       height: 947,
     },
   },
   contact: {
     /** Public inbox for shop orders, bookings, and general inquiries */
-    email: "ironlionhealing@gmail.com",
-    phoneDisplay: "(713) 815 0276",
-    phoneTel: "+17138150276",
+    email: "willowcreekhealing@gmail.com",
+    phoneDisplay: "(828) 555 0142",
+    phoneTel: "+18285550142",
     phoneNote: "Text only",
-    serviceArea: "Greater Austin area. Nationwide by arrangement.",
+    serviceArea: "Greater Asheville area. Nationwide by arrangement.",
     intro:
       "Email, call, or send us a message below for shop orders, session bookings, retreat questions, or anything else. We will reply with availability and next steps.",
     form: {
@@ -144,9 +145,9 @@ export const site = {
     },
   },
   social: {
-    instagram: "https://www.instagram.com/ironlion_healing/",
-    facebook: "https://www.facebook.com/IronLionFitnessandHolisticHealingLLC",
-    youtube: "https://www.youtube.com/channel/UC23k2d4yml-_3-a4efR0xFQ/featured",
+    instagram: "https://www.instagram.com/willowcreek.healing/",
+    facebook: "https://www.facebook.com/WillowCreekHealingArts",
+    youtube: "https://www.youtube.com/@willowcreekhealingarts",
   },
   nav: [
     { href: "/", label: "Home" },
@@ -168,9 +169,9 @@ export const site = {
     heroTitle: "Strength, stillness, and care that meets you where you are.",
     heroLead:
       "Personal training, Reiki, and education grounded in consent, clarity, and inclusive practice.",
-    aboutTitle: "Why Iron Lion",
+    aboutTitle: "Why Willow Creek",
     aboutBody: [
-      "Iron Lion is built around the idea that healing and fitness are not one size templates. Sessions honor your pace, your nervous system, and your goals while blending practical strength work with breath, presence, and energy practices when they serve you.",
+      "Willow Creek is built around the idea that healing and fitness are not one size templates. Sessions honor your pace, your nervous system, and your goals while blending practical strength work with breath, presence, and energy practices when they serve you.",
       "Registration is required before booking, shopping, or making a contribution. Register once with your contact details, then complete your order or session through this site. We follow up by email or text with next steps for scheduling and delivery.",
     ],
     ctaTitle: "Ready when you are",
@@ -183,10 +184,10 @@ export const site = {
   nature: {
     title: "Landscapes that ground our work",
     lead:
-      "From Dominica's mountains, rivers, and coast to Austin's springs, trails, and skyline, the places where we move, heal, and reconnect with the land.",
-    label: "Dominica & Austin, Texas",
+      "From Costa Rica's mountains, rivers, and coast to Asheville's springs, trails, and skyline, the places where we move, heal, and reconnect with the land.",
+    label: "Costa Rica & Asheville, Texas",
     /** Caption for the local-landscape photo (contact page). */
-    homeLabel: "Austin, Texas",
+    homeLabel: "Asheville, North Carolina",
     photos: retreatPhotos,
     galleryPhotos: natureGalleryPhotos,
   },
@@ -196,7 +197,7 @@ export const site = {
    * Leave empty until you have a live page, book links fall back to Contact.
    */
   calendly: {
-    url: "https://calendly.com/ironlionsoftware",
+    url: "https://calendly.com/willowcreeksoftware",
     heading: "Schedule a session",
     lead: "Choose your practitioner, then pick a time for Reiki, personal training, pranayama, or a consultation. Questions before you book? Email us anytime.",
   },
@@ -206,26 +207,26 @@ export const site = {
     dualSession: {
       slug: "dual",
       name: "Dual session (both practitioners)",
-      title: "Johari Templin & Johnny Lona together",
+      title: "Maya Ellsworth & Rosa Delgado together",
       description: "One shared session with both practitioners present at the same time.",
       /** Calendly event for dual sessions — override with CALENDLY_URL_DUAL_SESSION env var */
-      calendlyUrl: "https://calendly.com/ironlionsoftware",
+      calendlyUrl: "https://calendly.com/willowcreeksoftware",
       /** Charged as base service price × this multiplier (typically 2) */
       priceMultiplier: 2,
     },
     list: [
       {
-        slug: "johari-templin-jr",
-        name: "Johari Templin",
+        slug: "maya-ellsworth",
+        name: "Maya Ellsworth",
         title: "Holistic healer & trainer",
-        /** Per-practitioner Calendly page, override with CALENDLY_URL_JOHARI_TEMPLIN_JR env var */
-        calendlyUrl: "https://calendly.com/ironlionsoftware/service",
+        /** Per-practitioner Calendly page, override with CALENDLY_URL_MAYA_ELLSWORTH env var */
+        calendlyUrl: "https://calendly.com/willowcreeksoftware/service",
       },
       {
-        slug: "johnny-lona",
-        name: "Johnny Lona",
+        slug: "rosa-delgado",
+        name: "Rosa Delgado",
         title: "Holistic healer & trainer",
-        calendlyUrl: "https://calendly.com/ironlionsoftware/30min",
+        calendlyUrl: "https://calendly.com/willowcreeksoftware/30min",
       },
     ],
   },
@@ -235,7 +236,7 @@ export const site = {
       "Please share your contact details to register. Registration is required before checkout, booking, or payment on this site.",
     submitLabel: "Continue",
     marketingConsentLabel:
-      "I agree to receive emails and texts from Iron Lion about sessions, offers, and wellness updates. I can unsubscribe anytime.",
+      "I agree to receive emails and texts from Willow Creek about sessions, offers, and wellness updates. I can unsubscribe anytime.",
   },
   payments: {
     planLegend: "Payment option",
@@ -243,7 +244,7 @@ export const site = {
     payInFullHint: "One time card payment",
     installmentsLabel: "Pay in installments",
     installmentsHint: "Klarna or Affirm at checkout when you qualify (US)",
-    serviceLineDescription: "Iron Lion healing service",
+    serviceLineDescription: "Willow Creek healing service",
     serviceCheckoutTitle: "Pay for your service",
     serviceCheckoutIntro:
       "Choose your practitioner and options, pick a date and time on Calendly, then complete payment. Installment options appear on Stripe checkout when eligible.",
@@ -292,12 +293,12 @@ export const site = {
   fitnessTraining: {
     title: "Fitness Training",
     retreatPhoto: retreatPhotos[3],
-    retreatCaption: "Dominica",
+    retreatCaption: "Costa Rica",
     homePhoto: {
-      src: "/images/austin/austin-panorama.png",
-      alt: "Panoramic view of downtown Austin at sunset across Lady Bird Lake",
+      src: "/images/asheville/asheville-panorama.png",
+      alt: "Panoramic view of downtown Asheville at sunset across Lady Bird Lake",
     },
-    homeCaption: "Austin Texas",
+    homeCaption: "Asheville Texas",
     sections: [
       {
         paragraphs: [
@@ -377,14 +378,14 @@ export const site = {
           summary: "Automatic weekly charge based on your rate × sessions per week. Cancel anytime in Stripe.",
         },
       ],
-      trainerSlugs: ["johari-templin-jr", "johnny-lona", "pierre-middleton"],
+      trainerSlugs: ["maya-ellsworth", "rosa-delgado", "sam-okafor"],
       /** Fitness-only trainers — not offered on healing service booking flows */
       fitnessOnlyTrainers: [
         {
-          slug: "pierre-middleton",
-          name: "Pierre Middleton",
+          slug: "sam-okafor",
+          name: "Sam Okafor",
           title: "Fitness trainer",
-          calendlyUrl: "https://calendly.com/ironlionsoftware/pierre-middleton",
+          calendlyUrl: "https://calendly.com/willowcreeksoftware/sam-okafor",
         },
       ],
     },
@@ -392,7 +393,7 @@ export const site = {
   healingServices: {
     title: "Healing Services & Classes",
     intro:
-      "Iron Lion brings together holistic fitness, Reiki and energy work, plant medicine, classes, and guided support so you can move, heal, and grow with care that honors your whole self. We aim to meet you with clarity, respect, and practical tools, not quick fixes or pressure. Start by scheduling a consultation to build a holistic health plan that covers mind, body, and spirit: clear structure for your goals, practices that fit your life, and attention to the root causes of whatever it is that you are working with. Whether it be mental, physical, or spiritual. Every session is consent led and works alongside your schedule, as well as your personal, cultural, and spiritual beliefs. Services are available to all ages.",
+      "Willow Creek brings together holistic fitness, Reiki and energy work, plant medicine, classes, and guided support so you can move, heal, and grow with care that honors your whole self. We aim to meet you with clarity, respect, and practical tools, not quick fixes or pressure. Start by scheduling a consultation to build a holistic health plan that covers mind, body, and spirit: clear structure for your goals, practices that fit your life, and attention to the root causes of whatever it is that you are working with. Whether it be mental, physical, or spiritual. Every session is consent led and works alongside your schedule, as well as your personal, cultural, and spiritual beliefs. Services are available to all ages.",
     services: [
       { slug: "reiki", label: "Reiki & Frequency tuning", kind: "book", priceCents: 12000 },
       { slug: "consultation", label: "Consultation", kind: "book", priceCents: 4500 },
@@ -495,60 +496,60 @@ export const site = {
     photos: [
       {
         src: "/images/retreat/retreat-hiking-couple.png",
-        alt: "A smiling man and woman on a hiking trail overlooking lush green mountains and a lake in Dominica",
+        alt: "A smiling man and woman on a hiking trail overlooking lush green mountains and a lake in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-01.png",
-        alt: "Aerial view of Scotts Head peninsula with turquoise bays and coral shallows in Dominica",
+        alt: "Aerial view of Scotts Head peninsula with turquoise bays and coral shallows in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-02.png",
-        alt: "Mountain lake surrounded by lush rainforest in Dominica",
+        alt: "Mountain lake surrounded by lush rainforest in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-03.png",
-        alt: "Calm tropical lagoon with palm trees and black sand shore in Dominica",
+        alt: "Calm tropical lagoon with palm trees and black sand shore in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-04.png",
-        alt: "Sunny beach at the base of a green mountain in Dominica",
+        alt: "Sunny beach at the base of a green mountain in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-05.png",
-        alt: "Retreat guests hiking a scenic trail through tropical hills in Dominica",
+        alt: "Retreat guests hiking a scenic trail through tropical hills in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-06.png",
-        alt: "Steep jungle hiking path with a handrail through dense greenery in Dominica",
+        alt: "Steep jungle hiking path with a handrail through dense greenery in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-07.png",
-        alt: "Fresh tropical fruits arranged on a wooden table in Dominica",
+        alt: "Fresh tropical fruits arranged on a wooden table in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-08.png",
-        alt: "Winding road through lush tropical hills in Dominica",
+        alt: "Winding road through lush tropical hills in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-09.png",
-        alt: "Waterfall flowing into a clear pool in the Dominica rainforest",
+        alt: "Waterfall flowing into a clear pool in the Costa Rica rainforest",
       },
       {
         src: "/images/retreat/retreat-10.png",
-        alt: "Colorful boat on a river surrounded by palm trees in Dominica",
+        alt: "Colorful boat on a river surrounded by palm trees in Costa Rica",
       },
       {
         src: "/images/retreat/retreat-11.png",
-        alt: "Twin waterfalls of Trafalgar Falls with lush cliffs in Dominica",
+        alt: "Twin waterfalls of Trafalgar Falls with lush cliffs in Costa Rica",
       },
     ] satisfies readonly NaturePhoto[],
     themedRetreatsIntro:
-      "Themed retreats on Dominica, the Nature Island of the Caribbean. Most retreats run 1 week; the fitness retreat is offered in 2 week or 1 month formats. Eight spots per scheduled retreat; personalized custom healing retreats for groups of 4 to 8 year round. Every retreat is all inclusive.",
+      "Themed retreats on Costa Rica, the Nature Island of the Caribbean. Most retreats run 1 week; the fitness retreat is offered in 2 week or 1 month formats. Eight spots per scheduled retreat; personalized custom healing retreats for groups of 4 to 8 year round. Every retreat is all inclusive.",
     allInclusive: {
       heading: "All inclusive retreats",
       paragraphs: [
-        "Every Iron Lion retreat is all inclusive. Your $2,500 retreat fee covers lodging, plant based meals, healing sessions, workshops, and on island experiences, everything you need once you arrive.",
-        "The only additional cost is your flight to Dominica. Book your retreat, arrange travel, and we take care of the rest.",
+        "Every Willow Creek retreat is all inclusive. Your $2,500 retreat fee covers lodging, plant based meals, healing sessions, workshops, and on island experiences, everything you need once you arrive.",
+        "The only additional cost is your flight to Costa Rica. Book your retreat, arrange travel, and we take care of the rest.",
       ],
     },
     booking: {
@@ -609,7 +610,7 @@ export const site = {
           slug: "cannabis-healing-nature",
           label: "Cannabis Healing, Education & Nature Retreat",
           summary:
-            "Healing focused education on mindful cannabis use for mind, body, and spirit, with nature immersion on Dominica.",
+            "Healing focused education on mindful cannabis use for mind, body, and spirit, with nature immersion on Costa Rica.",
           duration: "1 week",
         },
         {
@@ -640,12 +641,12 @@ export const site = {
       balanceDueMinWeeks: 2,
       balanceDueMaxWeeks: 4,
       marketingConsentLabel:
-        "I agree to receive emails and texts from Iron Lion about this retreat and related wellness updates. I can unsubscribe anytime.",
+        "I agree to receive emails and texts from Willow Creek about this retreat and related wellness updates. I can unsubscribe anytime.",
     },
     sections: [
       {
         paragraphs: [
-          "At our holistic healing retreat in Dominica, WI, immerse yourself in a serene oasis of wellness and rejuvenation. Nestled amidst lush tropical landscapes and crystal clear waters, our retreat offers a sanctuary for healing and self discovery. Engage in transformative practices such as Reiki, deep breath work, and fitness to harmonize your mind, body, and spirit. Indulge in nourishing 100% plant based meals made with locally sourced ingredients that cater to your holistic well being. Experience the healing power of nature as you explore the island's natural beauty and immerse yourself in its revitalizing energy. Leave feeling refreshed and empowered to continue your path towards holistic wellness.",
+          "At our holistic healing retreat in Costa Rica, WI, immerse yourself in a serene oasis of wellness and rejuvenation. Nestled amidst lush tropical landscapes and crystal clear waters, our retreat offers a sanctuary for healing and self discovery. Engage in transformative practices such as Reiki, deep breath work, and fitness to harmonize your mind, body, and spirit. Indulge in nourishing 100% plant based meals made with locally sourced ingredients that cater to your holistic well being. Experience the healing power of nature as you explore the island's natural beauty and immerse yourself in its revitalizing energy. Leave feeling refreshed and empowered to continue your path towards holistic wellness.",
         ],
       },
       {
@@ -660,17 +661,17 @@ export const site = {
   shop: {
     title: "Shop plant medicine",
     intro:
-      "Curated botanicals and sea moss from our apothecary. Registration is required at checkout. Add items to your cart, register, enter your delivery address, and pay securely. Delivery is free in the Greater Austin area; a $10 fee applies elsewhere. Prices exclude sales tax.",
+      "Curated botanicals and sea moss from our apothecary. Registration is required at checkout. Add items to your cart, register, enter your delivery address, and pay securely. Delivery is free in the Greater Asheville area; a $10 fee applies elsewhere. Prices exclude sales tax.",
     /** Optional link to a storefront the practice used before this site.
      *  Leave url empty to hide the link entirely. */
     legacyStorefront: {
-      url: "https://www.ironlionfitnessandhealing.com/shop",
-      prompt: "Prefer to browse on our previous storefront?",
-      label: "Visit the apothecary shop",
+      url: "",
+      prompt: "",
+      label: "",
     },
     checkoutTitle: "Checkout",
     checkoutIntro:
-      "Register first, then review your cart, enter your delivery address, and pay securely with Stripe. Delivery is free in the Greater Austin area; a $10 fee applies elsewhere.",
+      "Register first, then review your cart, enter your delivery address, and pay securely with Stripe. Delivery is free in the Greater Asheville area; a $10 fee applies elsewhere.",
     checkoutRegistrationTitle: "Your details",
     checkoutRegistrationIntro:
       "Please register so we can confirm your order and coordinate delivery.",
@@ -727,7 +728,7 @@ export const shopProducts: ShopProduct[] = [
     description:
       "Small-batch herbal teas for daily ritual and hydration. Each flavor draws on plant traditions for gentle wellness support—not medical treatment.",
     imageSrc: "/images/shop/bottled-teas.jpg",
-    imageAlt: "Bottled herbal teas from Iron Lion apothecary",
+    imageAlt: "Bottled herbal teas from Willow Creek apothecary",
     optionGroups: [
       {
         id: "size",

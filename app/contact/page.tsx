@@ -3,7 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { NatureFeature } from "@/components/sections/NatureFeature";
-import { austinLandscapePhotos, site } from "@/content/site";
+import { homeLandscapePhotos, site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
-  const mailto = `mailto:${site.contact.email}?subject=${encodeURIComponent("Iron Lion inquiry")}`;
+  const mailto = `mailto:${site.contact.email}?subject=${encodeURIComponent(`${site.shortName} inquiry`)}`;
 
   return (
     <>
@@ -20,7 +20,7 @@ export default function ContactPage() {
         <Container className="max-w-4xl">
           <div className="grid gap-4 sm:grid-cols-2">
             <NatureFeature photo={site.nature.photos[0]} label={site.nature.label} />
-            <NatureFeature photo={austinLandscapePhotos[3]} label="Austin, Texas" />
+            <NatureFeature photo={homeLandscapePhotos[3]} label={site.nature.homeLabel} />
           </div>
         </Container>
       </div>

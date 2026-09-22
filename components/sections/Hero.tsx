@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LionOfJudah } from "@/components/brand/LionOfJudah";
+import { BrandEmblem } from "@/components/brand/BrandEmblem";
 import { site } from "@/content/site";
 import { Container } from "@/components/layout/Container";
 import { NatureBackdrop } from "@/components/sections/NatureBackdrop";
@@ -11,7 +11,7 @@ export function Hero() {
       className="border-b border-subtle bg-surface text-center"
     >
       <Container className="section-pad">
-        <LionOfJudah className="mx-auto" />
+        <BrandEmblem className="mx-auto" />
         <p className="font-display mx-auto mt-8 max-w-full px-1 text-lg tracking-[0.12em] text-balance text-[var(--rasta-green)] sm:mt-10 sm:text-2xl sm:tracking-[0.28em] md:text-3xl md:tracking-[0.35em]">
           {site.home.heroMantra.join(" · ")}
         </p>

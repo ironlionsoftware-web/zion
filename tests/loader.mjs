@@ -1,10 +1,8 @@
 /**
  * Module loader for the test suite.
  *
- * Three jobs Next.js normally does for us:
+ * Two jobs Next.js normally does for us:
  *  - resolve the `@/` path alias from `tsconfig.json`
- *  - resolve `@/tenant`, which next.config.ts aliases to the tenant directory
- *    named by the TENANT env var (defaults to iron-lion)
  *  - add the file extension that TypeScript source omits
  *
  * It also stubs `next/headers`, which only exists inside a Next request and is not needed by any
@@ -16,10 +14,6 @@ import { register } from "node:module";
 import { pathToFileURL } from "node:url";
 
 const ROOT = pathToFileURL(process.cwd() + "/").href;
-// Mirrors the `@/tenant` alias in next.config.ts so tests exercise the same
-// tenant the build would. Set TENANT to run the suite against another tenant.
-const TENANT = process.env.TENANT?.trim() || "iron-lion";
-const TENANT_ROOT = pathToFileURL(process.cwd() + "/tenants/" + TENANT + "/").href;
 
 register(
   "data:text/javascript," +
@@ -50,10 +44,6 @@ register(
       } catch {
         return next(specifier, context);
       }
-    }
-    if (specifier === '@/tenant' || specifier.startsWith('@/tenant/')) {
-      const rest = specifier === '@/tenant' ? 'index' : specifier.slice('@/tenant/'.length);
-      return next(withExtension(new URL(rest, '${TENANT_ROOT}').href), context);
     }
     if (specifier.startsWith('@/')) {
       return next(withExtension(new URL(specifier.slice(2), '${ROOT}').href), context);

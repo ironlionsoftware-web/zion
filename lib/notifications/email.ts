@@ -15,7 +15,7 @@ type NotifyParams = {
 };
 
 /** Resend's shared sandbox sender. It can only deliver to the Resend account owner. */
-const SANDBOX_FROM = "Iron Lion <onboarding@resend.dev>";
+const SANDBOX_FROM = `${site.shortName} <onboarding@resend.dev>`;
 
 /**
  * The address mail is sent from. Must be on a domain verified with whichever provider is active,

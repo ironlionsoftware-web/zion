@@ -13,7 +13,10 @@
     "test": "node --experimental-strip-types --import ./tests/loader.mjs --test tests/**/*.test.ts",
     "db:verify": "node --env-file=.env.local scripts/verify-database.mjs",
     "payments:verify": "node --env-file=.env.local scripts/verify-stripe.mjs",
-    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe/webhook"
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
+    "prebuild": "node scripts/select-tenant.mjs",
+    "predev": "node scripts/select-tenant.mjs",
+    "pretest": "node scripts/select-tenant.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^12.10.0",

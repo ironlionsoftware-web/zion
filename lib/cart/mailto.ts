@@ -16,7 +16,7 @@ export function buildCartOrderMailto(
   );
 
   const body = [
-    "Hi Iron Lion,",
+    `Hi ${site.shortName},`,
     "",
     "I would like to place the following order:",
     "",

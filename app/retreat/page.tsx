@@ -18,7 +18,7 @@ export default function RetreatPage() {
       <PageHeader title={p.title} centered />
       <div className="section-pad pt-0">
         <Container className="max-w-3xl">
-          <PhotoRoll photos={p.photos} title="Iron Lion Retreat photos" />
+          <PhotoRoll photos={p.photos} title={`${site.shortName} Retreat photos`} />
           <section className="mt-14" aria-labelledby="themed-retreats-heading">
             <h2 id="themed-retreats-heading" className="font-display text-2xl font-medium text-[var(--foreground)]">
               Themed retreats

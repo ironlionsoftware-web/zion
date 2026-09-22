@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { validateContactInput } from "@/lib/contact/validate";
 import { notifyAdmin } from "@/lib/notifications/email";
 import { enforceRateLimit } from "@/lib/rate-limit";
+import { site } from "@/content/site";
 
 export async function POST(request: Request) {
   // Every accepted request sends an email. Five in ten minutes is more than a genuine enquiry
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     subject: `Contact form: ${fullName}`,
     replyTo: email,
     text: [
-      "New message from the Iron Lion contact form:",
+      `New message from the ${site.shortName} contact form:`,
       "",
       `Name: ${fullName}`,
       `Email: ${email}`,

@@ -21,8 +21,8 @@ export default async function FitnessTrainingPage() {
       <div className="section-pad pt-0">
         <Container className="max-w-5xl">
           <div className="mb-12 grid gap-4 sm:grid-cols-2">
-            <NatureFeature photo={p.dominicaPhoto} label={p.dominicaCaption} />
-            <NatureFeature photo={p.austinPhoto} label={p.austinCaption} />
+            <NatureFeature photo={p.retreatPhoto} label={p.retreatCaption} />
+            <NatureFeature photo={p.homePhoto} label={p.homeCaption} />
           </div>
           <div className="mx-auto max-w-3xl space-y-12">
             {p.sections.map((block, i) => (

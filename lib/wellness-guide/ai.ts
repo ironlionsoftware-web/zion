@@ -1,6 +1,7 @@
 import { wellnessCatalog } from "@/content/wellness-catalog";
 import { getWellnessOffering } from "@/content/wellness-catalog";
 import type { WellnessMatch } from "@/lib/wellness-guide/match";
+import { site } from "@/content/site";
 
 type AiPick = {
   id: string;
@@ -67,7 +68,7 @@ export async function aiWellnessRecommendations(query: string): Promise<AiWellne
 
   const model = process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini";
 
-  const system = `You are a wellness guide for Iron Lion Fitness & Holistic Healing. The user describes conditions, goals, or what they want to heal. Recommend ONLY items from the catalog below (use exact id values). Return JSON with key "recommendations": an array of up to 5 objects, each with "id" (string, exact catalog id) and "reason" (1-2 friendly sentences). Never diagnose or claim to cure disease. Offerings complement licensed medical care. Prefer plant shop items for physical/nutritional goals, Reiki and frequency tuning for energy/stress, consultation when someone needs a plan or does not know where to start, ceremonies only when user signals deep spiritual/ceremonial work, fitness for movement goals, retreat for immersive reset.
+  const system = `You are a wellness guide for ${site.name}. The user describes conditions, goals, or what they want to heal. Recommend ONLY items from the catalog below (use exact id values). Return JSON with key "recommendations": an array of up to 5 objects, each with "id" (string, exact catalog id) and "reason" (1-2 friendly sentences). Never diagnose or claim to cure disease. Offerings complement licensed medical care. Prefer plant shop items for physical/nutritional goals, Reiki and frequency tuning for energy/stress, consultation when someone needs a plan or does not know where to start, ceremonies only when user signals deep spiritual/ceremonial work, fitness for movement goals, retreat for immersive reset.
 
 Catalog:
 ${catalogForPrompt()}`;
