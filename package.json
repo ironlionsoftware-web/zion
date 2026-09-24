@@ -17,7 +17,8 @@
     "prebuild": "node scripts/select-tenant.mjs",
     "predev": "node scripts/select-tenant.mjs",
     "pretest": "node scripts/select-tenant.mjs",
-    "dev:demo": "node scripts/dev.mjs willow-creek 3001"
+    "dev:demo": "node scripts/dev.mjs willow-creek 3001",
+    "build:all": "node scripts/build-all-tenants.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^12.10.0",

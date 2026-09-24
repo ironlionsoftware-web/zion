@@ -37,6 +37,27 @@ which tenant it used.
 
 `tenants/active.ts` is generated and git-ignored. Do not edit or commit it.
 
+## Before you deploy a change
+
+```bash
+npm run build:all
+```
+
+Builds every practice in turn and refuses to pass if any of them breaks. One
+codebase serving everyone is the point — a fix reaches all of them at once —
+but the same property means a change that works for the practice you were
+testing can break another. Almost always because new platform code reads a
+config field only that one tenant happens to have.
+
+It catches two things:
+
+- **A build failure** in any practice, naming the missing field.
+- **A leak**: one practice's name, email domain or location appearing in
+  another's rendered pages. That means a value is written into platform code
+  instead of tenant content.
+
+Nothing is deployed either way. It exits non-zero, so CI can gate on it.
+
 ## Adding a practice
 
 1. `cp -r tenants/willow-creek tenants/their-slug`
