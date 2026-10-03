@@ -14,6 +14,7 @@ import type {
   LandingOffer,
   NaturePhoto,
   NavItem,
+  ReviewSummary,
   Service,
   ShopProduct,
   Testimonial,
@@ -720,6 +721,15 @@ export const site = {
    * Ordered so the strongest review for each audience comes first; each page
    * takes the top four for its audience (see lib/testimonials.ts).
    */
+  /**
+   * Headline rating shown near the top of the key pages.
+   * UPDATE BY HAND when the Google profile changes. Last checked 2026-10-03.
+   */
+  reviewSummary: {
+    rating: "5.0",
+    platform: "Google",
+  } satisfies ReviewSummary,
+
   testimonials: [
     {
       quote: "Johari is a gentle but very powerful man who has walked through hell and back. His experiences in this life have allowed him to grow in his empathy towards others and he holds his clients with curiosity instead of judgement. The love that outpours from him during a session is equally calming and electric, his hands hold heat and the tuning forks he uses combines frequencies with his own channeling of energy. The result is a reset that will leave you feeling calm yet ready to take action steps towards claiming your own power back. Grateful for this human’s multifaceted work.",

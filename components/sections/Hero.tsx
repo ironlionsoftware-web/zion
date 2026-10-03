@@ -3,6 +3,7 @@ import { BrandEmblem } from "@/components/brand/BrandEmblem";
 import { site } from "@/content/site";
 import { Container } from "@/components/layout/Container";
 import { NatureBackdrop } from "@/components/sections/NatureBackdrop";
+import { ReviewRating } from "@/components/testimonials/ReviewRating";
 
 export function Hero() {
   return (
@@ -16,6 +17,9 @@ export function Hero() {
           {site.home.heroMantra.join(" · ")}
         </p>
         <p className="eyebrow mt-6 sm:mt-8">{site.home.heroEyebrow}</p>
+        {site.testimonials.length > 0 ? (
+          <ReviewRating summary={site.reviewSummary} className="mt-5 justify-center" />
+        ) : null}
         <h1
           id="home-hero-heading"
           className="font-display mx-auto mt-4 max-w-3xl text-3xl font-medium leading-tight tracking-tight text-balance text-[var(--foreground)] sm:mt-5 sm:text-4xl md:text-5xl lg:text-6xl"

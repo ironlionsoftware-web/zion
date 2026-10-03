@@ -6,8 +6,13 @@ import { NatureGallery } from "@/components/sections/NatureGallery";
 import { ServiceGrid } from "@/components/sections/ServiceGrid";
 import { WellnessGuideTeaser } from "@/components/sections/WellnessGuideTeaser";
 import { Container } from "@/components/layout/Container";
+import { Testimonials } from "@/components/testimonials/Testimonials";
+import { site } from "@/content/site";
+import { featuredTestimonials } from "@/lib/testimonials";
 
 export default function HomePage() {
+  const reviews = featuredTestimonials(site.testimonials, 3);
+
   return (
     <>
       <Hero />
@@ -15,6 +20,9 @@ export default function HomePage() {
       <NatureGallery />
       <ServiceGrid />
       <WellnessGuideTeaser />
+      <Container className="section-pad max-w-3xl">
+        <Testimonials testimonials={reviews} headingId="home-reviews" />
+      </Container>
       <CtaBand />
       <Container className="pb-8 text-center">
         <Link href="/admin/login" className="text-xs text-muted/70 hover:text-muted hover:underline">

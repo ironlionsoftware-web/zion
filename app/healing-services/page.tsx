@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { ReviewRating } from "@/components/testimonials/ReviewRating";
 import { Testimonials } from "@/components/testimonials/Testimonials";
 import { WellnessGuideFinder } from "@/components/wellness-guide/WellnessGuideFinder";
 import { healingServiceHref, site } from "@/content/site";
@@ -20,6 +21,9 @@ export default function HealingServicesPage() {
       <PageHeader title={p.title} lead={p.intro} centered />
       <div className="section-pad pt-0">
         <Container className="max-w-3xl">
+          {site.testimonials.length > 0 ? (
+            <ReviewRating summary={site.reviewSummary} className="mb-8" />
+          ) : null}
           <WellnessGuideFinder compact />
           <ul className="mt-12 grid gap-4 sm:grid-cols-2">
             {p.services.map((service) => {
@@ -46,6 +50,7 @@ export default function HealingServicesPage() {
               );
             })}
           </ul>
+          <Testimonials testimonials={reviews} className="mt-14" headingId="hs-reviews" />
           <div className="mt-14 space-y-12">
             {p.sections.map((block, i) => (
               <section key={i} aria-labelledby={block.heading ? `hs-h2-${i}` : undefined}>
@@ -62,7 +67,6 @@ export default function HealingServicesPage() {
               </section>
             ))}
           </div>
-          <Testimonials testimonials={reviews} className="mt-14" headingId="hs-reviews" />
         </Container>
       </div>
     </>

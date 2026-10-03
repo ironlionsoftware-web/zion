@@ -114,6 +114,23 @@ export type Testimonial = {
 export type TestimonialAudience = "healing" | "fitness";
 
 /**
+ * The headline rating, shown near the top of a page so it registers before
+ * anyone scrolls.
+ *
+ * Deliberately carries no review count: a count has to be re-checked and
+ * re-entered every time the public profile changes, and a stale one is a false
+ * claim. The average moves far more slowly.
+ */
+export type ReviewSummary = {
+  /** e.g. "5.0" — as displayed on the platform. */
+  rating: string;
+  /** Where they live, e.g. "Google". */
+  platform: string;
+  /** Optional link to the public profile so visitors can check for themselves. */
+  url?: string;
+};
+
+/**
  * A single-offer page for paid traffic to land on.
  *
  * These exist because an ad click needs one offer and one action: the homepage

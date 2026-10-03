@@ -3,6 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { FitnessTrainerBooking } from "@/components/fitness/FitnessTrainerBooking";
 import { NatureFeature } from "@/components/sections/NatureFeature";
+import { ReviewRating } from "@/components/testimonials/ReviewRating";
 import { Testimonials } from "@/components/testimonials/Testimonials";
 import { getRegistration } from "@/lib/registration/cookie";
 import { site } from "@/content/site";
@@ -23,10 +24,18 @@ export default async function FitnessTrainingPage() {
       <PageHeader title={p.title} centered />
       <div className="section-pad pt-0">
         <Container className="max-w-5xl">
+          {site.testimonials.length > 0 ? (
+            <ReviewRating summary={site.reviewSummary} className="mb-8" />
+          ) : null}
           <div className="mb-12 grid gap-4 sm:grid-cols-2">
             <NatureFeature photo={p.retreatPhoto} label={p.retreatCaption} />
             <NatureFeature photo={p.homePhoto} label={p.homeCaption} />
           </div>
+          <Testimonials
+            testimonials={reviews}
+            className="mx-auto mb-14 max-w-3xl"
+            headingId="ft-reviews"
+          />
           <div className="mx-auto max-w-3xl space-y-12">
             {p.sections.map((block, i) => (
               <section
@@ -46,11 +55,6 @@ export default async function FitnessTrainingPage() {
               </section>
             ))}
           </div>
-          <Testimonials
-            testimonials={reviews}
-            className="mx-auto mt-14 max-w-3xl"
-            headingId="ft-reviews"
-          />
           <FitnessTrainerBooking registration={registration} />
         </Container>
       </div>

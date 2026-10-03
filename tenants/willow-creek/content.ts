@@ -15,6 +15,7 @@ import type {
   LandingOffer,
   NaturePhoto,
   NavItem,
+  ReviewSummary,
   Service,
   ShopProduct,
   Testimonial,
@@ -703,6 +704,12 @@ export const site = {
   },
 
   /** Real client reviews shown on the /offer pages. Paste verbatim, first names only. */
+  /** Headline rating. Update by hand; nothing here is computed. */
+  reviewSummary: {
+    rating: "5.0",
+    platform: "Google",
+  } satisfies ReviewSummary,
+
   testimonials: [] as Testimonial[],
 
   /** Single-offer pages for paid traffic — see the LandingOffer type. */
