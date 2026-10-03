@@ -6,7 +6,11 @@ can be retargeted. For a $120 session, retargeting warm visitors is usually wher
 revenue sits.
 
 **Status:** code is in place and verified. It stays dormant until the environment variable below is
-set, so nothing changes on the live site until Johari adds his pixel id.
+set, so nothing changes on the live site until the id is added in Vercel.
+
+**Iron Lion's pixel id is `425292372788596`** (given by Johari 2026-10-03, confirmed working on
+localhost: the real `fbevents.js` loads and `fbq.getState()` reports the pixel registered). A pixel
+id is not a secret - it ships in the public page source of every site that uses one.
 
 ---
 
