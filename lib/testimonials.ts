@@ -23,29 +23,19 @@ export function selectTestimonials(
 }
 
 /**
- * A balanced handful for the homepage, where the visitor has not yet said
- * whether they came for healing or for training.
+ * The homepage reviews, hand-picked and in the order given.
  *
- * Takes them round-robin across the audiences rather than straight off the top,
- * so the homepage never shows three reviews about basketball coaching to someone
- * who arrived looking for Reiki.
+ * Which reviews lead the homepage is a judgement about the business, not about
+ * code, so the choice lives in tenant content as a list of attributions and this
+ * only resolves it. Names that match nothing are dropped rather than throwing —
+ * a typo should not take the site down — so if a review goes missing from the
+ * homepage, check the spelling in `site.home.featuredReviews` first.
  */
-export function featuredTestimonials(
+export function pickTestimonials(
   all: readonly Testimonial[],
-  limit = 3,
+  attributions: readonly string[],
 ): readonly Testimonial[] {
-  const byAudience: Record<string, Testimonial[]> = { healing: [], fitness: [], both: [] };
-  for (const t of all) byAudience[t.audience]?.push(t);
-
-  const picked: Testimonial[] = [];
-  const order = ["healing", "fitness", "both"] as const;
-  for (let round = 0; picked.length < limit; round++) {
-    const before = picked.length;
-    for (const key of order) {
-      const next = byAudience[key][round];
-      if (next && picked.length < limit) picked.push(next);
-    }
-    if (picked.length === before) break; // every audience exhausted
-  }
-  return picked;
+  return attributions
+    .map((name) => all.find((t) => t.attribution.toLowerCase() === name.trim().toLowerCase()))
+    .filter((t): t is Testimonial => Boolean(t));
 }

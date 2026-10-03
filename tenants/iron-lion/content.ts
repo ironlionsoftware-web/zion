@@ -725,6 +725,12 @@ export const site = {
    * Headline rating shown near the top of the key pages.
    * UPDATE BY HAND when the Google profile changes. Last checked 2026-10-03.
    */
+  /**
+   * Which reviews lead the homepage, in display order. Johari's picks,
+   * 2026-10-03. Must match a testimonial's `attribution` exactly.
+   */
+  homeReviews: ["Lindsay", "Jariatou", "Willow", "Fred", "Amber"] as readonly string[],
+
   reviewSummary: {
     rating: "5.0",
     platform: "Google",

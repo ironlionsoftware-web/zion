@@ -8,10 +8,10 @@ import { WellnessGuideTeaser } from "@/components/sections/WellnessGuideTeaser";
 import { Container } from "@/components/layout/Container";
 import { Testimonials } from "@/components/testimonials/Testimonials";
 import { site } from "@/content/site";
-import { featuredTestimonials } from "@/lib/testimonials";
+import { pickTestimonials } from "@/lib/testimonials";
 
 export default function HomePage() {
-  const reviews = featuredTestimonials(site.testimonials, 3);
+  const reviews = pickTestimonials(site.testimonials, site.homeReviews);
 
   return (
     <>
