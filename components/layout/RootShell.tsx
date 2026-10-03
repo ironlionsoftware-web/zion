@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { MetaPixel } from "@/components/analytics/MetaPixel";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { Footer } from "@/components/layout/Footer";
@@ -18,6 +19,7 @@ export function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <PageViewTracker />
+      <MetaPixel />
       <SkipLink />
       <CartProvider>
         <Header />

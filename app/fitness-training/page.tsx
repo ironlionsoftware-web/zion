@@ -3,8 +3,10 @@ import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { FitnessTrainerBooking } from "@/components/fitness/FitnessTrainerBooking";
 import { NatureFeature } from "@/components/sections/NatureFeature";
+import { Testimonials } from "@/components/testimonials/Testimonials";
 import { getRegistration } from "@/lib/registration/cookie";
 import { site } from "@/content/site";
+import { selectTestimonials } from "@/lib/testimonials";
 
 export const metadata: Metadata = {
   title: site.fitnessTraining.title,
@@ -14,6 +16,7 @@ export const metadata: Metadata = {
 export default async function FitnessTrainingPage() {
   const p = site.fitnessTraining;
   const registration = await getRegistration();
+  const reviews = selectTestimonials(site.testimonials, "fitness");
 
   return (
     <>
@@ -43,6 +46,11 @@ export default async function FitnessTrainingPage() {
               </section>
             ))}
           </div>
+          <Testimonials
+            testimonials={reviews}
+            className="mx-auto mt-14 max-w-3xl"
+            headingId="ft-reviews"
+          />
           <FitnessTrainerBooking registration={registration} />
         </Container>
       </div>

@@ -11,10 +11,12 @@
 import type {
   ClassOffering,
   HealingServiceItem,
+  LandingOffer,
   NaturePhoto,
   NavItem,
   Service,
   ShopProduct,
+  Testimonial,
 } from "@/content/types";
 
 /** Your Dominica photography, used across the site */
@@ -706,6 +708,176 @@ export const site = {
     termsSummary:
       "This placeholder page will be replaced with terms of use for the website and any future commerce or booking features.",
   },
+
+  /**
+   * All 12 Google reviews, published exactly as each client wrote them.
+   *
+   * Johari's instruction, 2026-10-03: do not edit or trim. Nothing here is
+   * reworded, shortened or tidied. The typos, emphasis, punctuation and line
+   * breaks are the reviewers' own. If a review ever needs to come down, delete
+   * the whole entry rather than editing someone's words.
+   *
+   * Ordered so the strongest review for each audience comes first; each page
+   * takes the top four for its audience (see lib/testimonials.ts).
+   */
+  testimonials: [
+    {
+      quote: "Johari is a gentle but very powerful man who has walked through hell and back. His experiences in this life have allowed him to grow in his empathy towards others and he holds his clients with curiosity instead of judgement. The love that outpours from him during a session is equally calming and electric, his hands hold heat and the tuning forks he uses combines frequencies with his own channeling of energy. The result is a reset that will leave you feeling calm yet ready to take action steps towards claiming your own power back. Grateful for this human’s multifaceted work.",
+      attribution: "Kylin",
+      source: "Google review",
+      audience: "healing",
+    },
+    {
+      quote: "I met Johari through a friend and he is a wonderful trainer! Also, affordable so my goals weren’t so unreachable. He was encouraging, supportive, and we had great conversations. He’s super knowledgeable about his job and incorporated a spirituality portion I personally enjoyed. He was ok with meeting me super early and at my apartment gym and helped me feel more comfortable with the equipment. I would definitely recommend him as a trainer but also as any of his other offerings!!",
+      attribution: "JoAnna",
+      source: "Google review",
+      audience: "fitness",
+    },
+    {
+      quote: "Calm, empathetic energy that translates into a comfortable and insightful reading. Myself with a group of girlfriends got out reading done at Casa de Luz and were blown away by the accuracy. Will definitely go back for an individual reading",
+      attribution: "Suzanna",
+      source: "Google review",
+      audience: "healing",
+    },
+    {
+      quote: "I was referred to Iron Lion Fitness & Holistic Healing for physical fitness coaching by my doctor (an MD also certified in holistic practices). For years, I had struggled with back issues and had spent so much $$ on chiropractors, physical therapy, books, and specialists. Each was a little helpful, but none seemed to address the ROOT of the problem. My doc said that Johari had worked wonders with another patient who had severe diastasis recti (ab separation) after childbirth… so I reached out.\n\nI shared my journey with Johari & started training 1:1. He was careful & extremely knowledgeable. For the FIRST TIME in my 7-year health saga, a professional could actually SEE & UNDERSTAND where my muscles were imbalanced - what was weak, what was overcompensating, where my motion was restricted and how I needed to build strength to stabilize my lower back and pelvis. Wow - what an unbelievable relief & blessing. He guided me to build balance & strength in my body again, from the foundation up.\n\nALSO, I was on the cusp of turning 40. Ha! He told me that in Dominica, they know that women are just beginning to come into their true strength & self at this age. That was SUCH beautiful, needed reframe on aging..\n\nWorking out with Iron Lion is FUN! His easy-going, empathetic nature balances beautifully with @ss-kicking workouts. You’ll accomplish way more with Johari than you would on your own. I had individual fitness coaching for 9 months, and became stronger than I had ever been. I began to trust my body again.\n\nI also had ZERO back issues. Even the couple times my back felt vulnerable, my body was strong enough to correct itself before going out of alignment. I am forever thankful for Johari’s intuition, knowledge and awesome coaching. It changed what once was a scary trajectory for my body…. and I’ve had such a good time in the process!\n\nNow, Johari does small group fitness coaching in our neighborhood. It’s the best of all worlds for me - turn up some jams, hang with friends & neighbors, and workout together. His functional strength training workouts are always different, interesting and fun. It’s a blast to do with friends. I truly can’t recommend Iron Lion Fitness & Holistic Health or Johari enough for fitness or healing needs. If you’re thinking about it, try a couple sessions! Have a consultation! You’ll be thankful.",
+      attribution: "Lindsay",
+      source: "Google review",
+      audience: "fitness",
+    },
+    {
+      quote: "My friends and I had a reading with Johari and it was amazing. He was so calming and knowledgeable and was spot on with each of our readings. We greatly enjoyed our experience and would love to do more in the future.",
+      attribution: "Hailey",
+      source: "Google review",
+      audience: "healing",
+    },
+    {
+      quote: "My son has had the honor of working with Johari over the past 2-3 years. An excellent coach and trainer, we saw immediate and substantial improvements in my son’s game as well as his overall confidence level. We would absolutely recommend the Iron Lion team to anybody else that wants to connect their body and mind more seamlessly.",
+      attribution: "Fred",
+      source: "Google review",
+      audience: "fitness",
+    },
+    {
+      quote: "Johari with Iron Lion Fitness has been an amazing addition in my life. He has taught me so much about my body not only physically, also nutritionally and spiritually. He is dedicated to all encompassing holistic wellness. I cannot put into words the amount of gratitude I have for him. He also does a great job of encouraging me on my journey and we have a ton of interesting conversations! I feel so strong and my strength is growing exponentially!",
+      attribution: "Willow",
+      source: "Google review",
+      audience: "both",
+    },
+    {
+      quote: "My son has received weekly fitness tips and training on basketball with this company for almost two years now - the patience, persistence and resilience he is learning is immeasurable and such a benefit to his overall well-being! We are so grateful to have found Iron Lion Fitness!",
+      attribution: "Amber",
+      source: "Google review",
+      audience: "fitness",
+    },
+    {
+      quote: "Such a a breath of fresh air and healing experience to have a reading.",
+      attribution: "Maryam",
+      source: "Google review",
+      audience: "healing",
+    },
+    {
+      quote: "Iron Lion has helped myself and many other athletes get back to optimal performance with his personal training and healing abilities. He is a very insightful and a knowledgeable business man when it comes to holistic health. My favorite product is the sea moss! Thank you again!",
+      attribution: "G",
+      source: "Google review",
+      audience: "fitness",
+    },
+    {
+      quote: "Johari at Iron Lion Fitness is a gifted trainer and healer! I have benefited from my own physical training, herbs and mental health support, as has my 13yr old thru professional basketball coaching. As a physician, I have referred many patients — especially women— for physical training at all life stages. Gifted professional with and unique and diverse skill sets… highly recommend! —Amina Haji, MD, Family Medicine",
+      attribution: "Amina",
+      source: "Google review",
+      audience: "healing",
+    },
+    {
+      quote: "I’ve been a client of Iron Lion Fitness and Holistic Healing for a little over one year. In the span of the year I’ve successfully lost 25 lbs and more importantly, maintained my healthy weight for the better half of the past year.\n\nReiki, personal fitness, customized nutrition, and breathing exercises are among the various holistic methods implemented for my personal health plan.\n\nI look forward to continuing my wellness journey with Iron Lion Fitness and Holistic Healing and spreading the word to my friends and family.\nI am eternally grateful for Iron Lion Fitness and Holistic Healing for giving me hope and ensuring I was set up for long term health and wellness. I can confidently affirm that I’m no longer just surviving… I am thriving!!",
+      attribution: "Jariatou",
+      source: "Google review",
+      audience: "both",
+    },
+  ] satisfies Testimonial[],
+
+  /**
+   * Single-offer pages for paid traffic — see the LandingOffer type.
+   * Routes live at app/offer/<slug>/page.tsx and are excluded from search.
+   */
+  landing: {
+    healing: {
+      slug: "healing",
+      testimonialAudience: "healing",
+      metaTitle: "Reiki & holistic healing in Austin",
+      metaDescription:
+        "Reiki, frequency tuning and traditional plant medicine with two practitioners in the Greater Austin area. Start with a $45 consultation.",
+      eyebrow: "Greater Austin · consent-led",
+      headline: "Most people who book with us have never done this before",
+      lead:
+        "Johari Templin and Johnny Lona practice Reiki, frequency tuning, H.E.L.P. sessions and traditional plant medicine across the Greater Austin area. If you have been curious for a while and have not known where to start, start with a conversation.",
+      photo: {
+        src: "/images/nature/dominica-rainforest.jpg",
+        alt: "Dense rainforest canopy on Dominica, the Nature Island",
+      },
+      whatHappens: {
+        heading: "What actually happens",
+        steps: [
+          "We start with a consultation — $45, about an hour. You talk, we listen, and together we map out what you are actually looking for. Nothing is decided in the room and nothing is sold to you.",
+          "If a session is the right next step, you choose your practitioner, or both of us together. You stay fully clothed. You lie down. Nothing is asked of you.",
+          "A full session runs an hour and costs $120. Afterwards you get a plan you can actually follow, built around your life rather than ours.",
+        ],
+      },
+      priceLine: "Consultations are $45. Sessions are $120.",
+      priceNote:
+        "Sliding scale from $45 to $120 is available on card readings and when cost is a barrier — ask and it is yours, no questions and no means testing.",
+      primaryCta: {
+        label: "Book a $45 consultation",
+        href: "/register?next=book&service=consultation",
+      },
+      reassurances: [
+        "You have never done energy work before and would rather ask questions than be impressed.",
+        "You want someone who will not promise you outcomes they cannot deliver.",
+        "You are neurodivergent, injured, pregnant, grieving, or simply tired, and need a practitioner who adjusts rather than pushes.",
+        "You want your own cultural or spiritual beliefs respected rather than replaced.",
+        "All ages welcome. Greater Austin area, nationwide by arrangement.",
+      ],
+      disclaimer:
+        "Sessions support wellbeing and are not medical care, diagnosis, or treatment, and do not replace advice from your care team. H.E.L.P. sessions are complementary to licensed therapy, not a substitute for it.",
+    },
+    training: {
+      slug: "training",
+      testimonialAudience: "fitness",
+      metaTitle: "Sliding-scale personal training in Austin",
+      metaDescription:
+        "Personal training across Greater Austin on a $45 to $120 sliding scale. Groups of two to ten at $40 per person. No contracts.",
+      eyebrow: "Greater Austin · sliding scale",
+      headline: "Training that does not require a contract or a confession",
+      lead:
+        "Strength, mobility and conditioning paced for your joints, your nervous system and your actual schedule. You choose what you pay, between $45 and $120 a session. Groups of two to ten are $40 per person.",
+      photo: {
+        src: "/images/nature/austin-trail.jpg",
+        alt: "Wooded trail through the Austin greenbelt in morning light",
+      },
+      whatHappens: {
+        heading: "How it works",
+        steps: [
+          "Pick individual or group, your age group, and how often you want to train. Groups of two to ten are $40 per person and one payment covers everyone.",
+          "Choose your trainer — Johari, Johnny or Pierre — then a date and time that fits.",
+          "Set the price. Individual sessions slide from $45 to $120 and you pick the number. Pay per session, or set up weekly billing if a standing slot helps you show up. Cancel whenever.",
+        ],
+      },
+      priceLine: "Individual sessions, $45 to $120 — your call. Groups, $40 per person.",
+      priceNote: "No contracts and no lock-in. Weekly billing is optional and you can stop it any time.",
+      primaryCta: {
+        label: "See training options and book",
+        href: "/fitness-training",
+      },
+      reassurances: [
+        "You are starting over, starting late, or starting for the first time.",
+        "You have injuries, chronic pain, or neurodivergent needs and want them worked around rather than ignored.",
+        "You want to be pushed athletically and need someone who will actually do it.",
+        "You would rather train with your partner or your friends than alone.",
+        "Any age, any starting point. Form without shame, consistency without burnout.",
+      ],
+      disclaimer:
+        "Training supports general fitness and is not medical care or physical therapy. Talk to your doctor before starting if you are managing an injury or a health condition.",
+    },
+  } satisfies Record<string, LandingOffer>,
 } as const;
 
 export const services: Service[] = [

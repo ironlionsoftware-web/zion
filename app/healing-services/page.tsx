@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { Testimonials } from "@/components/testimonials/Testimonials";
 import { WellnessGuideFinder } from "@/components/wellness-guide/WellnessGuideFinder";
 import { healingServiceHref, site } from "@/content/site";
+import { selectTestimonials } from "@/lib/testimonials";
 
 export const metadata: Metadata = {
   title: site.healingServices.title,
@@ -12,6 +14,7 @@ export const metadata: Metadata = {
 
 export default function HealingServicesPage() {
   const p = site.healingServices;
+  const reviews = selectTestimonials(site.testimonials, "healing");
   return (
     <>
       <PageHeader title={p.title} lead={p.intro} centered />
@@ -59,6 +62,7 @@ export default function HealingServicesPage() {
               </section>
             ))}
           </div>
+          <Testimonials testimonials={reviews} className="mt-14" headingId="hs-reviews" />
         </Container>
       </div>
     </>

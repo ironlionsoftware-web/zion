@@ -12,10 +12,12 @@
 import type {
   ClassOffering,
   HealingServiceItem,
+  LandingOffer,
   NaturePhoto,
   NavItem,
   Service,
   ShopProduct,
+  Testimonial,
 } from "@/content/types";
 
 /** Your Costa Rica photography, used across the site */
@@ -699,6 +701,84 @@ export const site = {
     termsSummary:
       "This placeholder page will be replaced with terms of use for the website and any future commerce or booking features.",
   },
+
+  /** Real client reviews shown on the /offer pages. Paste verbatim, first names only. */
+  testimonials: [] as Testimonial[],
+
+  /** Single-offer pages for paid traffic — see the LandingOffer type. */
+  landing: {
+    healing: {
+      slug: "healing",
+      testimonialAudience: "healing",
+      metaTitle: "Reiki & holistic healing in Asheville",
+      metaDescription:
+        "Reiki, frequency tuning and holistic healing with two practitioners in the Greater Asheville area. Start with a $45 consultation.",
+      eyebrow: "Greater Asheville · consent-led",
+      headline: "Most people who book with us have never done this before",
+      lead:
+        "Maya Ellsworth and Rosa Delgado practice Reiki, frequency tuning and H.E.L.P. sessions across the Greater Asheville area. If you have been curious for a while and have not known where to start, start with a conversation.",
+      photo: homeLandscapePhotos[0],
+      whatHappens: {
+        heading: "What actually happens",
+        steps: [
+          "We start with a consultation — $45, about an hour. You talk, we listen, and together we map out what you are actually looking for. Nothing is decided in the room.",
+          "If a session is the right next step, you choose your practitioner, or both together. You stay fully clothed. You lie down. Nothing is asked of you.",
+          "A full session runs an hour and costs $120. Afterwards you get a plan built around your life rather than ours.",
+        ],
+      },
+      priceLine: "Consultations are $45. Sessions are $120.",
+      priceNote:
+        "Sliding scale from $45 to $120 is available when cost is a barrier — ask and it is yours, no means testing.",
+      primaryCta: {
+        label: "Book a $45 consultation",
+        href: "/register?next=book&service=consultation",
+      },
+      reassurances: [
+        "You have never done energy work before and would rather ask questions than be impressed.",
+        "You want someone who will not promise you outcomes they cannot deliver.",
+        "You are neurodivergent, injured, grieving, or simply tired, and need a practitioner who adjusts rather than pushes.",
+        "You want your own cultural or spiritual beliefs respected rather than replaced.",
+        "All ages welcome. Greater Asheville area, nationwide by arrangement.",
+      ],
+      disclaimer:
+        "Sessions support wellbeing and are not medical care, diagnosis, or treatment, and do not replace advice from your care team. H.E.L.P. sessions are complementary to licensed therapy, not a substitute for it.",
+    },
+    training: {
+      slug: "training",
+      testimonialAudience: "fitness",
+      metaTitle: "Sliding-scale personal training in Asheville",
+      metaDescription:
+        "Personal training across Greater Asheville on a $45 to $120 sliding scale. Groups of two to ten at $40 per person. No contracts.",
+      eyebrow: "Greater Asheville · sliding scale",
+      headline: "Training that does not require a contract or a confession",
+      lead:
+        "Strength, mobility and conditioning paced for your joints, your nervous system and your actual schedule. You choose what you pay, between $45 and $120 a session. Groups of two to ten are $40 per person.",
+      photo: homeLandscapePhotos[1],
+      whatHappens: {
+        heading: "How it works",
+        steps: [
+          "Pick individual or group, your age group, and how often you want to train. Groups of two to ten are $40 per person and one payment covers everyone.",
+          "Choose your trainer, then a date and time that fits.",
+          "Set the price. Individual sessions slide from $45 to $120 and you pick the number. Pay per session, or set up weekly billing if a standing slot helps you show up. Cancel whenever.",
+        ],
+      },
+      priceLine: "Individual sessions, $45 to $120 — your call. Groups, $40 per person.",
+      priceNote: "No contracts and no lock-in. Weekly billing is optional and you can stop it any time.",
+      primaryCta: {
+        label: "See training options and book",
+        href: "/fitness-training",
+      },
+      reassurances: [
+        "You are starting over, starting late, or starting for the first time.",
+        "You have injuries, chronic pain, or neurodivergent needs and want them worked around rather than ignored.",
+        "You want to be pushed athletically and need someone who will actually do it.",
+        "You would rather train with your partner or your friends than alone.",
+        "Any age, any starting point. Form without shame, consistency without burnout.",
+      ],
+      disclaimer:
+        "Training supports general fitness and is not medical care or physical therapy. Talk to your doctor before starting if you are managing an injury or a health condition.",
+    },
+  } satisfies Record<string, LandingOffer>,
 } as const;
 
 export const services: Service[] = [

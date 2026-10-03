@@ -88,3 +88,61 @@ export type NaturePhoto = {
   alt: string;
 };
 
+/**
+ * A real client review, quoted verbatim.
+ *
+ * Only ever paste what someone actually wrote — usually copied across from the
+ * business's Google Business Profile. Never compose one. Prefer reviews that
+ * describe how a session felt or what the person expected: a review crediting a
+ * session with resolving a medical condition carries the same compliance risk
+ * as making that claim directly, so leave those off the site.
+ */
+export type Testimonial = {
+  /** Verbatim text. Trim for length only — never reword. */
+  quote: string;
+  /** First name, optionally with a city. Never a full name. */
+  attribution: string;
+  /** Where it was left, e.g. "Google review". Shown as provenance. */
+  source?: string;
+  /** Which offer this review speaks to, so each page shows relevant ones. */
+  audience: TestimonialAudience | "both";
+  /** Roughly when it was left, e.g. "2025". Display only. */
+  date?: string;
+};
+
+/** The two things this business sells sessions of. "both" reviews show on either page. */
+export type TestimonialAudience = "healing" | "fitness";
+
+/**
+ * A single-offer page for paid traffic to land on.
+ *
+ * These exist because an ad click needs one offer and one action: the homepage
+ * asks a stranger to choose between healing, fitness, retreats and the shop,
+ * and a paid visitor given four choices usually takes none. Routed under
+ * `/offer/<slug>` and kept out of search (see the route files) so they don't
+ * compete with the real service pages for the same keywords.
+ */
+export type LandingOffer = {
+  /** Route segment under /offer — must match the directory name. */
+  slug: string;
+  /** Which reviews this page shows. */
+  testimonialAudience: TestimonialAudience;
+  metaTitle: string;
+  metaDescription: string;
+  eyebrow: string;
+  headline: string;
+  lead: string;
+  photo: NaturePhoto;
+  /** The first-timer's real question, answered as an ordered sequence. */
+  whatHappens: { heading: string; steps: readonly string[] };
+  /** Plain-language price line, e.g. "Sessions are $120." */
+  priceLine: string;
+  priceNote?: string;
+  /** Where the one button goes. Usually a registerHref() booking path. */
+  primaryCta: { label: string; href: string };
+  /** Short reassurances answering "is this for someone like me?" */
+  reassurances: readonly string[];
+  /** Shown small at the foot of the page. Keep it compliant. */
+  disclaimer: string;
+};
+
