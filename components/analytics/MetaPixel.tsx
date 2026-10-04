@@ -74,16 +74,47 @@ fbq('track','PageView');`}
   );
 }
 
+export type MetaEvent = "Lead" | "Schedule" | "Purchase" | "CompleteRegistration";
+
 /**
  * Report a conversion to Meta.
  *
  * Call on the thank-you/confirmation step rather than on button click, so the
  * number in Ads Manager means "money taken", not "someone was interested".
  */
-export function trackMetaEvent(
-  event: "Lead" | "Schedule" | "Purchase" | "CompleteRegistration",
-  params?: Record<string, unknown>,
-): void {
+export function trackMetaEvent(event: MetaEvent, params?: Record<string, unknown>): void {
   if (typeof window === "undefined") return;
   window.fbq?.("track", event, params);
+}
+
+const REPORTED_PREFIX = "iron_lion_meta_reported:";
+
+/**
+ * Report a conversion at most once per `dedupeKey`.
+ *
+ * The confirmation screens re-run their lookup on every load, and the server
+ * answers idempotently with the existing order — so without this, one customer
+ * refreshing the thank-you page reports two purchases. Ad spend gets optimised
+ * against that number, so a double count is worse than a missing one.
+ *
+ * Keyed on the Stripe session id and kept in localStorage. If storage is
+ * unavailable (private windows, blocked site data) the event still fires: an
+ * occasional duplicate beats silently losing every conversion.
+ */
+export function trackMetaEventOnce(
+  dedupeKey: string,
+  event: MetaEvent,
+  params?: Record<string, unknown>,
+): void {
+  if (typeof window === "undefined" || !dedupeKey) return;
+
+  const storageKey = `${REPORTED_PREFIX}${event}:${dedupeKey}`;
+  try {
+    if (localStorage.getItem(storageKey)) return;
+    localStorage.setItem(storageKey, "1");
+  } catch {
+    // Storage blocked — fall through and report anyway.
+  }
+
+  trackMetaEvent(event, params);
 }

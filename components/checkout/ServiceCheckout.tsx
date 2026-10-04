@@ -1,5 +1,6 @@
 "use client";
 
+import { trackMetaEventOnce } from "@/components/analytics/MetaPixel";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -102,9 +103,20 @@ export function ServiceCheckout({
     })
       .then(async (res) => {
         if (res.ok) {
-          const data = (await res.json()) as { scheduledLabel?: string };
+          const data = (await res.json()) as {
+            scheduledLabel?: string;
+            booking?: { amountCents?: number; serviceLabel?: string };
+          };
           if (data.scheduledLabel) setConfirmedScheduleLabel(data.scheduledLabel);
           setConfirmed(true);
+          // Reported here rather than on the pay button: this only runs once
+          // Stripe has actually taken the money.
+          trackMetaEventOnce(sessionId, "Purchase", {
+            value: (data.booking?.amountCents ?? 0) / 100,
+            currency: "USD",
+            content_name: data.booking?.serviceLabel,
+            content_type: "service",
+          });
           return;
         }
         const data = (await res.json()) as { error?: string };

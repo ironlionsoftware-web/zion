@@ -1,5 +1,6 @@
 "use client";
 
+import { trackMetaEventOnce } from "@/components/analytics/MetaPixel";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -57,8 +58,14 @@ export function CheckoutFlow({ registration, paymentsReady }: CheckoutFlowProps)
     })
       .then(async (res) => {
         if (res.ok) {
+          const data = (await res.json()) as { order?: { subtotalCents?: number } };
           setConfirmed(true);
           clearCart();
+          trackMetaEventOnce(sessionId, "Purchase", {
+            value: (data.order?.subtotalCents ?? 0) / 100,
+            currency: "USD",
+            content_type: "product",
+          });
           return;
         }
         const data = (await res.json()) as { error?: string };

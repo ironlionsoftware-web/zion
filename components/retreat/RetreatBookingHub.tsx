@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { trackMetaEventOnce } from "@/components/analytics/MetaPixel";
 import { RetreatParticipantPayment } from "./RetreatParticipantPayment";
 import type { ClientRegistration } from "@/lib/registration/types";
 import { formatRetreatUsd, retreatTypeLabelForBooking } from "@/lib/retreat/booking";
@@ -25,6 +26,12 @@ export function RetreatBookingHub({
   const [booking, setBooking] = useState(initialBooking);
   const [confirming, setConfirming] = useState(false);
 
+  // Derived in render scope as primitives: the effect below depends on these,
+  // and numbers compare by value, so a new `initialBooking` object identity
+  // cannot re-run the effect and re-post the payment confirmation.
+  const { depositCents, balanceCents } = retreatPricingForBooking(initialBooking);
+  const retreatLabel = retreatTypeLabelForBooking(initialBooking);
+
   const refreshBooking = useCallback(async () => {
     const res = await fetch(`/api/retreat/booking/${bookingId}`);
     if (!res.ok) return;
@@ -45,7 +52,20 @@ export function RetreatBookingHub({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sessionId }),
     })
-      .then(() => refreshBooking())
+      .then(() => {
+        // The highest-value transaction on the site. Amount comes from the
+        // booking's own pricing rather than the confirm response, which only
+        // reports success - and it is the deposit or the balance depending on
+        // which one Stripe just took.
+        const amountCents = payment === "deposit" ? depositCents : balanceCents;
+        trackMetaEventOnce(sessionId, "Purchase", {
+          value: amountCents / 100,
+          currency: "USD",
+          content_name: retreatLabel,
+          content_type: "retreat",
+        });
+        return refreshBooking();
+      })
       .finally(() => {
         setConfirming(false);
         const url = new URL(window.location.href);
@@ -54,7 +74,7 @@ export function RetreatBookingHub({
         url.searchParams.delete("canceled");
         window.history.replaceState({}, "", url.toString());
       });
-  }, [refreshBooking]);
+  }, [refreshBooking, depositCents, balanceCents, retreatLabel]);
 
   return (
     <div className="space-y-6">

@@ -1,5 +1,6 @@
 "use client";
 
+import { trackMetaEventOnce } from "@/components/analytics/MetaPixel";
 import { useState } from "react";
 import { PractitionerPicker } from "@/components/booking/PractitionerPicker";
 import { CeremonyMedicinePicker } from "@/components/booking/CeremonyMedicinePicker";
@@ -126,6 +127,11 @@ export function RegisterForm({
         setError(data.error ?? "Registration failed. Please try again.");
         return;
       }
+
+      // Someone entering the funnel, reported before we navigate away. Deduped on
+      // the email so a person who registers twice is one lead, not two. No
+      // personal data goes to Meta - the email is only the local dedupe key.
+      trackMetaEventOnce(email.trim().toLowerCase(), "Lead", { content_category: next });
 
       if (data.external) {
         window.location.href = data.redirect;
