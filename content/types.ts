@@ -16,6 +16,14 @@ export type Service = {
   title: string;
   summary: string;
   sections: { heading?: string; paragraphs: string[] }[];
+  /**
+   * Send the card somewhere other than its own /services/<slug> page.
+   *
+   * Set this when a real page already covers the subject better than a generated
+   * stub would — the stub is then not built or listed in the sitemap, so the two
+   * never compete for the same search.
+   */
+  href?: string;
 };
 
 export type ShopProductVariant = {

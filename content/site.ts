@@ -41,7 +41,9 @@ export function getService(slug: string): Service | undefined {
 }
 
 export function getServiceSlugs(): { slug: string }[] {
-  return services.map((s) => ({ slug: s.slug }));
+  // Entries that link elsewhere get no generated page, so a thin stub never
+  // competes with the real page for the same search.
+  return services.filter((s) => !s.href).map((s) => ({ slug: s.slug }));
 }
 
 /** True when `site.calendly.url` is a real Calendly link (not empty / placeholder). */

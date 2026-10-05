@@ -21,21 +21,3 @@ export function selectTestimonials(
 ): readonly Testimonial[] {
   return all.filter((t) => t.audience === audience || t.audience === "both").slice(0, limit);
 }
-
-/**
- * The homepage reviews, hand-picked and in the order given.
- *
- * Which reviews lead the homepage is a judgement about the business, not about
- * code, so the choice lives in tenant content as a list of attributions and this
- * only resolves it. Names that match nothing are dropped rather than throwing —
- * a typo should not take the site down — so if a review goes missing from the
- * homepage, check the spelling in `site.home.featuredReviews` first.
- */
-export function pickTestimonials(
-  all: readonly Testimonial[],
-  attributions: readonly string[],
-): readonly Testimonial[] {
-  return attributions
-    .map((name) => all.find((t) => t.attribution.toLowerCase() === name.trim().toLowerCase()))
-    .filter((t): t is Testimonial => Boolean(t));
-}

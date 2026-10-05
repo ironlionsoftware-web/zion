@@ -725,12 +725,6 @@ export const site = {
    * Headline rating shown near the top of the key pages.
    * UPDATE BY HAND when the Google profile changes. Last checked 2026-10-03.
    */
-  /**
-   * Which reviews lead the homepage, in display order. Johari's picks,
-   * 2026-10-03. Must match a testimonial's `attribution` exactly.
-   */
-  homeReviews: ["Lindsay", "Jariatou", "Willow", "Fred", "Amber"] as readonly string[],
-
   reviewSummary: {
     rating: "5.0",
     platform: "Google",
@@ -917,17 +911,14 @@ export const services: Service[] = [
     ],
   },
   {
-    slug: "education-workshops",
-    title: "Education & workshops",
+    slug: "fitness-training",
+    title: "Fitness training",
     summary:
-      "Short form learning on Reiki basics, plant forward living, and embodied practices, without dogma.",
-    sections: [
-      {
-        paragraphs: [
-          "Workshops emphasize accessibility and respect for diverse belief systems. Content is informational and experiential, not prescriptive medical advice.",
-        ],
-      },
-    ],
+      "Strength, mobility, and conditioning paced for your joints and your schedule. Sliding scale $45 to $120, groups of two to ten at $40 each.",
+    // Links to the real training page rather than a generated stub, so no
+    // detail page is built for this entry.
+    href: "/fitness-training",
+    sections: [],
   },
 ];
 

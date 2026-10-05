@@ -705,9 +705,6 @@ export const site = {
 
   /** Real client reviews shown on the /offer pages. Paste verbatim, first names only. */
   /** Headline rating. Update by hand; nothing here is computed. */
-  /** Which reviews lead the homepage, in display order. */
-  homeReviews: [] as readonly string[],
-
   reviewSummary: {
     rating: "5.0",
     platform: "Google",

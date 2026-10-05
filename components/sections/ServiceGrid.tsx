@@ -21,7 +21,7 @@ export function ServiceGrid() {
                 <h3 className="font-display text-xl font-medium text-[var(--foreground)]">{s.title}</h3>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{s.summary}</p>
                 <Link
-                  href={`/services/${s.slug}`}
+                  href={s.href ?? `/services/${s.slug}`}
                   className="link-accent mt-6 inline-flex min-h-11 w-full items-center py-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2"
                 >
                   <span className="sr-only">Learn more about </span>
