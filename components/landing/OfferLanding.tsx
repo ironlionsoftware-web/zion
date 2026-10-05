@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { NatureFeature } from "@/components/sections/NatureFeature";
+import { ReviewRating } from "@/components/testimonials/ReviewRating";
 import { Testimonials } from "@/components/testimonials/Testimonials";
+import { site } from "@/content/site";
 import type { LandingOffer, Testimonial } from "@/content/types";
 import { selectTestimonials } from "@/lib/testimonials";
 
@@ -37,6 +39,9 @@ export function OfferLanding({ offer, testimonials }: OfferLandingProps) {
           <p className="eyebrow">{offer.eyebrow}</p>
           <h1 className="page-title mt-4">{offer.headline}</h1>
           <div className="symbol-band mt-6 h-px w-16 opacity-80" aria-hidden="true" />
+          {testimonials.length > 0 ? (
+            <ReviewRating summary={site.reviewSummary} className="mt-6" />
+          ) : null}
           <p className="prose-content mt-6 max-w-2xl">{offer.lead}</p>
           <div className="mt-8 flex w-full max-w-md flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:items-center">
             {cta}
