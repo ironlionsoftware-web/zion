@@ -22,9 +22,10 @@ type OfferLandingProps = {
  * around the offer.
  */
 export function OfferLanding({ offer, testimonials }: OfferLandingProps) {
-  // Four is as many as the page carries before the call to action gets pushed
-  // below where anyone reads.
-  const reviews = selectTestimonials(testimonials, offer.testimonialAudience, 4);
+  // Every review that speaks to this offer. The cap that used to be here existed
+  // to stop the call to action being buried; long reviews now collapse to two
+  // lines, so the whole set costs little height and is worth more as proof.
+  const reviews = selectTestimonials(testimonials, offer.testimonialAudience);
 
   const cta = (
     <Link href={offer.primaryCta.href} className="btn btn-primary w-full sm:w-auto">
